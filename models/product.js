@@ -20,9 +20,6 @@ const Model = new mongoose.Schema(
   }
 );
     
-Model.plugin(require('../modules/auto-increment').getInstance().plugin, {
-  model: 'product',
-  field: 'id'
-});
+
 
 module.exports = mongoose.model('product', Model);

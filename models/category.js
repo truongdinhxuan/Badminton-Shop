@@ -12,9 +12,6 @@ const Model = new mongoose.Schema(
   }
 );
     
-Model.plugin(require('../modules/auto-increment').getInstance().plugin, {
-  model: 'category',
-  field: 'id'
-});
+
 
 module.exports = mongoose.model('category', Model);

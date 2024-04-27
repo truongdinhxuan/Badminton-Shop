@@ -5,6 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var hbs = require("hbs");
 var indexRouter = require('./routes/index');
+var mongoose = require("mongoose");
+
 
 var app = express();
 
@@ -25,9 +27,7 @@ app.use('/', indexRouter);
 app.use(function(req, res, next) {
   next(createError(404));
 });
-app.get('/', (req, res) => {
-  res.render('index');
-});
+
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
@@ -39,10 +39,16 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+//view settings
+app.use('/', require('./routes/index'));
+app.use('/admin', require('./routes/admin'));
+
 // connection
-var mongoose = require("mongoose");
 var uri =
 "mongodb://localhost:27017/shopping";
+
+
+
 mongoose
   .connect(uri)
   .then(() => console.log("Database Successfully Connected"))
