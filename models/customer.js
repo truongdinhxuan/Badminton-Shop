@@ -2,17 +2,13 @@ const mongoose = require('mongoose');
 
 const Model = new mongoose.Schema(
   {
-    id: Number,
-    fullname: String,
     email: String,
     password: String,
+    name: String,
+    roleID: String,
     photo: String,
-    roles: Object,
-    isDeleted: Boolean
-  },
-  {
-    collection: 'customer'
   }
 );
     
-module.exports = mongoose.model('customer', Model);
+const Customer = mongoose.model("Customer", Model, "customer");
+module.exports = Customer;
