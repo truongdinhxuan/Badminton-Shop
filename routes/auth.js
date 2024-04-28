@@ -1,34 +1,35 @@
 var express = require("express");
 var router = express.Router();
 
-const BcryptJs = require('bcryptjs');
-const Passport = require('../modules/passport');
-const UserModel = require('../models/user');
-const UserRole = require('../constants/user-role');
+const AdminModel = require('../models/admin')
+const CustomerModel = require('../models/customer')
+const RoleModel = require('../models/roles')
 
-router.get('/admin/login', (req, res) => {
-    const model = {
-        callbackUrl: '/admin/login'
-    };
+router.get("/login", function (req, res, next) {
+    res.render("auth/login");
+  });
+router.post("/login", async (req, res) => {
+    var email = req.body.email;
+    var password = req.body.password;
 
-    if (req.query.returnUrl && req.query.returnUrl.length > 0) {
-        model.callbackUrl = `${model.callbackUrl}?returnUrl=${req.query.returnUrl}`;
+    console.log(role)
+    try {
+        var admin = await AdminModel.findOne({
+            email: email,
+            password: password,
+          }).lean();
+          if (admin) {
+            var role = await RoleModel.findById(admin.roleID).lean();
+            if (role && role.roleName == "admin") {
+              req.session.email = admin.email;
+              return res.redirect("/admin");
+            }
+          }
+    } catch (err) {
+        console.error(err);
+        res.render("auth/login", { 
+          message: "Internal Server Error" 
+        });
     }
-
-    res.render('admin/auth/login', model);
 });
-
-router.post('/admin/login', Passport.auth(), (req, res) => {
-    let sReturnUrl = undefined;
-
-    if (req.query.returnUrl && req.query.returnUrl.length > 0) {
-        sReturnUrl = decodeURI(req.query.returnUrl);
-    }
-
-    if (!sReturnUrl) {
-        return res.redirect('/admin');
-    }
-    else {
-        return res.redirect(sReturnUrl);
-    }
-});
+module.exports = router;
