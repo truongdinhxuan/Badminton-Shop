@@ -7,11 +7,8 @@ const Model = new mongoose.Schema(
     urlRewriteName: String,
     isDeleted: Boolean
   },
-  {
-    collection: 'category'
-  }
 );
     
+const Category = mongoose.model("Category", Model, "category");
+module.exports = Category;
 
-
-module.exports = mongoose.model('category', Model);
