@@ -12,14 +12,8 @@ const Model = new mongoose.Schema(
     sale: Number,
     sale1: Number,
     salePrice: Number,
-    isDeleted: Boolean,
-      
+    isDeleted: Boolean,  
   },
-  {
-    collection: 'product'
-  }
 );
-    
-
-
-module.exports = mongoose.model('product', Model);
+const Product = mongoose.model("Product", Model, "product");
+module.exports = Product;

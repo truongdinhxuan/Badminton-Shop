@@ -8,8 +8,10 @@ const AdminModel = require('../models/admin');
 const CustomerModel = require('../models/customer');
 const CategoryModel = require('../models/category');
 const Charset = require('../modules/charset');
+const multer = require("multer");
 // const OrderStatus = require('../constants/order-status');
 
+// Admin index
 router.get('/', async (req, res) => {
     // Dashboard.... Chinh sau
     const order = await OrderModel.find().count();
@@ -23,13 +25,13 @@ router.get('/', async (req, res) => {
     product: product
     });
 });
-
+// CATEGORY
 router.get('/category', async (req, res) => {
-    const model = await CategoryModel.find().lean();
+    const category = await CategoryModel.find().lean();
 
     res.render("admin/category" , {
     layout: "admin/layout/layout",
-    data:model
+    data:category
     })
 })
 router.get('/add-category', async (req, res) => {
@@ -67,8 +69,6 @@ router.get('/delete-all-category', async (req, res) => {
         res.redirect('/admin/category?error=true'); 
     }
 })
-
-// Delete
 router.get("/delete-category/:id", async (req, res) => {
     const categoryId = req.params.id;
     await CategoryModel.findByIdAndDelete(categoryId).lean();
@@ -97,5 +97,29 @@ router.post("/update-category/:id", async (req, res) => {
         res.redirect('/admin')
     }
 })
+// PRODUCT
+router.get('/product', async (req, res) => {
+    try {
+        // Fetch all products
+        const products = await ProductModel.find().lean();
+
+        // Fetch categories for all products
+        const productWithCategory = await Promise.all(products.map(async (product) => {
+            const category = await CategoryModel.findOne({ id: product.categoryId }).lean();    
+            return {
+                ...product,
+                categoryName: category ? category.name : 'Uncategorized'
+            };
+        }));
+
+        res.render('admin/product', {
+            layout: "/admin/layout/layout",
+            data: productWithCategory
+        });
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 module.exports = router;
