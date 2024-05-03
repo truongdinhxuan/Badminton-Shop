@@ -7,7 +7,7 @@ var hbs = require("hbs");
 var mongoose = require("mongoose");
 const flash = require('connect-flash');
 const session = require('cookie-session');
-
+const fs = require('fs');
 var app = express();
 
 // View engine setup
@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
 // Connect-flash middleware
 // app.use(flash());
 
@@ -50,8 +50,8 @@ app.use((req, res, next) => {
 
 // Middleware to check admin session
 const { checkAdminSession } = require("./middlewares/auth");
-
 app.use("/admin", checkAdminSession);
+
 
 // Routes
 app.use('/', require('./routes/index'));

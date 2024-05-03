@@ -11,13 +11,13 @@
                                 <h6 class="m-0 font-weight-bold text-primary">Action</h6>
                             </div>
                             <div class="card-body">
-                                <a href="/admin/add-category" class="btn btn-success btn-icon-split">
+                                <a href="/admin/add-product" class="btn btn-success btn-icon-split">
                                     <span class="icon text-white-50">
                                         <i class="fas fa-plus"></i>
                                     </span>
                                     <span class="text">Add new product</span>
                                 </a>
-                                <a href="/admin/delete-all-category" class="btn btn-danger btn-icon-split">
+                                <a href="/admin/delete-all-product" class="btn btn-danger btn-icon-split">
                                     <span class="icon text-white-50">
                                         <i class="fas fa-trash"></i>
                                     </span>
@@ -62,9 +62,15 @@
                                             <td>{{id}}</td>
                                             <td>{{name}}</td>
                                             <td>{{categoryName}}</td>
-                                            <td>{{description}}</td>
+                                            <td>
+                                                {{{description}}}
+                                            </td>
                                             <td>{{price}}</td>
-                                            <td>{{photo}}</td>
+                                            <td>
+                                                {{#each images}}
+                                                    <img src="{{this}}" alt="ABC">
+                                                {{/each}}
+                                            </td>
                                             <td>
                                                 <form action="/admin/update-product/{{_id}}">
                                                 <button type="submit" class="btn btn-primary">Update</button>

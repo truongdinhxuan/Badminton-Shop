@@ -4,10 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create a new product</title>
+    <script src="/public/ckeditor/ckeditor.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
 </head>
+<style>
+    /* Style for the CKEditor div */
+#editor {
+    width: 100%; /* Adjust the width as needed */
+    height: 300px; /* Adjust the height as needed */
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-bottom: 20px; /* Add some bottom margin for spacing */
+}
+
+/* Style for the form */
+.card {
+    width: 80%; /* Adjust the width of the form container */
+    margin: 0 auto; /* Center the form horizontally */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+</style>
 <body>
-    <h1>
-        Create product
-    </h1>
+    <div class="card">
+    <form action="/admin/add-product" method="post" enctype="multipart/form-data">
+        Name: <input type="text" name="name"> <br>
+        Category: <select name="categoryId" id="categoryId">
+            {{#each data}}
+                <option value="{{this.id}}">
+                    {{this.name}}
+                </option>
+            {{/each}}
+        </select> <br>
+        Description: 
+        <div id="input-description">
+        <textarea name="description" id="editor" placeholder="Enter description..."></textarea>
+        </div>
+        <br>
+        Price: <input type="number" name="price" id=""> <br>
+        Photo: <input type="file" name="photo" accept="image/*" class="form-control-file" multiple> <br>
+        <button type="submit">SMT</button>
+    </form>
+    </div>
 </body>
 </html>
+<script>
+    ClassicEditor
+        .create( document.querySelector( '#editor' ) )
+        .catch( error => {
+            console.error( error );
+        } );
+    CKEDITOR.replace('editor')
+
+</script>
