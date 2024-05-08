@@ -154,7 +154,7 @@ router.get('/product', async (req, res) => {
 });
 router.get('/add-product', async (req, res) => {
   const category = await CategoryModel.find({}).lean();
-
+  
   res.render("admin/product/add-product" , {
     layout: "admin/layout/layout",
     data: category
@@ -167,6 +167,8 @@ router.post('/add-product', upload.fields([{name: "photo",maxCount: 10}]), async
   // const categoryId = category.id
   const description = req.body.description
   const price = req.body.price
+  const isDisplay = req.body.isDisplay === 'on';
+  console.log(req.body)
   try {
     const newProduct = new ProductModel({
       id: await ProductModel.countDocuments() + 1,
@@ -176,6 +178,7 @@ router.post('/add-product', upload.fields([{name: "photo",maxCount: 10}]), async
       photo: "",
       description: description,
       price: price,
+      isDisplay: isDisplay
     })
     const savedProduct = await newProduct.save();
     const productFolderPath = path.join(__dirname, "../public/uploads", savedProduct._id.toString())
@@ -215,30 +218,52 @@ function createFolder(folderPath) {
 router.get("/delete-product/:id", async (req, res) => {
   const productId = req.params.id;
   await ProductModel.findByIdAndDelete(productId).lean();
-
+  
   res.redirect("/admin/product");
 });
 router.get("/update-product/:id", async (req, res) => {
   const productId = req.params.id;
   const updateProduct = await ProductModel.findById(productId).lean();
+  const category = await CategoryModel.find({}).lean();
+  
+  const selectedCategory = category.find(category => category.id === updateProduct.categoryId);
 
   res.render('admin/product/update-product' ,{
       layout: "admin/layout/layout",
       updateProduct: updateProduct,
+      data: category,
+      selectedCategory: selectedCategory,
+      isDisplay: updateProduct.isDisplay,
   });
 });
-router.post("/update-product/:id", async (req, res) => {
+router.post("/update-product/:id",upload.fields([{name: "photo",maxCount: 10}]), async (req, res) => {
   
   try {
       const productId = req.params.id;
-      const data = req.body
-      await CategoryModel.findByIdAndUpdate(categoryID, data).lean();
-  
-      res.redirect("/admin/category")
+      const name = req.body.name;
+      const categoryId = req.body.categoryId;
+      const description = req.body.description;
+      const price = req.body.price;
+      const isDisplay = req.body.isDisplay === 'on'
+      await ProductModel.findByIdAndUpdate(productId , {
+        name: name,
+        categoryId: categoryId,
+        description: description,
+        price: price,
+        isDisplay: isDisplay
+      })
+      
+      const productFolderPath = path.join(__dirname, "../public/uploads", productId.toString())
+
+      const imagesPath = path.join(productFolderPath);
+
+      await saveFilesFromMemory(req.files.photo, imagesPath);
+
+      res.redirect("/admin/product")
   } catch (errors) {
       console.log(errors)
       res.redirect('/admin')
   }
-})
+}) 
 
 module.exports = router;

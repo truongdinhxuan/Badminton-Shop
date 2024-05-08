@@ -9,6 +9,7 @@ const Model = new mongoose.Schema(
     photo: String,
     description: String,
     price: Number,
+    isDisplay: Boolean
     // sale: Number,
     // sale1: Number,
     // salePrice: Number,

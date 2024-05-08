@@ -36,7 +36,7 @@ app.use(
   })
 );
 // MongoDB connection
-var uri = "mongodb://localhost:27017/shopping";
+var uri = "mongodb+srv://truongdinh12002:truongdinh12002@shopping.46ohfvc.mongodb.net/";
 
 mongoose.connect(uri)
   .then(() => console.log("Database Successfully Connected"))

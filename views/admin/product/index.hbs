@@ -67,9 +67,9 @@
                                             </td>
                                             <td>{{price}}</td>
                                             <td>
-                                                {{#each images}}
-                                                    <img src="{{this}}" alt="ABC">
-                                                {{/each}}
+                                                {{#if images}} 
+                                                    <img class="productImg" src="{{images.[0]}}" alt="ABC" style="width: 200; height: 150px">                                               
+                                                {{/if}}
                                             </td>
                                             <td>
                                                 <form action="/admin/update-product/{{_id}}">
