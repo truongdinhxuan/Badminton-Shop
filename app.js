@@ -36,11 +36,16 @@ app.use(
   })
 );
 // MongoDB connection
-var uri = "mongodb+srv://truongdinh12002:truongdinh12002@shopping.46ohfvc.mongodb.net/";
+var uri = "mongodb+srv://truongdinh12002:truongdinh12002@shopping.46ohfvc.mongodb.net/shopping";
 
 mongoose.connect(uri)
   .then(() => console.log("Database Successfully Connected"))
   .catch((error) => console.log(error));
+
+app.listen(process.env.PORT || 8000);
+
+var bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // Make session value accessible in views (hbs)
 app.use((req, res, next) => {
@@ -67,18 +72,6 @@ app.use(function (err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render("error", { layout: "error_layout" });
-});
-
-
-// Error handler
-app.use(function(err, req, res, next) {
-  // Set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // Render the error page
-  res.status(err.status || 500);
-  res.render('error');
 });
 
 module.exports = app;
