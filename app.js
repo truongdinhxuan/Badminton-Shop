@@ -42,7 +42,9 @@ mongoose.connect(uri)
   .then(() => console.log("Database Successfully Connected"))
   .catch((error) => console.log(error));
 
-app.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT || 8000, () => {
+  console.log('LOG: ${port}')
+});
 
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
