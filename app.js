@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+const port = process.env.PORT || 4000;
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -42,7 +43,9 @@ mongoose.connect(uri)
   .then(() => console.log("Database Successfully Connected"))
   .catch((error) => console.log(error));
 
-app.listen(process.env.PORT || 8000);
+app.listen(port, () => {
+    console.log(`POST: ${port}`)
+})
 
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
