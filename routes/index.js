@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var CategoryModel = require('../models/category');
-var ProductModel = require('../models/product')
+var ProductModel = require('../models/product');
 const fs = require("fs");
 const path = require("path");
 // const { checkLoginSession } = require("../middlewares/auth");

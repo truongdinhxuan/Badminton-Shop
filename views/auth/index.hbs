@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login page</title>
+    <link rel="stylesheet" href="/stylesheets/swiper.css" />
+    <link rel="stylesheet" href="/stylesheets/bootstrap.css" />
+
+    <link rel="stylesheet" type="text/css" href="/stylesheets/vendor.css">
+    <link rel="stylesheet" type="text/css" href="/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chilanka&family=Montserrat:wght@300;400;500&display=swap"
+    rel="stylesheet">
+</head>
+</html>
+    <section id="banner" class="py-3" style="background: #F9F3EC;">
+        <div class="container">
+            <div class="hero-content py-5 my-3">
+                <h2 class="display-1 mt-3 mb-0">Account</h2>
+                <nav class="breadcrumb">
+                    <a class="breadcrumb-item nav-link" href="/">Home</a>
+                    <span class="breadcrumb-item active" aria-current="page">Account</span>
+                </nav>
+            </div>
+        </div>
+    </section>
+
+    <section class="login-tabs padding-large">
+        <div class="container my-5 py-5">
+            <div class="row">
+                <div class="tabs-listing">
+                    <nav>
+                        <div class="nav nav-tabs d-flex justify-content-center border-dark-subtle mb-3" id="nav-tab"
+                            role="tablist">
+                            <button
+                                class="nav-link mx-3 fs-3 border-bottom border-dark-subtle border-0 text-uppercase active"
+                                id="nav-sign-in-tab" data-bs-toggle="tab" data-bs-target="#nav-sign-in" type="button"
+                                role="tab" aria-controls="nav-sign-in" aria-selected="true">Log In</button>
+                            <button class="nav-link mx-3 fs-3 border-bottom border-dark-subtle border-0 text-uppercase"
+                                id="nav-register-tab" data-bs-toggle="tab" data-bs-target="#nav-register" type="button"
+                                role="tab" aria-controls="nav-register" aria-selected="false">Sign Up</button>
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade active show" id="nav-sign-in" role="tabpanel"
+                            aria-labelledby="nav-sign-in-tab">
+                            <div class="col-lg-8 offset-lg-2 mt-5">
+
+                                {{!-- <p class="mb-0">Log-In With Social</p>
+                                <hr class="my-1">
+                                <div class="row mt-4 mb-5">
+                                    <div class="d-grid col-md-6 my-2">
+                                        <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1 ">
+                                            <div class="d-flex flex-wrap justify-content-center">
+                                                <iconify-icon icon="ion:logo-google"
+                                                    class="signup-social-icon me-2"></iconify-icon>
+                                                <p class="mb-0">Google</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="d-grid col-md-6 my-2">
+                                        <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1 ">
+                                            <div class="d-flex flex-wrap justify-content-center">
+                                                <iconify-icon icon="ion:logo-facebook"
+                                                    class="signup-social-icon me-2"></iconify-icon>
+                                                <p class="mb-0">Facebook</p>
+                                            </div>
+                                        </a>
+                                    </div> 
+                                </div>--}}
+
+
+                                <p class="mb-0">Log-In With Email</p>
+                                <hr class="my-1">
+                                <form action="/auth/login" method="post" id="form1" class="form-group flex-wrap ">
+                                    <div class="form-input col-lg-12 my-4">
+                                        <input type="email" id="exampleInputEmail1" name="email"
+                                            placeholder="Enter email address" class="form-control mb-3 p-4">
+                                        <input type="password" id="inputPassword1" name="password" placeholder="Enter password"
+                                            class="form-control mb-3 p-4" aria-describedby="passwordHelpBlock">
+
+                                        <label class="py-3 d-flex flex-wrap justify-content-between">
+                                            <div id="passwordHelpBlock" class="form-text ">
+                                                <a href="#" class="text-primary  fw-bold"> Forgot Password?</a>
+                                            </div>
+                                        </label>
+                                        <div class="d-grid my-3"> 
+                                            <button type="submit" class="btn btn-dark btn-lg rounded-1">Login</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="nav-register" role="tabpanel" aria-labelledby="nav-register-tab">
+                            <div class="col-lg-8 offset-lg-2 mt-5">
+
+                                {{!-- <p class="mb-0">Sign-up With Social</p>
+                                <hr class="my-1">
+                                <div class="row mt-4 mb-5">
+                                    <div class="d-grid col-md-6 my-2">
+                                        <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1 ">
+                                            <div class="d-flex flex-wrap justify-content-center">
+                                                <iconify-icon icon="ion:logo-google"
+                                                    class="signup-social-icon me-2"></iconify-icon>
+                                                <p class="mb-0">Google</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="d-grid col-md-6 my-2">
+                                        <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1 ">
+                                            <div class="d-flex flex-wrap justify-content-center">
+                                                <iconify-icon icon="ion:logo-facebook"
+                                                    class="signup-social-icon me-2"></iconify-icon>
+                                                <p class="mb-0">Facebook</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div> --}}
+
+
+                                <p class="mb-0">Sign-Up With Email</p>
+                                <hr class="my-1">
+
+                                <form action="/auth/register" method="post" id="form1" class="form-group flex-wrap ">
+                                    <div class="form-input col-lg-12 my-4">
+                                        <input type="text" id="exampleInputName" name="name"
+                                            placeholder="Your full name" class="form-control mb-3 p-4">  
+                                        <input type="text" id="exampleInputEmail1" name="email"
+                                            placeholder="Your email address" class="form-control mb-3 p-4">
+                                        <input type="password" id="inputPassword1" placeholder="Set your password" name="password"
+                                            class="form-control mb-3 p-4" aria-describedby="passwordHelpBlock">
+                                        <input type="password" id="inputPassword2" placeholder="Retype your password"
+                                            class="form-control mb-3 p-4" aria-describedby="passwordHelpBlock">
+                                        <span id='message'></span>
+                                        <label class="py-3 d-flex flex-wrap justify-content-between">
+                                            {{!-- <div>
+                                                <input type="checkbox" required="" class="d-inline">
+                                                <span class="label-body ">Remember Me</span>
+                                            </div> --}}
+                                            <div id="passwordHelpBlock" class="form-text ">
+                                                <a href="#" class="text-primary  fw-bold"> Forgot Password?</a>
+                                            </div>
+                                        </label>
+                                        <div class="d-grid my-3">
+                                            <button type="submit" class="btn btn-dark btn-lg rounded-1">Sign Up</button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+<script src="/javascripts/jquery-1.11.0.min.js"></script>
+  <script src="/javascripts/swiper.js"></script>
+  <script src="/javascripts/bootstrap.bundle.js"></script>
+  <script src="/javascripts/plugins.js"></script>
+  <script src="/javascripts/script.js"></script>
+  <script src="/javascripts/iconify.js"></script>

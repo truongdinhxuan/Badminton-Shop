@@ -5,8 +5,8 @@ const AdminModel = require('../models/admin');
 const CustomerModel = require('../models/customer')
 const RoleModel = require('../models/roles')
 
-router.get("/login", function (req, res, next) {
-    res.render("auth/login");
+router.get("/", function (req, res, next) {
+    res.render('auth');
   });
 router.post("/login", async (req, res) => {
     var email = req.body.email;
@@ -36,15 +36,36 @@ router.post("/login", async (req, res) => {
           return res.redirect("/");
         }
       }
-      res.render("auth/login", { 
+      res.render('auth', { 
         // layout: "auth_layout" ,
         message: "Invalid email or password" 
       });
     } catch (err) {
         console.error(err);
-        res.render("auth/login", { 
+        res.render('auth', { 
           message: "Internal Server Error" 
         });
     }
 });
+router.post("/register", async (req, res) => {
+  const name = req.body.name
+  const email = req.body.email
+  const password = req.body.password
+  const customerRole = await RoleModel.findOne({roleName: "customer"}).lean();
+  
+  var customer = {
+    email: email,
+    password: password,
+    name: name,
+    roleID: customerRole._id
+  }
+  await CustomerModel.create(customer)
+  res.render('auth')
+  });
+  
+router.get("/logout", (req, res) => {
+    req.session = null;
+    res.redirect("/auth/login");
+  });
+  
 module.exports = router;
