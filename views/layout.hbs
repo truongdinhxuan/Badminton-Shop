@@ -213,25 +213,6 @@
         <div class="d-flex d-lg-none align-items-end mt-3">
           <ul class="d-flex justify-content-end list-unstyled m-0">
             <li>
-              {{!-- Auth --}}
-              
-              {{#if customer}}
-                <a href="/account" class="mx-3">
-                  <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
-                </a>
-                {{else}}
-                <a href="/auth" class="mx-3">
-                  <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
-                </a>
-                {{/if}}
-            </li>
-            <li>
-              <a href="/wishlist" class="mx-3">
-                <iconify-icon icon="mdi:heart" class="fs-4"></iconify-icon>
-              </a>
-            </li>
-
-            <li>
               <a href="#" class="mx-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart"
                 aria-controls="offcanvasCart">
                 <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
@@ -240,13 +221,31 @@
                 </span>
               </a>
             </li>
-
+            <li>
+              <a href="/wishlist" class="mx-3">
+                <iconify-icon icon="mdi:heart" class="fs-4"></iconify-icon>
+              </a>
+            </li>
             <li>
               <a href="#" class="mx-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSearch"
                 aria-controls="offcanvasSearch">
                 <iconify-icon icon="tabler:search" class="fs-4"></iconify-icon>
                 </span>
               </a>
+            </li>
+            <li>
+            {{#if customer}}
+              <a href="/account" class="mx-3">
+                <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
+              </a>
+              <a href="/auth/logout" class="mx-3">
+                <iconify-icon icon="material-symbols:logout" class="fs-4"></iconify-icon>
+              </a>
+            {{else}}
+              <a href="/auth" class="mx-3">
+                <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
+              </a>
+            {{/if}}
             </li>
           </ul>
         </div>
@@ -262,7 +261,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
           </div>
 
-{{!-- Desktop --}}
+
           <div class="offcanvas-body justify-content-between">      
 {{!-- Heading Link --}}
             <ul class="navbar-nav menu-list list-unstyled d-flex gap-md-3 mb-0">
@@ -285,13 +284,6 @@
               <li class="nav-item">
                 <a href="/blog" class="nav-link">Blog</a>
               </li>
-              {{#if customer}}
-              <li class="nav-item">
-                <a href="/auth/logout" class="nav-link">
-                  <iconify-icon icon="material-symbols:logout" class="fs-4"></iconify-icon>
-                </a>
-              </li>
-              {{/if}}
               {{!-- <li class="nav-item">
                 <a href="contact.html" class="nav-link">Contact</a>
               </li> --}}
@@ -302,12 +294,25 @@
                 <a href="https://templatesjungle.gumroad.com/l/waggy-pet-shop-ecommerce-html-website-template" class="nav-link fw-bold text-dark" target="_blank">GET PRO</a>
               </li> --}}
             </ul>
-
+{{!-- Desktop --}}
             <div class="d-none d-lg-flex align-items-end">
               <ul class="d-flex justify-content-end list-unstyled m-0">
+                <li class="">
+                  <a href="#" class="mx-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart"
+                    aria-controls="offcanvasCart">
+                    <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
+                    <span class="position-absolute translate-middle badge rounded-circle bg-primary pt-2">
+                      03
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/wishlist" class="mx-3">
+                    <iconify-icon icon="mdi:heart" class="fs-4"></iconify-icon>
+                  </a>
+                </li>
                 <li>
                   {{!-- Auth --}}
-                  Logged as: {{customer}}
                   {{#if customer}}
                   <a href="/account" class="mx-3">
                     <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
@@ -320,21 +325,6 @@
                     <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
                   </a>
                   {{/if}}
-                </li>
-                <li>
-                  <a href="/wishlist" class="mx-3">
-                    <iconify-icon icon="mdi:heart" class="fs-4"></iconify-icon>
-                  </a>
-                </li>
-
-                <li class="">
-                  <a href="#" class="mx-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart"
-                    aria-controls="offcanvasCart">
-                    <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
-                    <span class="position-absolute translate-middle badge rounded-circle bg-primary pt-2">
-                      03
-                    </span>
-                  </a>
                 </li>
               </ul>
 
