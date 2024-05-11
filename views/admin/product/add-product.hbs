@@ -70,9 +70,9 @@
         </div>
 
         <div class="mb-3">
-        <select class="form-select" name="categoryId" id="categoryId">
+        <select class="form-select" name="categoryId" id="categorySelect">
         <option selected>Select category</option>
-            {{#each data}}
+            {{#each category}}
                 <option value="{{this.id}}">
                     {{this.name}}
                 </option>
@@ -80,6 +80,35 @@
         </select>
         </div>
 
+        <div class="mb-3">
+        <select class="form-select" name="brandId" id="brandSelect">
+        <option selected>Select brand</option>
+        </select>
+        </div>
+        {{!-- Dropdown brand --}}
+        <script>
+            document.getElementById('categorySelect').addEventListener('change', function() {
+                const categoryId = this.value;
+                fetch('/admin/get-brands', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ categoryId: categoryId })
+                })
+                .then(response => response.json())
+                .then(brands => {
+                const brandSelect = document.getElementById('brandSelect');
+                brandSelect.innerHTML = '<option selected>Select brand</option>';
+                brands.forEach(brand => {
+                    const option = document.createElement('option');
+                    option.value = brand.id;
+                    option.textContent = brand.name;
+                    brandSelect.appendChild(option);
+                });
+                });
+            });
+        </script>
         <div class="mb-3">
         <div id="input-description">
         <textarea name="description" id="editor" 
@@ -111,5 +140,4 @@
             console.error( error );
         } );
     CKEDITOR.replace('editor')
-
 </script>

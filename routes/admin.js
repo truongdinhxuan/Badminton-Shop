@@ -109,7 +109,6 @@ const imagesExtensions = /.(png|jpg|jpeg)$/i;
 const upload = multer({
   storage: multer.memoryStorage(),
 });
-
 const getImageFiles = (directory) => {
   try {
     return fs
@@ -120,7 +119,6 @@ const getImageFiles = (directory) => {
     return [];
   }
 };
-
 router.get('/product', async (req, res) => {
   try {
     // Fetch all products
@@ -129,6 +127,8 @@ router.get('/product', async (req, res) => {
     const productBigData = await Promise.all(products.map(async (product) => {
       const category = await CategoryModel.findOne({ id: product.categoryId }).lean();
       
+      const brand = await BrandModel.findOne({id: product.brandId}).lean();
+
       const imagesDirectory = path.join(__dirname, product.photo);
 
       const imageFiles = getImageFiles(imagesDirectory);
@@ -139,6 +139,7 @@ router.get('/product', async (req, res) => {
       return {
         ...product,
         categoryName: category ? category.name : 'Uncategorized', 
+        brandName: brand ? brand.name : 'Uncategorized',
         images: imagesWithUrls
       };
     }));
@@ -154,17 +155,24 @@ router.get('/product', async (req, res) => {
 });
 router.get('/add-product', async (req, res) => {
   const category = await CategoryModel.find({}).lean();
-  
+  const brand = await BrandModel.find({}).lean();
   res.render("admin/product/add-product" , {
     layout: "admin/layout/layout",
-    data: category
+    category: category,
+    brand: brand
     })
 })
+router.post('/get-brands', async (req, res) => {
+  const categoryId = req.body.categoryId;
+  const brands = await BrandModel.find({ categoryId: categoryId }).lean();
+  res.json(brands);
+}); 
 router.post('/add-product', upload.fields([{name: "photo",maxCount: 10}]), async (req, res) => {
   const name = req.body.name
   const categoryId = req.body.categoryId
   // const category = await CategoryModel.findOne({name: categoryName}).lean();
   // const categoryId = category.id
+  const brandId = req.body.brandId
   const description = req.body.description
   const price = req.body.price
   const isDisplay = req.body.isDisplay === 'on';
@@ -173,6 +181,7 @@ router.post('/add-product', upload.fields([{name: "photo",maxCount: 10}]), async
     const newProduct = new ProductModel({
       id: await ProductModel.countDocuments() + 1,
       categoryId: categoryId,
+      brandId: brandId,
       name: name,
       urlRewriteName: Charset.removeUnicode(req.body.name),
       photo: "",
@@ -197,7 +206,6 @@ router.post('/add-product', upload.fields([{name: "photo",maxCount: 10}]), async
   }
 
 })
-
 async function saveFilesFromMemory(files, destPath) {
   if (files) {
     files.forEach((file) => {
@@ -207,14 +215,11 @@ async function saveFilesFromMemory(files, destPath) {
     });
   }
 }
-
 function createFolder(folderPath) {
   if (!fs.existsSync(folderPath)) {
     fs.mkdirSync(folderPath, { recursive: true });
   }
 }
-
-
 router.get("/delete-product/:id", async (req, res) => {
   const productId = req.params.id;
   await ProductModel.findByIdAndDelete(productId).lean();
