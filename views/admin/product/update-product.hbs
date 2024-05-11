@@ -27,31 +27,90 @@
     border-radius: 5px;
     box-sizing: border-box;
 }
+.container {
+    width: 50%; /* Adjust the width as needed */
+    margin: 0 auto; /* Center the container horizontally */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 50px;
+    }
 
+    .form-label {
+        font-weight: bold;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button[type="submit"] {
+        padding: 10px 20px;
+        background-color: #007bff; /* Adjust the button color as needed */
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+</style>
 </style>
 <body>
-    <div class="card">
-    <form action="/admin/update-product/{{updateProduct._id}}" method="post" enctype="multipart/form-data">
-        Name: <input type="text" name="name" value="{{updateProduct.name}}"> <br>
-        Category: <select name="categoryId" id="categoryId">
-            <option value="{{selectedCategory.id}}" selected disabled hidden>{{selectedCategory.name}}</option>
+    <div class="container">
+    <form action="/admin/update-product/{{updateProduct._id}}" method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Product name: </label>
+        <input name="name" type="name" class="form-control" id="name" value="{{updateProduct.name}}">
+        </div>
+
+        <div class="mb-3">
+        <select class="form-select" aria-label="Default select example">
+        <option value="{{selectedCategory.id}}" selected disabled hidden>{{selectedCategory.name}}</option>
             {{#each data}}
                 <option value="{{this.id}}">
                     {{this.name}}
                 </option>
             {{/each}}
-        </select> <br>
-        Description: 
-        <div id="input-description">
-        <textarea name="description" id="editor" placeholder="Enter description...">{{updateProduct.description}}</textarea>
+        </select>
         </div>
-        <br>
-        Price: <input type="number" name="price" id="" value="{{updateProduct.price}}"> <br>
-        Photo: <input type="file" name="photo" accept="image/*" class="form-control-file"> <br>
-        isDisplay: <input type="checkbox" name="isDisplay" id="" {{#if isDisplay}}checked{{/if}}> <br>
-        <button type="submit">SMT</button>
+
+        <div class="mb-3">
+        <div id="input-description">
+        <textarea name="description" id="editor" 
+        placeholder="Enter description..."
+        >{{updateProduct.description}}
+        </textarea>
+        </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="price" class="form-label" >Price(vnđ):</label>
+            <input type="number" class="form-control" id="price" name="price" value="{{updateProduct.price}}">
+        </div>
+
+        <div class="mb-3">
+            <label for="photo" class="form-label">Photo:</label>
+            <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+        </div>
+        <div class="mb-3">
+        <div class="form-check">
+        <input class="form-check-input" type="checkbox" class="isDisplay" name="isDisplay" id="" {{#if isDisplay}}checked{{/if}}>
+        <label class="form-check-label" for="flexCheckChecked">
+            Trending
+        </label>
+        </div>
+        </div>
+        <button type="submit">Submit</button>
     </form>
     </div>
+
 </body>
 </html>
 <script>

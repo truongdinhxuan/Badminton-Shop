@@ -53,12 +53,12 @@
                                             <td>{{id}}</td>
                                             <td>{{name}}</td>
                                             <td>
-                                                <form action="/admin/update-category/{{_id}}">
-                                                <button type="submit" class="btn btn-primary">Update</button>
-                                                </form>
-                                                <form action="/admin/delete-category/{{_id}}">
-                                                <button type="submit" class="btn btn-danger">Delete</button>
-                                                </form>
+                                                <a href="/admin/update-category/{{_id}}">
+                                                <iconify-icon icon="icon-park:edit-two" width="32" height="32"></iconify-icon>
+                                                </a>
+                                                <a href="/admin/delete-category/{{_id}}">
+                                                <iconify-icon icon="icon-park:delete" width="32" height="32"></iconify-icon>
+                                                </a>
                                             </td>
                                         </tr>
                                         {{/each}}

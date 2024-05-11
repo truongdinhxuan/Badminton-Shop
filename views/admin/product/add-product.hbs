@@ -27,28 +27,79 @@
     border-radius: 5px;
     box-sizing: border-box;
 }
+.container {
+    width: 50%; /* Adjust the width as needed */
+    margin: 0 auto; /* Center the container horizontally */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 50px;
+    }
 
+    .form-label {
+        font-weight: bold;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button[type="submit"] {
+        padding: 10px 20px;
+        background-color: #007bff; /* Adjust the button color as needed */
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #0056b3;
+    }
 </style>
 <body>
-    <div class="card">
-    <form action="/admin/add-product" method="post" enctype="multipart/form-data">
-        Name: <input type="text" name="name"> <br>
-        Category: <select name="categoryId" id="categoryId">
+    <div class="container">
+    <form action="/admin/add-product" method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Product name: </label>
+        <input name="name" type="name" class="form-control" id="name">
+        </div>
+
+        <div class="mb-3">
+        <select class="form-select" aria-label="Default select example">
+        <option selected>Select category</option>
             {{#each data}}
                 <option value="{{this.id}}">
                     {{this.name}}
                 </option>
             {{/each}}
-        </select> <br>
-        Description: 
-        <div id="input-description">
-        <textarea name="description" id="editor" placeholder="Enter description..."></textarea>
+        </select>
         </div>
-        <br>
-        Price: <input type="number" name="price" id=""> <br>
-        Photo: <input type="file" name="photo" accept="image/*" class="form-control-file"> <br>
+
+        <div class="mb-3">
+        <div id="input-description">
+        <textarea name="description" id="editor" 
+        placeholder="Enter description..."
+        >
+        </textarea>
+        </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="price" class="form-label">Price(vnđ):</label>
+            <input type="number" class="form-control" id="price" name="price">
+        </div>
+
+        <div class="mb-3">
+            <label for="photo" class="form-label">Photo:</label>
+            <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+        </div>
         <input type="checkbox" class="isDisplay" name="isDisplay" hidden>
-        <button type="submit">SMT</button>
+        <button type="submit">Submit</button>
     </form>
     </div>
 </body>
