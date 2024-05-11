@@ -60,7 +60,7 @@ router.post("/register", async (req, res) => {
     roleID: customerRole._id
   }
   await CustomerModel.create(customer)
-  res.render('auth')
+  res.redirect('/auth')
   });
   
 router.get("/logout", (req, res) => {

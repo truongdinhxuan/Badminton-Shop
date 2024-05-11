@@ -7,7 +7,7 @@ const checkLoginSession = (req, res, next) => {
     if (req.session.email) {
       next();
     } else {
-      res.redirect("/auth/login");
+      res.redirect("/auth");
       return;
     }
 };
@@ -20,7 +20,7 @@ const checkAdminSession = async (req, res, next) => {
       next();
     }
   } else {
-    res.redirect("/auth/login");
+    res.redirect("/auth");
     return;
   }
 };
@@ -32,7 +32,7 @@ const checkCustomerSession = async (req, res, next) => {
       next();
     }
   } else {
-    res.redirect("/auth/login");
+    res.redirect("/auth");
     return;
   }
 };
@@ -53,7 +53,7 @@ const checkMultipleSession = (allowedRoles) => (req, res, next) => {
   if (req.session.email && allowedRoles.includes(req.session.role)) {
     next();
   } else {
-    res.redirect("/auth/login");
+    res.redirect("/auth");
   }
 };
 module.exports={
