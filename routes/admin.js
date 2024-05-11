@@ -134,7 +134,7 @@ router.get('/product', async (req, res) => {
       const imageFiles = getImageFiles(imagesDirectory);
       
       // Construct URLs for images
-      const imagesWithUrls = imageFiles.map((file) => `/uploads/${product._id}/${file}`);
+      const imagesWithUrls = imageFiles.map((file) => `/uploads/product/${product._id}/${file}`);
 
       return {
         ...product,
@@ -181,13 +181,13 @@ router.post('/add-product', upload.fields([{name: "photo",maxCount: 10}]), async
       isDisplay: isDisplay
     })
     const savedProduct = await newProduct.save();
-    const productFolderPath = path.join(__dirname, "../public/uploads", savedProduct._id.toString())
+    const productFolderPath = path.join(__dirname, "../public/uploads/product", savedProduct._id.toString())
     
     const photo = path.join(productFolderPath);
     
     createFolder(photo);
 
-    await savedProduct.updateOne({photo: `../public/uploads/${savedProduct._id.toString()}`});
+    await savedProduct.updateOne({photo: `../public/uploads/product/${savedProduct._id.toString()}`});
     
     await saveFilesFromMemory(req.files.photo, photo);
     res.redirect("/admin/product",)
@@ -253,7 +253,7 @@ router.post("/update-product/:id",upload.fields([{name: "photo",maxCount: 10}]),
         isDisplay: isDisplay
       })
       
-      const productFolderPath = path.join(__dirname, "../public/uploads", productId.toString())
+      const productFolderPath = path.join(__dirname, "../public/uploads/product", productId.toString())
 
       const imagesPath = path.join(productFolderPath);
 
@@ -265,5 +265,14 @@ router.post("/update-product/:id",upload.fields([{name: "photo",maxCount: 10}]),
       res.redirect('/admin')
   }
 }) 
-
+router.get('/delete-all-product', async (req, res) => {
+  try {
+      await ProductModel.deleteMany({}); // Delete all documents
+      res.redirect('/admin/product');
+  } catch (error) {
+      console.error("Error deleting all categories:", error);
+      // Handle the error appropriately, e.g., display an error message
+      res.redirect('/admin/product?error=true'); 
+  }
+})
 module.exports = router;

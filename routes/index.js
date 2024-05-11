@@ -35,7 +35,7 @@ router.get("/", async (req, res) => {
       
         const imagesDirectory = path.join(__dirname, product.photo);
         const imageFiles = getImageFiles(imagesDirectory);
-        const imagesWithUrls = imageFiles.map((file) => `/uploads/${product._id}/${file}`);
+        const imagesWithUrls = imageFiles.map((file) => `/uploads/product/${product._id}/${file}`);
   
         return {
           ...product,
@@ -53,7 +53,7 @@ router.get("/", async (req, res) => {
       
         const imagesDirectory = path.join(__dirname, product.photo);
         const imageFiles = getImageFiles(imagesDirectory);
-        const imagesWithUrls = imageFiles.map((file) => `/uploads/${product._id}/${file}`);
+        const imagesWithUrls = imageFiles.map((file) => `/uploads/product/${product._id}/${file}`);
   
         return {
           ...product,
