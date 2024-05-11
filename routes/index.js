@@ -2,7 +2,9 @@ var express = require('express');
 var router = express.Router();
 var CategoryModel = require('../models/category');
 var ProductModel = require('../models/product');
-var CustomerModel = require('../models/customer')
+var CustomerModel = require('../models/customer');
+var CartModel = require('../models/cart');
+var ProductModel = require('../models/product');
 const fs = require("fs");
 const path = require("path");
 // const { checkLoginSession } = require("../middlewares/auth");
@@ -21,6 +23,7 @@ const getImageFiles = (directory) => {
     return [];
   }
 };
+// INDEX & AUTH
 router.get("/", async (req, res) => {
   try {
     // Fetch all products
@@ -74,6 +77,7 @@ router.get("/", async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 })
+// ACCOUNT
 router.get('/account', async (req, res) => {
   const user = await CustomerModel.findOne({email: req.session.email}).lean();
   res.render('site/account', {
@@ -81,4 +85,94 @@ router.get('/account', async (req, res) => {
     customer: user.name
   })
 })
+// PRODUCT
+router.get('/product',async(req,res) =>{
+  try {
+    // Fetch all products
+    const products = await ProductModel.find().lean();
+    
+    const category = await CategoryModel.find().lean();
+    
+    const user = await CustomerModel.findOne({email: req.session.email}).lean();
+    
+    if (!user) {
+      const productBigData = await Promise.all(products.map(async (product) => {
+      
+        const imagesDirectory = path.join(__dirname, product.photo);
+        const imageFiles = getImageFiles(imagesDirectory);
+        const imagesWithUrls = imageFiles.map((file) => `/uploads/product/${product._id}/${file}`);
+  
+        return {
+          ...product,
+          images: imagesWithUrls,
+        };
+      }));
+        
+      res.render('site/product', {
+        layout: "/layout",
+        category: category,
+        product: productBigData,
+      });
+    } else {
+      const productBigData = await Promise.all(products.map(async (product) => {
+      
+        const imagesDirectory = path.join(__dirname, product.photo);
+        const imageFiles = getImageFiles(imagesDirectory);
+        const imagesWithUrls = imageFiles.map((file) => `/uploads/product/${product._id}/${file}`);
+  
+        return {
+          ...product,
+          images: imagesWithUrls,
+        };
+      }));
+        
+      res.render('site/product', {
+        layout: "/layout",
+        category: category,
+        product: productBigData,
+        customer: user.name
+      });
+    }
+    
+  } catch (error) { 
+    console.error('Error fetching products:', error);
+    res.status(500).send('Internal Server Error');
+  }
+})
+// CART
+router.get('/cart', async (req, res) => {
+  const user = await CustomerModel.findOne({email: req.session.email}).lean();
+  if (!req.session.cart) {
+    return res.render('site/cart', { products: null });
+  }
+  const cart = new CartModel(req.session.cart);
+  res.render('site/cart',{
+    layout: 'layout',
+    products: cart.generateArray(),
+    totalPrice: cart.totalPrice,
+    customer: user.name
+  })
+})
+
+router.get('/add-cart/:id', async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const cart = new CartModel(req.session.cart ? req.session.cart : {});
+
+    const product = await ProductModel.findById(productId);
+    
+    if (!product) {
+      return res.redirect('/');
+    }
+
+    cart.add(product, product.id);
+    req.session.cart = cart;
+    console.log(req.session.cart);
+    res.redirect('/cart');
+  } catch (error) {
+    console.error(error);
+    res.redirect('/');
+  }
+});
+
 module.exports = router;
