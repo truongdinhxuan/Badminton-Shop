@@ -8,6 +8,7 @@ const ProductModel = require('../models/product');
 const AdminModel = require('../models/admin');
 const CustomerModel = require('../models/customer');
 const CategoryModel = require('../models/category');
+const BrandModel = require('../models/brand');
 const Charset = require('../modules/charset');
 const multipart = require("connect-multiparty");
 const multer = require("multer");
@@ -55,7 +56,6 @@ router.post('/add-category', async (req, res) => {
             id: await CategoryModel.countDocuments() + 1,
             name: controlData.name,
             urlRewriteName: Charset.removeUnicode(req.body.name),
-            isDeleted: false
         }
         await CategoryModel.create(info);
         res.redirect('/admin/category')
@@ -237,7 +237,6 @@ router.get("/update-product/:id", async (req, res) => {
   });
 });
 router.post("/update-product/:id",upload.fields([{name: "photo",maxCount: 10}]), async (req, res) => {
-  
   try {
       const productId = req.params.id;
       const name = req.body.name;
@@ -273,6 +272,97 @@ router.get('/delete-all-product', async (req, res) => {
       console.error("Error deleting all categories:", error);
       // Handle the error appropriately, e.g., display an error message
       res.redirect('/admin/product?error=true'); 
+  }
+})
+
+// BRAND
+router.get('/brand', async (req, res) => {
+  try {
+    // Fetch all brand
+    const brand = await BrandModel.find().lean();
+    
+    const brandBigData = await Promise.all(brand.map(async (brand) => {
+      const category = await CategoryModel.findOne({ id: brand.categoryId }).lean();
+
+      return {
+        ...brand,
+        categoryName: category ? category.name : 'Uncategorized', 
+      };
+    }));
+        
+    res.render('admin/brand', {
+      layout: "/admin/layout/layout",
+      data: brandBigData,
+    });
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+router.get('/add-brand', async (req, res) => {
+  const category = await CategoryModel.find({}).lean();
+
+  res.render("admin/brand/add-brand" , {
+    layout: "admin/layout/layout",
+    data: category
+  })
+})
+router.post('/add-brand', async (req, res) => { 
+  var controlData = req.body
+  
+  try {
+      let info = {
+          id: await BrandModel.countDocuments() + 1,
+          name: controlData.name,
+          categoryId: controlData.categoryId,
+          urlRewriteName: Charset.removeUnicode(req.body.name),
+      }
+      await BrandModel.create(info);
+      res.redirect('/admin/brand')
+  } catch (errors) {
+      console.log(errors)
+      res.redirect('/admin')
+  } 
+});
+router.get("/delete-brand/:id", async (req, res) => {
+  const brandId = req.params.id;
+  await BrandModel.findByIdAndDelete(brandId).lean();
+  
+  res.redirect("/admin/brand");
+});
+router.get("/update-brand/:id", async (req, res) => {
+  const brandId = req.params.id;
+  const updateBrand = await BrandModel.findById(brandId).lean();
+  const category = await CategoryModel.find({}).lean();
+
+  const selectedCategory = category.find(category => category.id === updateBrand.categoryId);
+  res.render('admin/brand/update-brand' ,{
+      layout: "admin/layout/layout",
+      updateBrand: updateBrand,
+      data: category,
+      selectedCategory: selectedCategory,
+  });
+});
+router.post("/update-brand/:id", async (req, res) => {
+  try {
+      const brandId = req.params.id;
+      const data = req.body
+      await BrandModel.findByIdAndUpdate(brandId, data).lean();
+  
+      res.redirect("/admin/brand")
+  } catch (errors) {
+      console.log(errors)
+      res.redirect('/admin')
+  }
+})
+router.get('/delete-all-brand', async (req, res) => {
+  try {
+      await BrandModel.deleteMany({}); // Delete all documents
+      res.redirect('/admin/brand');
+  } catch (error) {
+      console.error("Error deleting all categories:", error);
+      // Handle the error appropriately, e.g., display an error message
+      res.redirect('/admin/brand?error=true'); 
   }
 })
 module.exports = router;

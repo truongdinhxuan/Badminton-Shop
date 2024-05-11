@@ -1,0 +1,75 @@
+<main>
+                    <div class="container-fluid px-4">
+                        <h1 class="mt-4">Tables</h1>
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Tables</li>
+                        </ol>
+                        
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Action</h6>
+                            </div>
+                            <div class="card-body">
+                                <a href="/admin/add-brand" class="btn btn-success btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        <i class="fas fa-plus"></i>
+                                    </span>
+                                    <span class="text">Add new brand</span>
+                                </a>
+                                <a href="/admin/delete-all-brand" class="btn btn-danger btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        <i class="fas fa-trash"></i>
+                                    </span>
+                                    <span class="text">Delete all</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-table me-1"></i>
+                                Brand Table
+                            </div>
+                            
+                            <div class="card-body">
+                                <table id="datatablesSimple">
+                                    <thead>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Category</th>
+                                            <th>Name</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Category</th>
+                                            <th>Name</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        {{#each data}}
+                                        <tr>
+                                            <td>{{id}}</td>
+                                            <td>{{categoryName}}</td>
+                                            <td>{{name}}</td>
+                                            <td>
+                                                <a href="/admin/update-brand/{{_id}}">
+                                                <iconify-icon icon="icon-park:edit-two" width="32" height="32"></iconify-icon>
+                                                </a>
+                                                <a href="/admin/delete-brand/{{_id}}">
+                                                <iconify-icon icon="icon-park:delete" width="32" height="32"></iconify-icon>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {{/each}}
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </main>

@@ -7014,17 +7014,4 @@
   ];
   return J.use(pe), J;
 });
-var password = document.getElementById("inputPassword1")
-    , confirm_password = document.getElementById("inputPassword2");
-
-    function validatePassword(){
-    if(password.value != confirm_password.value) {
-        confirm_password.setCustomValidity("Password do not match!");
-    } else {
-        confirm_password.setCustomValidity('');
-    }
-    }
-
-    password.onchange = validatePassword;
-    confirm_password.onkeyup = validatePassword;
 //# sourceMappingURL=swiper-bundle.min.js.map
