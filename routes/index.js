@@ -5,6 +5,7 @@ var ProductModel = require('../models/product');
 var CustomerModel = require('../models/customer');
 var CartModel = require('../models/cart');
 var ProductModel = require('../models/product');
+var BrandModel = require('../models/brand')
 const fs = require("fs");
 const path = require("path");
 // const { checkLoginSession } = require("../middlewares/auth");
@@ -93,6 +94,8 @@ router.get('/product',async(req,res) =>{
     
     const category = await CategoryModel.find().lean();
     
+    const brand = await BrandModel.find().lean();
+
     const user = await CustomerModel.findOne({email: req.session.email}).lean();
     
     if (!user) {
@@ -111,6 +114,7 @@ router.get('/product',async(req,res) =>{
       res.render('site/product', {
         layout: "/layout",
         category: category,
+        brand: brand,
         product: productBigData,
       });
     } else {

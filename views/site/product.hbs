@@ -61,15 +61,25 @@
                       5.0</span>
 
                     <h3 class="secondary-font text-primary">{{price}}</h3>
-
+                    {{#if customer}}
                     <div class="d-flex flex-wrap mt-3">
                       <a href="/add-cart/{{this._id}}" class="btn-cart me-3 px-4 pt-3 pb-3">
-                        <h5 class="text-uppercase m-0">Add to Cart</h5>
+                      <h5 class="text-uppercase m-0">Add to Cart</h5>
                       </a>
                       <a href="#" class="btn-wishlist px-4 pt-3 ">
                         <iconify-icon icon="fluent:heart-28-filled" class="fs-5"></iconify-icon>
                       </a>
                     </div>
+                    {{else}}
+                    <div class="d-flex flex-wrap mt-3">
+                      <a href="/auth" class="btn-cart me-3 px-4 pt-3 pb-3">
+                      <h5 class="text-uppercase m-0">Add to Cart</h5>
+                      </a>
+                      <a href="#" class="btn-wishlist px-4 pt-3 ">
+                        <iconify-icon icon="fluent:heart-28-filled" class="fs-5"></iconify-icon>
+                      </a>
+                    </div>
+                    {{/if}}
 
 
                   </div>
@@ -113,32 +123,25 @@
             </div>
             <div class="widget-product-categories pt-5">
               <h4 class="widget-title">Categories</h4>
+              {{#each category}}
               <ul class="product-categories sidebar-list list-unstyled">
-                {{#each category}}
                 <li class="cat-item">
-                  <a href="/{{name}}">{{name}}</a>
+                  <a href="/product/{{urlRewriteName}}" class="nav-link">{{name}}</a>
                 </li>
-                {{/each}}
               </ul>
+              {{/each}}
             </div>
-            {{!-- <div class="widget-product-tags pt-3">
-              <h4 class="widget-title">Tags</h4>
+            <div class="widget-product-tags pt-3">
+              <h4 class="widget-title">Brand</h4>
+              {{#each brand}}
               <ul class="product-tags sidebar-list list-unstyled">
                 <li class="tags-item">
-                  <a href="#" class="nav-link">Pets</a>
-                </li>
-                <li class="tags-item">
-                  <a href="#" class="nav-link">Clothes</a>
-                </li>
-                <li class="tags-item">
-                  <a href="#" class="nav-link">Foods</a>
-                </li>
-                <li class="tags-item">
-                  <a href="#" class="nav-link">Toys</a>
+                  <a href="/product/{{urlRewriteName}}" class="nav-link">{{name}}</a>
                 </li>
               </ul>
+              {{/each}}
             </div>
-            <div class="widget-product-brands pt-3">
+           {{!-- <div class="widget-product-brands pt-3">
               <h4 class="widget-title">Brands</h4>
               <ul class="product-tags sidebar-list list-unstyled">
                 <li class="tags-item">
