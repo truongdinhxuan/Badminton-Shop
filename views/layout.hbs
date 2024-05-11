@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chilanka&family=Montserrat:wght@300;400;500&display=swap"
   rel="stylesheet">
-
+<link rel="icon" type="image/x-icon" href="/images/favicon.ico">
 </head>
 
 <body>
@@ -213,12 +213,13 @@
         <div class="d-flex d-lg-none align-items-end mt-3">
           <ul class="d-flex justify-content-end list-unstyled m-0">
             <li>
-              <a href="account.html" class="mx-3">
+              {{!-- Auth --}}
+              <a href="/account" class="mx-3">
                 <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
               </a>
             </li>
             <li>
-              <a href="wishlist.html" class="mx-3">
+              <a href="/wishlist" class="mx-3">
                 <iconify-icon icon="mdi:heart" class="fs-4"></iconify-icon>
               </a>
             </li>
@@ -259,44 +260,55 @@
 {{!-- Heading Link --}}
             <ul class="navbar-nav menu-list list-unstyled d-flex gap-md-3 mb-0">
               <li class="nav-item">
-                <a href="index.html" class="nav-link active">Home</a>
+                <a href="/" class="nav-link active">Home</a>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" role="button" id="pages" data-bs-toggle="dropdown"
                   aria-expanded="false">Pages</a>
                 <ul class="dropdown-menu" aria-labelledby="pages">
                   {{!-- Pages Category --}}
-                  <li><a href="about.html" class="dropdown-item">About Us<span
+                  <li><a href="/about" class="dropdown-item">About Us<span
                         class="badge bg-success text-dark ms-2">PRO</span></a></li>
                  
                 </ul>
               </li>
               <li class="nav-item">
-                <a href="shop.html" class="nav-link">Shop</a>
+                <a href="/product" class="nav-link">Shop</a>
               </li>
               <li class="nav-item">
-                <a href="blog.html" class="nav-link">Blog</a>
+                <a href="/blog" class="nav-link">Blog</a>
               </li>
-              <li class="nav-item">
+              {{!-- <li class="nav-item">
                 <a href="contact.html" class="nav-link">Contact</a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">Others</a>
-              </li>
-              <li class="nav-item">
+              </li> --}}
+              {{!-- <li class="nav-item">
+                <a href="#" c lass="nav-link">Others</a>
+              </li> --}}
+              {{!-- <li class="nav-item">
                 <a href="https://templatesjungle.gumroad.com/l/waggy-pet-shop-ecommerce-html-website-template" class="nav-link fw-bold text-dark" target="_blank">GET PRO</a>
-              </li>
+              </li> --}}
             </ul>
 
             <div class="d-none d-lg-flex align-items-end">
               <ul class="d-flex justify-content-end list-unstyled m-0">
                 <li>
-                  <a href="account.html" class="mx-3">
+                  {{!-- Auth --}}
+                  Welcome back: {{customer}}
+                  {{#if customer}}
+                  <a href="/account" class="mx-3">
                     <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
                   </a>
+                  <a href="/auth/logout" class="mx-3">
+                    <iconify-icon icon="material-symbols:logout" class="fs-4"></iconify-icon>
+                  </a>
+                  {{else}}
+                  <a href="/auth" class="mx-3">
+                    <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
+                  </a>
+                  {{/if}}
                 </li>
                 <li>
-                  <a href="wishlist.html" class="mx-3">
+                  <a href="/wishlist" class="mx-3">
                     <iconify-icon icon="mdi:heart" class="fs-4"></iconify-icon>
                   </a>
                 </li>
