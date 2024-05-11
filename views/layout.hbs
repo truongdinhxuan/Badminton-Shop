@@ -214,9 +214,16 @@
           <ul class="d-flex justify-content-end list-unstyled m-0">
             <li>
               {{!-- Auth --}}
-              <a href="/account" class="mx-3">
-                <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
-              </a>
+              
+              {{#if customer}}
+                <a href="/account" class="mx-3">
+                  <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
+                </a>
+                {{else}}
+                <a href="/auth" class="mx-3">
+                  <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
+                </a>
+                {{/if}}
             </li>
             <li>
               <a href="/wishlist" class="mx-3">
@@ -278,6 +285,13 @@
               <li class="nav-item">
                 <a href="/blog" class="nav-link">Blog</a>
               </li>
+              {{#if customer}}
+              <li class="nav-item">
+                <a href="/auth/logout" class="nav-link">
+                  <iconify-icon icon="material-symbols:logout" class="fs-4"></iconify-icon>
+                </a>
+              </li>
+              {{/if}}
               {{!-- <li class="nav-item">
                 <a href="contact.html" class="nav-link">Contact</a>
               </li> --}}
@@ -293,7 +307,7 @@
               <ul class="d-flex justify-content-end list-unstyled m-0">
                 <li>
                   {{!-- Auth --}}
-                  Welcome back: {{customer}}
+                  Logged as: {{customer}}
                   {{#if customer}}
                   <a href="/account" class="mx-3">
                     <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
