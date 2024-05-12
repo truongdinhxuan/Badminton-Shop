@@ -3,9 +3,9 @@ var router = express.Router();
 var CategoryModel = require('../models/category');
 var ProductModel = require('../models/product');
 var CustomerModel = require('../models/customer');
-var CartModel = require('../models/cart');
 var ProductModel = require('../models/product');
 var BrandModel = require('../models/brand')
+var CartModel = require('../models/cart');
 const fs = require("fs");
 const path = require("path");
 const Customer = require('../models/customer');
@@ -181,9 +181,7 @@ router.get('/add-cart/:id', async (req, res) => {
   try {
     const productId = req.params.id;
     const cart = new CartModel(req.session.cart ? req.session.cart : {});
-
     const product = await ProductModel.findById(productId);
-    
     if (!product) {
       return res.redirect('/');
     }
@@ -197,11 +195,30 @@ router.get('/add-cart/:id', async (req, res) => {
     res.redirect('/');
   }
 });
-router.get('/cart/reduce/:id', function (req, res) {
+
+router.get('/cart/reduce/:id', async (req, res) =>{
   const productId = req.params.id;
+  const product = await ProductModel.findById(productId);
   const cart = new CartModel(req.session.cart ? req.session.cart : {});
-  
-  cart.reduceByOne(productId);
+  cart.reduceByOne(product.id);
+  req.session.cart = cart;
+  res.redirect('/cart');
+});
+
+router.get('/cart/plus/:id', async (req, res) =>{
+  const productId = req.params.id;
+  const product = await ProductModel.findById(productId);
+  const cart = new CartModel(req.session.cart ? req.session.cart : {});
+  cart.plusByOne(product.id);
+  req.session.cart = cart;
+  res.redirect('/cart');
+});
+
+router.get('/cart/remove/:id', async (req, res) =>{
+  const productId = req.params.id;
+  const product = await ProductModel.findById(productId);
+  const cart = new CartModel(req.session.cart ? req.session.cart : {});
+  cart.removeItem(product.id);
   req.session.cart = cart;
   res.redirect('/cart');
 });

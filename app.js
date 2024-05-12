@@ -6,7 +6,8 @@ var logger = require('morgan');
 var hbs = require("hbs");
 var mongoose = require("mongoose");
 const flash = require('connect-flash');
-const session = require('cookie-session');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const fs = require('fs');
 var app = express();
 
@@ -24,6 +25,22 @@ app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
 // Connect-flash middleware
 // app.use(flash());
 
+
+// MongoDB connection
+
+// REAL DATA
+var uri = "mongodb+srv://truongdinh12002:truongdinh12002@shopping.46ohfvc.mongodb.net/shopping";
+
+// TEST SERVER
+// var uri = "mongodb+srv://truongdinh12002:truongdinh12002@shopping.46ohfvc.mongodb.net/test";
+
+// TEST LOCAL
+// var uri = "mongodb://localhost:27017/shopping";
+
+mongoose.connect(uri)
+  .then(() => console.log("Database Successfully Connected"))
+  .catch((error) => console.log(error));
+
 // Express session middleware
 //set session timeout
 const timeout = 10000 * 60 * 60 * 24; // 24 hours (in milliseconds)
@@ -33,19 +50,12 @@ app.use(
     secret: "practice_makes_perfect", // Secret key for signing the session ID cookie
     resave: false, // Forces a session that is "uninitialized" to be saved to the store
     saveUninitialized: true, // Forces the session to be saved back to the session store
+    store: MongoStore.create({
+      mongoUrl: uri, // uri là địa chỉ MongoDB
+    }),
     cookie: { maxAge: timeout },
   })
 );
-// MongoDB connection
-var uri = "mongodb+srv://truongdinh12002:truongdinh12002@shopping.46ohfvc.mongodb.net/shopping";
-// var uri = "mongodb+srv://truongdinh12002:truongdinh12002@shopping.46ohfvc.mongodb.net/test";
-// var uri = "mongodb://localhost:27017/shopping";
-
-mongoose.connect(uri)
-  .then(() => console.log("Database Successfully Connected"))
-  .catch((error) => console.log(error));
-
-
 
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -53,6 +63,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Make session value accessible in views (hbs)
 app.use((req, res, next) => {
   res.locals.email = req.session.email;
+  res.locals.session = req.session;
   next();
 });
 
