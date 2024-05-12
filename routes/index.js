@@ -197,5 +197,12 @@ router.get('/add-cart/:id', async (req, res) => {
     res.redirect('/');
   }
 });
-
+router.get('/cart/reduce/:id', function (req, res) {
+  const productId = req.params.id;
+  const cart = new CartModel(req.session.cart ? req.session.cart : {});
+  
+  cart.reduceByOne(productId);
+  req.session.cart = cart;
+  res.redirect('/cart');
+});
 module.exports = router;

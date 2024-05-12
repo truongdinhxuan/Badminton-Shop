@@ -55,25 +55,17 @@
                 <td class="py-4 align-middle">
                   <div class="input-group product-qty align-items-center w-50">
                     
-                    <span class="input-group-btn">
-                      <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus" data-product-id="{{ item.item._id }}">
-                        <svg width="16" height="16">
-                          <use xlink:href="#minus"></use>
-                        </svg>
-                      </button>
-                    </span>
+                    <a href="/cart/reduce/{{item._id}}">
+                    <iconify-icon icon="ph:minus" width="30" height="30"></iconify-icon>
+                    </a>
 
                     <input type="text" id="quantity" name="quantity"
                       class="form-control input-number text-center p-2 mx-1" value="{{this.qty}}" data-product-id="{{ item.item._id }}">
                     
-                    <span class="input-group-btn"> 
-                      <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus"
-                        data-field="">
-                        <svg width="16" height="16">
-                          <use xlink:href="#plus"></use>
-                        </svg>
-                      </button>
-                    </span>
+                    <a href="/cart/plus/{{item._id}}">
+                    <iconify-icon icon="basil:plus-outline" width="30" height="30"></iconify-icon>
+                    </a>
+
                   </div>
                 </td>
                 
