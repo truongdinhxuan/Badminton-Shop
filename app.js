@@ -37,8 +37,8 @@ app.use(
   })
 );
 // MongoDB connection
-// var uri = "mongodb+srv://truongdinh12002:truongdinh12002@shopping.46ohfvc.mongodb.net/shopping";
-var uri = "mongodb+srv://truongdinh12002:truongdinh12002@shopping.46ohfvc.mongodb.net/test";
+var uri = "mongodb+srv://truongdinh12002:truongdinh12002@shopping.46ohfvc.mongodb.net/shopping";
+// var uri = "mongodb+srv://truongdinh12002:truongdinh12002@shopping.46ohfvc.mongodb.net/test";
 // var uri = "mongodb://localhost:27017/shopping";
 
 mongoose.connect(uri)
