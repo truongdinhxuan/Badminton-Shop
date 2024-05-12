@@ -219,7 +219,7 @@
                 >
                 <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
                 <span class="position-absolute translate-middle badge rounded-circle bg-primary pt-2">
-                  03
+                  {{session.cart.totalQty}}
                 </span>
               </a>
             </li>
@@ -307,9 +307,9 @@
                     aria-controls="offcanvasCart" --}}
                     >
                     <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
-                    {{!-- <span class="position-absolute translate-middle badge rounded-circle bg-primary pt-2">
-                      03
-                    </span> --}}
+                    <span class="position-absolute translate-middle badge rounded-circle bg-primary pt-2">
+                      {{session.cart.totalQty}}
+                    </span>
                   </a>
                 </li>
                 <li>

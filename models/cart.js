@@ -38,4 +38,18 @@ module.exports = function Cart(oldCart) {
       }
       return arr;
     };
+    this.updateQty = function (id, newQty) {
+      const storedItem = this.items[id];
+      if (storedItem) {
+          const qtyChange = newQty - storedItem.qty; 
+          storedItem.qty = newQty;
+          storedItem.price = storedItem.item.price * newQty;
+          this.totalQty += qtyChange;
+          this.totalPrice += storedItem.item.price * qtyChange; // Update totalPrice based on the change in quantity
+
+          if (newQty <= 0) {
+              delete this.items[id];
+          }
+      }
+  };
   };

@@ -8,6 +8,7 @@ var ProductModel = require('../models/product');
 var BrandModel = require('../models/brand')
 const fs = require("fs");
 const path = require("path");
+const Customer = require('../models/customer');
 // const { checkLoginSession } = require("../middlewares/auth");
 /* GET home page. */
 // router.get('/', async (req, res, next) {
@@ -98,7 +99,26 @@ router.get('/product',async(req,res) =>{
 
     const user = await CustomerModel.findOne({email: req.session.email}).lean();
     
-    if (!user) {
+    if (user) {
+      const productBigData = await Promise.all(products.map(async (product) => {
+      
+        const imagesDirectory = path.join(__dirname, product.photo);
+        const imageFiles = getImageFiles(imagesDirectory);
+        const imagesWithUrls = imageFiles.map((file) => `/uploads/product/${product._id}/${file}`);
+  
+        return {
+          ...product,
+          images: imagesWithUrls,
+        };
+      }));
+        
+      res.render('site/product', {
+        layout: "/layout",
+        category: category,
+        product: productBigData,
+        customer: user.name,
+      });
+    } else {
       const productBigData = await Promise.all(products.map(async (product) => {
       
         const imagesDirectory = path.join(__dirname, product.photo);
@@ -117,25 +137,6 @@ router.get('/product',async(req,res) =>{
         brand: brand,
         product: productBigData,
       });
-    } else {
-      const productBigData = await Promise.all(products.map(async (product) => {
-      
-        const imagesDirectory = path.join(__dirname, product.photo);
-        const imageFiles = getImageFiles(imagesDirectory);
-        const imagesWithUrls = imageFiles.map((file) => `/uploads/product/${product._id}/${file}`);
-  
-        return {
-          ...product,
-          images: imagesWithUrls,
-        };
-      }));
-        
-      res.render('site/product', {
-        layout: "/layout",
-        category: category,
-        product: productBigData,
-        customer: user.name
-      });
     }
     
   } catch (error) { 
@@ -150,13 +151,31 @@ router.get('/cart', async (req, res) => {
     return res.render('site/cart', { products: null });
   }
   const cart = new CartModel(req.session.cart);
-  res.render('site/cart',{
+  let totalPrice = 0
+  // Get product data with image URLs
+  const productsWithImages = await Promise.all(cart.generateArray().map(async (item) => {
+    const product = await ProductModel.findById(item.item._id).lean(); // Assuming you need product data from the database
+    const imagesDirectory = path.join(__dirname, product.photo);
+    const imageFiles = getImageFiles(imagesDirectory);
+    const imagesWithUrls = imageFiles.map((file) => `/uploads/product/${product._id}/${file}`);
+    
+    return {
+      ...item,
+      item: {
+        ...item.item,
+        images: imagesWithUrls
+      }
+    };
+  }));
+  console.log('TOTAL PRICE: ',totalPrice)
+  res.render('site/cart', {
     layout: 'layout',
-    products: cart.generateArray(),
     totalPrice: cart.totalPrice,
-    customer: user.name
-  })
-})
+    totalQty: cart.totalQty,
+    customer: user.name,
+    products: productsWithImages,
+  });
+});
 
 router.get('/add-cart/:id', async (req, res) => {
   try {
@@ -172,7 +191,7 @@ router.get('/add-cart/:id', async (req, res) => {
     cart.add(product, product.id);
     req.session.cart = cart;
     console.log(req.session.cart);
-    res.redirect('/cart');
+    res.redirect('/product');
   } catch (error) {
     console.error(error);
     res.redirect('/');
