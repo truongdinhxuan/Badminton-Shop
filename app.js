@@ -29,10 +29,10 @@ app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
 // MongoDB connection
 
 // REAL DATA
-// var uri = "mongodb+srv://truongdinh12002:truongdinh12002@shopping.46ohfvc.mongodb.net/shopping";
+var uri = "mongodb+srv://truongdinh12002:truongdinh12002@shopping.46ohfvc.mongodb.net/shopping";
 
 // TEST SERVER
-var uri = "mongodb+srv://truongdinh12002:truongdinh12002@shopping.46ohfvc.mongodb.net/test";
+// var uri = "mongodb+srv://truongdinh12002:truongdinh12002@shopping.46ohfvc.mongodb.net/test";
 
 // TEST LOCAL
 // var uri = "mongodb://localhost:27017/shopping";
