@@ -99,47 +99,27 @@ router.get('/product',async(req,res) =>{
     const brand = await BrandModel.find().lean();
 
     const user = await CustomerModel.findOne({email: req.session.email}).lean();
-    
-    if (user) {
-      const productBigData = await Promise.all(products.map(async (product) => {
-      
-        const imagesDirectory = path.join(__dirname, product.photo);
-        const imageFiles = getImageFiles(imagesDirectory);
-        const imagesWithUrls = imageFiles.map((file) => `/uploads/product/${product._id}/${file}`);
+
   
-        return {
-          ...product,
-          images: imagesWithUrls,
-        };
-      }));
-        
-      res.render('site/product', {
-        layout: "/layout",
-        category: category,
-        product: productBigData,
-        customer: user.name,
-      });
-    } else {
-      const productBigData = await Promise.all(products.map(async (product) => {
+
+    const productBigData = await Promise.all(products.map(async (product) => {
       
-        const imagesDirectory = path.join(__dirname, product.photo);
-        const imageFiles = getImageFiles(imagesDirectory);
-        const imagesWithUrls = imageFiles.map((file) => `/uploads/product/${product._id}/${file}`);
-  
-        return {
-          ...product,
-          images: imagesWithUrls,
-        };
-      }));
-        
-      res.render('site/product', {
-        layout: "/layout",
-        category: category,
-        brand: brand,
-        product: productBigData,
-      });
-    }
-    
+      const imagesDirectory = path.join(__dirname, product.photo);
+      const imageFiles = getImageFiles(imagesDirectory);
+      const imagesWithUrls = imageFiles.map((file) => `/uploads/product/${product._id}/${file}`);
+
+      return {
+        ...product,
+        images: imagesWithUrls,
+      };
+    }));
+      
+    res.render('site/product', {
+      layout: "/layout",
+      category: category,
+      product: productBigData,
+      customer: user,
+    }); 
   } catch (error) { 
     console.error('Error fetching products:', error);
     res.status(500).send('Internal Server Error');
