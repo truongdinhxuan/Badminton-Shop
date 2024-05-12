@@ -226,8 +226,8 @@ router.get('/cart/remove/:id', async (req, res) =>{
 
 // PAYMENT
 const payos = ('c57285fa-6aab-486d-9c15-503c13f158a8','364eea32-f6bc-4b81-884b-66c3eb436424','326f33d24c9beb21bcc00ed032a77118820849f0a64bf694762d12ca017a7dc4')
-app.post('/create-payment-link', (req, res) => {
+// app.post('/create-payment-link', (req, res) => {
   
-})
+// })
 
 module.exports = router;
