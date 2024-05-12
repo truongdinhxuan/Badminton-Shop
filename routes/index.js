@@ -132,7 +132,6 @@ router.get('/cart', async (req, res) => {
     return res.render('site/cart', { products: null });
   }
   const cart = new CartModel(req.session.cart);
-  let totalPrice = 0
   // Get product data with image URLs
   const productsWithImages = await Promise.all(cart.generateArray().map(async (item) => {
     const product = await ProductModel.findById(item.item._id).lean(); // Assuming you need product data from the database
@@ -148,7 +147,6 @@ router.get('/cart', async (req, res) => {
       }
     };
   }));
-  console.log('TOTAL PRICE: ',totalPrice)
   res.render('site/cart', {
     layout: 'layout',
     totalPrice: cart.totalPrice,
@@ -205,9 +203,47 @@ router.get('/cart/remove/:id', async (req, res) =>{
 });
 
 // PAYMENT
-const payos = ('c57285fa-6aab-486d-9c15-503c13f158a8','364eea32-f6bc-4b81-884b-66c3eb436424','326f33d24c9beb21bcc00ed032a77118820849f0a64bf694762d12ca017a7dc4')
-// app.post('/create-payment-link', (req, res) => {
-  
-// })
+const payos = new PayOs(
+  "c57285fa-6aab-486d-9c15-503c13f158a8",
+  "364eea32-f6bc-4b81-884b-66c3eb436424",
+  "326f33d24c9beb21bcc00ed032a77118820849f0a64bf694762d12ca017a7dc4"
+);
+router.get('/checkout', async(req,res)=>{
+  const cart = new CartModel(req.session.cart);
+  const user = await CustomerModel.findById({email: req.session.email}).lean()
+  res.render('site/checkout',{
+    layout: 'layout',
+    customer: user.name,
+    totalPrice: cart.totalPrice,
+    totalQty: cart.totalQty,
+  })
+});
+function generateOrderCode() {
+  return Math.floor(Math.random() * 99999); // Generate a random 6-digit number
+}
+// Local
+// const DOMAIN_URL='http://localhost:3000'
+// Server
+const DOMAIN_URL='https://shopbadmintonvn.onrender.com'
 
+router.post('/checkout',async (req, res) => {
+  const cart = new CartModel(req.session.cart)
+  const name = req.body.name
+  const country = req.body.country
+  const address = req.body.address
+  const phone = req.body.phone
+  const email = req.body.email
+  const note = req.body.note
+
+    const order = {
+      orderCode: generateOrderCode(),
+      amount: cart.totalPrice,
+      description: "ShopBadmintonVn",
+      returnUrl: `${DOMAIN_URL}/checkout/success`,
+      cancelUrl: `${DOMAIN_URL}/checkout/cancel`
+    }
+    console.log(order)
+    const paymentLink = await payos.createPaymentLink(order);
+    res.redirect(303, paymentLink.checkoutUrl);
+});
 module.exports = router;

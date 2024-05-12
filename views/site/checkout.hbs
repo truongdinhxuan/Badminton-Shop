@@ -1,0 +1,99 @@
+  <section id="banner" class="py-3" style="background: #F9F3EC;">
+    <div class="container">
+      <div class="hero-content py-5 my-3">
+        <h2 class="display-1 mt-3 mb-0">Checkout</h2>
+        <nav class="breadcrumb">
+          <a class="breadcrumb-item nav-link" href="#">Home</a>
+          <a class="breadcrumb-item nav-link" href="#">Pages</a>
+          <span class="breadcrumb-item active" aria-current="page">Checkout</span>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  <section class="shopify-cart checkout-wrap">
+    <div class="container py-5 my-5">
+      <form action="/checkout" method="post" class="form-group">
+        <div class="row d-flex flex-wrap">
+          <div class="col-lg-6">
+            <h2 class="text-dark pb-3">Billing Details</h2>
+            <div class="billing-details">
+
+              <label for="name">Full Name*</label>
+              <input type="text" id="name" name="name" class="form-control mt-2 mb-4 ps-3" placeholder="Example: Nguyen Van A">
+
+              <label for="country">Country*</label>
+              <input type="text" id="country" name="country" class="form-control mt-2 mb-4 ps-3" placeholder="Example: Ha Noi">
+
+              <label for="address">Street Address*</label>
+              <input type="text" id="address" name="address" placeholder="Example: 171 Nguyen Ngoc Vu, Trung Hoa, Cau Giay"
+                class="form-control mt-3 ps-3 mb-3">
+
+              <label for="email">Phone *</label>
+              <input type="text" id="phone" name="phone" class="form-control mt-2 mb-4 ps-3" placeholder="Example: 012345678">
+
+              <label for="email">Email address *</label>
+              <input type="text" id="email" name="email" class="form-control mt-2 mb-4 ps-3" placeholder="Example: abc@gmail.com">
+
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <h2 class="text-dark pb-3">Additional Information</h2>
+            <div class="billing-details">
+              <label for="fname">Order notes (optional)</label>
+              <textarea class="form-control pt-3 pb-3 ps-3 mt-2" name="note"
+                placeholder="Notes about your order. Like special notes for delivery."></textarea>
+            </div>
+            <div class="your-order mt-5">
+              <h2 class="display-7 text-dark pb-3">Cart Totals</h2>
+              <div class="total-price">
+                <table cellspacing="0" class="table">
+                  <tbody>
+                    <tr class="subtotal border-top border-bottom pt-2 pb-2 text-uppercase">
+                      <th>QUANTITY</th>
+                      <td data-title="Subtotal">
+                        <span class="price-amount amount ps-5">
+                          <bdi>
+                            <span class="price-currency-symbol"></span>{{totalQty}}</bdi>
+                        </span>
+                      </td>
+                    </tr>
+                    <tr class="order-total border-bottom pt-2 pb-2">
+                      <th>TOTAL</th>
+                      <td data-title="Total">
+                        <span class="price-amount amount ps-5">
+                          <bdi>
+                            <span class="price-currency-symbol"></span>{{totalPrice}}</bdi> đ
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="list-group mt-5 mb-3">
+                  
+                
+                  <label class="list-group-item d-flex gap-2 border-0">
+                    <input class="form-check-input flex-shrink-0" type="radio" name="listGroupRadios"
+                      id="listGroupRadios3" name="cashmethod" value="">
+                    <span>
+                      <strong class="text-uppercase">Cash on delivery</strong>
+                      <small class="d-block text-body-secondary">Pay with cash upon delivery.</small>
+                    </span>
+                  </label>
+                  <label class="list-group-item d-flex gap-2 border-0">
+                    <input class="form-check-input flex-shrink-0" type="radio" name="listGroupRadios"
+                      id="listGroupRadios3" name="paymethod" value="">
+                    <span>
+                      <strong class="text-uppercase">QR Code by payOS</strong>
+                      <small class="d-block text-body-secondary">Pay via payOS.</small>
+                    </span>
+                  </label>
+                </div>
+                <button type="submit" name="submit" class="btn btn-dark btn-lg rounded-1 w-100">Place an order</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>

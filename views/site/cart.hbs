@@ -1,5 +1,5 @@
 <!-- Banner -->
-  {{#if products}}
+  {{#if customer}}
   <section id="banner" class="py-3" style="background: #F9F3EC;">
     <div class="container">
       <div class="hero-content py-5 my-3">
@@ -95,10 +95,10 @@
           <div class="cart-totals">
             <h2 class="pb-4">Cart Total</h2>
             <div class="total-price pb-4">
-              <table cellspacing="0" class="table text-uppercase">
+              <table cellspacing="0" class="table">
                 <tbody>
                   <tr class="subtotal pt-2 pb-2 border-top border-bottom">
-                    <th>Quantity</th>
+                    <th>QUANTITY</th>
                     <td data-title="Subtotal">
                       <span class="price-amount amount text-dark ps-5">
                         <bdi>
@@ -108,7 +108,7 @@
                     </td>
                   </tr>
                   <tr class="order-total pt-2 pb-2 border-bottom">
-                    <th>Total</th>
+                    <th>TOTAL</th>
                     <td data-title="Total">
                       <span class="price-amount amount text-dark ps-5">
                         <span class="secondary-font fw-medium">{{totalPrice}} đ</span>

@@ -77,6 +77,9 @@ app.use('/', require('./routes/index'));
 app.use('/admin', require('./routes/admin'));
 app.use('/auth', require('./routes/auth'));
 
+// For payment method
+
+
 // Catch 404 and forward to error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
