@@ -307,9 +307,16 @@
                     aria-controls="offcanvasCart" --}}
                     >
                     <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
-                    <span class="position-absolute translate-middle badge rounded-circle bg-primary pt-2">
-                      {{session.cart.totalQty}}
+                    
+                    <span class="position-absolute translate-middle badge rounded-circle pt-2 
+                    {{#if session.cart.totalQty}}
+                            bg-primary  
+                    {{/if}}">
+                      {{#if session.cart.totalQty}}
+                        {{session.cart.totalQty}}
+                      {{/if}}
                     </span>
+                    
                   </a>
                 </li>
                 <li>
