@@ -3,15 +3,16 @@ const mongoose = require('mongoose');
 const Model = new mongoose.Schema(
   {
     orderCode: Number,
-    name: String,
-    email: String,
-    phone: String,
-    address: String,
-    country: String,
-    note: String,
+    buyerName: String,
+    buyerEmail: String,
+    buyerPhone: String,
+    buyerAddress: String,
+    buyerCountry: String,
+    buyerNote: String,
     amount: Number,
-    payMethod: String,
-    details: Object
+    paymentMethod: String,
+    items: Object,
+    status: String
   },
 );
     

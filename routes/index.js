@@ -4,7 +4,8 @@ var CategoryModel = require('../models/category');
 var ProductModel = require('../models/product');
 var CustomerModel = require('../models/customer');
 var ProductModel = require('../models/product');
-var BrandModel = require('../models/brand')
+var BrandModel = require('../models/brand');
+var OrderModel = require('../models/order');
 var CartModel = require('../models/cart');
 
 const fs = require("fs");
@@ -202,12 +203,45 @@ router.get('/cart/remove/:id', async (req, res) =>{
   res.redirect('/cart');
 });
 
-// PAYMENT
+// Checkout
 const payos = new PayOs(
   "c57285fa-6aab-486d-9c15-503c13f158a8",
   "364eea32-f6bc-4b81-884b-66c3eb436424",
   "326f33d24c9beb21bcc00ed032a77118820849f0a64bf694762d12ca017a7dc4"
 );
+router.get('/checkout/success', async (req, res) => {
+  const pendingOrder = req.session.pendingOrder;
+
+  if (pendingOrder) { // Check if pendingOrder exists
+      try {
+          // Update order status
+          pendingOrder.status = "Đã chuyển khoản";
+
+          // Save the order to the database
+          const newOrder = new OrderModel(pendingOrder);
+          await newOrder.save();
+      } catch (error) {
+          console.error('Error saving order:', error);
+          return res.status(500).send('An error occurred processing your order.'); 
+          // Return to prevent further execution in case of error
+      }
+  } else {
+      console.warn('Pending order not found in session.');
+      // Optionally redirect to a different page or handle the situation gracefully
+      return res.redirect('/checkout/error'); // Redirect to an error page, for example
+  }
+
+  // Clear the session data
+  delete req.session.pendingOrder;
+
+  // Redirect to a success page
+  res.redirect('/checkout/success');
+});
+
+router.get('/checkout/cancel' , async (req,res) => {
+
+  res.render('checkout/cancel')
+})
 router.get('/checkout', async(req,res)=>{
   const cart = new CartModel(req.session.cart);
   const customer = await CustomerModel.findOne({email: req.session.email}).lean()
@@ -222,28 +256,56 @@ function generateOrderCode() {
   return Math.floor(Math.random() * 99999); // Generate a random 6-digit number
 }
 // Local
-// const DOMAIN_URL='http://localhost:3000'
+const DOMAIN_URL='http://localhost:3000'
 // Server
-const DOMAIN_URL='https://shopbadmintonvn.onrender.com'
+// const DOMAIN_URL='https://shopbadmintonvn.onrender.com'
 
 router.post('/checkout',async (req, res) => {
   const cart = new CartModel(req.session.cart)
-  // const name = req.body.name
-  // const country = req.body.country
-  // const address = req.body.address
-  // const phone = req.body.phone
-  // const email = req.body.email
-  // const note = req.body.note
+  const name = req.body.name
+  const country = req.body.country
+  const address = req.body.address
+  const phone = req.body.phone
+  const email = req.body.email
+  const note = req.body.note
+  const paymentMethod = req.body.paymentMethod
+  
+  const orderData = {
+    orderCode: generateOrderCode(),
+    buyerName: name,
+    buyerEmail: email,
+    buyerPhone: phone,
+    buyerCountry: country,
+    buyerAddress: address,
+    buyerNote: note,
+    amount: cart.totalPrice,
+    paymentMethod: paymentMethod,
+    items: cart.items,
+    status: "Chờ xác nhận"
+  }
 
+  if (paymentMethod === 'bank') {
   const order = {
-      orderCode: generateOrderCode(),
+      orderCode: orderData.orderCode,
       amount: cart.totalPrice,
       description: "ShopBadmintonVn",
       returnUrl: `${DOMAIN_URL}/checkout/success`,
-      cancelUrl: `${DOMAIN_URL}/checkout/cancel`
+      cancelUrl: `${DOMAIN_URL}/checkout/cancel`,
+      
   }
-  console.log(order)
   const paymentLink = await payos.createPaymentLink(order);
+  req.session.pendingOrder = orderData;
+  console.log(req.session.pendingOrder)
   res.redirect(303, paymentLink.checkoutUrl);
+  } else if (paymentMethod === 'cod') {
+    const newOrder = new OrderModel(orderData);
+    await newOrder.save();
+    res.redirect('/checkout/success')
+  } else {
+    res.render('site/checkout',{
+      layout: 'layout',
+      message: "Choose one method first"
+    })
+  }
 });
 module.exports = router;

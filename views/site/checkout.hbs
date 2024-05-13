@@ -73,20 +73,23 @@
                   
                 
                   <label class="list-group-item d-flex gap-2 border-0">
-                    <input class="form-check-input flex-shrink-0" type="radio" name="listGroupRadios"
-                      id="listGroupRadios3" name="cashmethod" value="">
+                    <input class="form-check-input flex-shrink-0" type="radio" 
+                      id="listGroupRadios3" name="paymentMethod" value="cod">
                     <span>
                       <strong class="text-uppercase">Cash on delivery</strong>
                       <small class="d-block text-body-secondary">Pay with cash upon delivery.</small>
                     </span>
                   </label>
                   <label class="list-group-item d-flex gap-2 border-0">
-                    <input class="form-check-input flex-shrink-0" type="radio" name="listGroupRadios"
-                      id="listGroupRadios3" name="paymethod" value="">
+                    <input class="form-check-input flex-shrink-0" type="radio" 
+                      id="listGroupRadios3" name="paymentMethod" value="bank">
                     <span>
                       <strong class="text-uppercase">QR Code by payOS</strong>
                       <small class="d-block text-body-secondary">Pay via payOS.</small>
                     </span>
+                  </label>
+                  <label class="list-group-item d-flex gap-2 border-0">
+                    {{message}}
                   </label>
                 </div>
                 <button type="submit" name="submit" class="btn btn-dark btn-lg rounded-1 w-100">Place an order</button>
