@@ -360,9 +360,9 @@ const payos = new PayOs(
   "326f33d24c9beb21bcc00ed032a77118820849f0a64bf694762d12ca017a7dc4"
 );
 // Local
-const DOMAIN_URL='http://localhost:3000'
+// const DOMAIN_URL='http://localhost:3000'
 // Server
-// const DOMAIN_URL='https://shopbadmintonvn.onrender.com'
+const DOMAIN_URL='https://shopbadmintonvn.onrender.com'
 
 // ORDER
 router.get('/order', async (req, res) => {
