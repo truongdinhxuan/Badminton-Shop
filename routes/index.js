@@ -210,10 +210,10 @@ const payos = new PayOs(
 );
 router.get('/checkout', async(req,res)=>{
   const cart = new CartModel(req.session.cart);
-  const user = await CustomerModel.findById({email: req.session.email}).lean()
+  const customer = await CustomerModel.findOne({email: req.session.email}).lean()
   res.render('site/checkout',{
     layout: 'layout',
-    customer: user.name,
+    customer: customer.name,
     totalPrice: cart.totalPrice,
     totalQty: cart.totalQty,
   })
@@ -228,22 +228,22 @@ const DOMAIN_URL='https://shopbadmintonvn.onrender.com'
 
 router.post('/checkout',async (req, res) => {
   const cart = new CartModel(req.session.cart)
-  const name = req.body.name
-  const country = req.body.country
-  const address = req.body.address
-  const phone = req.body.phone
-  const email = req.body.email
-  const note = req.body.note
+  // const name = req.body.name
+  // const country = req.body.country
+  // const address = req.body.address
+  // const phone = req.body.phone
+  // const email = req.body.email
+  // const note = req.body.note
 
-    const order = {
+  const order = {
       orderCode: generateOrderCode(),
       amount: cart.totalPrice,
       description: "ShopBadmintonVn",
       returnUrl: `${DOMAIN_URL}/checkout/success`,
       cancelUrl: `${DOMAIN_URL}/checkout/cancel`
-    }
-    console.log(order)
-    const paymentLink = await payos.createPaymentLink(order);
-    res.redirect(303, paymentLink.checkoutUrl);
+  }
+  console.log(order)
+  const paymentLink = await payos.createPaymentLink(order);
+  res.redirect(303, paymentLink.checkoutUrl);
 });
 module.exports = router;
