@@ -134,7 +134,7 @@ router.get('/product', async (req, res) => {
       const imageFiles = getImageFiles(imagesDirectory);
       
       // Construct URLs for images
-      const imagesWithUrls = imageFiles.map((file) => `/uploads/product/${product._id}/${file}`);
+      const imagesWithUrls = imageFiles.map((file) => `/uploads/${product._id}/${file}`);
 
       return {
         ...product,
@@ -190,13 +190,13 @@ router.post('/add-product', upload.fields([{name: "photo",maxCount: 10}]), async
       isDisplay: isDisplay
     })
     const savedProduct = await newProduct.save();
-    const productFolderPath = path.join(__dirname, "../public/uploads/product", savedProduct._id.toString())
+    const productFolderPath = path.join(__dirname, "../public/uploads", savedProduct._id.toString())
     
     const photo = path.join(productFolderPath);
     
     createFolder(photo);
 
-    await savedProduct.updateOne({photo: `../public/uploads/product/${savedProduct._id.toString()}`});
+    await savedProduct.updateOne({photo: `../public/uploads/${savedProduct._id.toString()}`});
     
     await saveFilesFromMemory(req.files.photo, photo);
     res.redirect("/admin/product",)
@@ -230,14 +230,15 @@ router.get("/update-product/:id", async (req, res) => {
   const productId = req.params.id;
   const updateProduct = await ProductModel.findById(productId).lean();
   const category = await CategoryModel.find({}).lean();
-  
+  const brand = await BrandModel.find({}).lean();
   const selectedCategory = category.find(category => category.id === updateProduct.categoryId);
-
+  const selectedBrand = brand.find(brand => brand.id === updateProduct.brandId);
   res.render('admin/product/update-product' ,{
       layout: "admin/layout/layout",
       updateProduct: updateProduct,
       data: category,
       selectedCategory: selectedCategory,
+      selectedBrand: selectedBrand,
       isDisplay: updateProduct.isDisplay,
   });
 });
@@ -246,18 +247,20 @@ router.post("/update-product/:id",upload.fields([{name: "photo",maxCount: 10}]),
       const productId = req.params.id;
       const name = req.body.name;
       const categoryId = req.body.categoryId;
+      const brandId = req.body.brandId;
       const description = req.body.description;
       const price = req.body.price;
       const isDisplay = req.body.isDisplay === 'on'
       await ProductModel.findByIdAndUpdate(productId , {
         name: name,
         categoryId: categoryId,
+        brandId: brandId,
         description: description,
         price: price,
         isDisplay: isDisplay
       })
       
-      const productFolderPath = path.join(__dirname, "../public/uploads/product", productId.toString())
+      const productFolderPath = path.join(__dirname, "../public/uploads", productId.toString())
 
       const imagesPath = path.join(productFolderPath);
 

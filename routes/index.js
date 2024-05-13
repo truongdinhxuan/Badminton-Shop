@@ -42,7 +42,7 @@ router.get("/", async (req, res) => {
       
         const imagesDirectory = path.join(__dirname, product.photo);
         const imageFiles = getImageFiles(imagesDirectory);
-        const imagesWithUrls = imageFiles.map((file) => `/uploads/product/${product._id}/${file}`);
+        const imagesWithUrls = imageFiles.map((file) => `/uploads/${product._id}/${file}`);
   
         return {
           ...product,
@@ -107,7 +107,7 @@ router.get('/product',async(req,res) =>{
       
       const imagesDirectory = path.join(__dirname, product.photo);
       const imageFiles = getImageFiles(imagesDirectory);
-      const imagesWithUrls = imageFiles.map((file) => `/uploads/product/${product._id}/${file}`);
+      const imagesWithUrls = imageFiles.map((file) => `/uploads/${product._id}/${file}`);
 
       return {
         ...product,
@@ -138,7 +138,7 @@ router.get('/cart', async (req, res) => {
     const product = await ProductModel.findById(item.item._id).lean(); // Assuming you need product data from the database
     const imagesDirectory = path.join(__dirname, product.photo);
     const imageFiles = getImageFiles(imagesDirectory);
-    const imagesWithUrls = imageFiles.map((file) => `/uploads/product/${product._id}/${file}`);
+    const imagesWithUrls = imageFiles.map((file) => `/uploads/${product._id}/${file}`);
     
     return {
       ...item,
@@ -203,32 +203,25 @@ router.get('/cart/remove/:id', async (req, res) =>{
   res.redirect('/cart');
 });
 
-// Checkout
-const payos = new PayOs(
-  "c57285fa-6aab-486d-9c15-503c13f158a8",
-  "364eea32-f6bc-4b81-884b-66c3eb436424",
-  "326f33d24c9beb21bcc00ed032a77118820849f0a64bf694762d12ca017a7dc4"
-);
+// CHECKOUT
+function generateOrderCode() {
+  return Math.floor(Math.random() * 99999); // Generate a random 6-digit number
+}
+
 router.get('/checkout/success', async (req, res) => {
   const pendingOrder = req.session.pendingOrder;
 
   if (pendingOrder) { // Check if pendingOrder exists
-      try {
+      
           // Update order status
-          pendingOrder.status = "Đã chuyển khoản";
+          pendingOrder.status = "Paid";
 
           // Save the order to the database
           const newOrder = new OrderModel(pendingOrder);
           await newOrder.save();
-      } catch (error) {
-          console.error('Error saving order:', error);
-          return res.status(500).send('An error occurred processing your order.'); 
-          // Return to prevent further execution in case of error
-      }
   } else {
-      console.warn('Pending order not found in session.');
-      // Optionally redirect to a different page or handle the situation gracefully
-      return res.redirect('/checkout/error'); // Redirect to an error page, for example
+    // Optionally redirect to a different page or handle the situation gracefully
+    return res.redirect('/order'); // Redirect to an error page, for example
   }
 
   // Clear the session data
@@ -240,27 +233,31 @@ router.get('/checkout/success', async (req, res) => {
 
 router.get('/checkout/cancel' , async (req,res) => {
 
-  res.render('checkout/cancel')
-})
+  res.redirect('/checkout/cancel')
+});
+
 router.get('/checkout', async(req,res)=>{
   const cart = new CartModel(req.session.cart);
   const customer = await CustomerModel.findOne({email: req.session.email}).lean()
-  res.render('site/checkout',{
+  res.render('checkout',{
     layout: 'layout',
     customer: customer.name,
     totalPrice: cart.totalPrice,
     totalQty: cart.totalQty,
   })
 });
-function generateOrderCode() {
-  return Math.floor(Math.random() * 99999); // Generate a random 6-digit number
-}
-// Local
-const DOMAIN_URL='http://localhost:3000'
-// Server
-// const DOMAIN_URL='https://shopbadmintonvn.onrender.com'
 
 router.post('/checkout',async (req, res) => {
+  const customerEmail = req.session.email;
+
+  const customer = await CustomerModel.findOne({ email: customerEmail }).lean();
+    
+    if (!customer) {
+      // Handle the case where no customer is found with the email (e.g., redirect to login)
+      return res.redirect('/login'); // Or other error handling
+    }
+  const customerId = customer.id; 
+
   const cart = new CartModel(req.session.cart)
   const name = req.body.name
   const country = req.body.country
@@ -272,6 +269,7 @@ router.post('/checkout',async (req, res) => {
   
   const orderData = {
     orderCode: generateOrderCode(),
+    buyerId: customerId,
     buyerName: name,
     buyerEmail: email,
     buyerPhone: phone,
@@ -281,7 +279,7 @@ router.post('/checkout',async (req, res) => {
     amount: cart.totalPrice,
     paymentMethod: paymentMethod,
     items: cart.items,
-    status: "Chờ xác nhận"
+    status: "Unconfirm"
   }
 
   if (paymentMethod === 'bank') {
@@ -300,12 +298,51 @@ router.post('/checkout',async (req, res) => {
   } else if (paymentMethod === 'cod') {
     const newOrder = new OrderModel(orderData);
     await newOrder.save();
-    res.redirect('/checkout/success')
+    res.redirect('/order')
   } else {
-    res.render('site/checkout',{
+    res.render('checkout',{
       layout: 'layout',
       message: "Choose one method first"
     })
+  }
+});
+const payos = new PayOs(
+  "c57285fa-6aab-486d-9c15-503c13f158a8",
+  "364eea32-f6bc-4b81-884b-66c3eb436424",
+  "326f33d24c9beb21bcc00ed032a77118820849f0a64bf694762d12ca017a7dc4"
+);
+// Local
+// const DOMAIN_URL='http://localhost:3000'
+// Server
+const DOMAIN_URL='https://shopbadmintonvn.onrender.com'
+
+// ORDER
+router.get('/order', async (req, res) => {
+  try {
+    const customerEmail = req.session.email; // Get email from session
+    
+    // Fetch customer ID based on email
+    const customer = await CustomerModel.findOne({ email: customerEmail }).lean();
+
+    if (!customer) {
+      // Handle the case where no customer is found (e.g., redirect to login)
+      return res.redirect('/login'); 
+    }
+
+    const customerId = customer.id;
+
+    // Find orders associated with the customer
+    const orders = await OrderModel.find({ buyerId: customerId }).lean(); 
+
+    res.render('site/order', {
+      layout: 'layout',
+      data: orders // Send the array of orders to the view
+    });
+
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    // Handle the error gracefully (e.g., display an error page)
+    res.render('site/error', { layout: 'layout', message: 'An error occurred while fetching your orders.' });
   }
 });
 module.exports = router;

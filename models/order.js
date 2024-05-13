@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Model = new mongoose.Schema(
   {
     orderCode: Number,
+    buyerId: Number,
     buyerName: String,
     buyerEmail: String,
     buyerPhone: String,

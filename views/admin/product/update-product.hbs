@@ -71,7 +71,8 @@
         </div>
 
         <div class="mb-3">
-        <select class="form-select" aria-label="Default select example">
+        <label for="exampleFormControlInput1" class="form-label">Category name: </label>
+        <select class="form-select" aria-label="Default select example" id="categorySelect" name="categoryId">
         <option value="{{selectedCategory.id}}" selected disabled hidden>{{selectedCategory.name}}</option>
             {{#each data}}
                 <option value="{{this.id}}">
@@ -82,6 +83,38 @@
         </div>
 
         <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Brand name: </label>
+        <select class="form-select" name="brandId" id="brandSelect" name="brandId">
+        <option value="{{selectedBrand}}" selected disabled hidden>{{selectedBrand.name}}</option>
+        </select>
+        </div>
+        {{!-- Dropdown brand --}}
+        <script>
+            document.getElementById('categorySelect').addEventListener('change', function() {
+                const categoryId = this.value;
+                fetch('/admin/get-brands', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ categoryId: categoryId })
+                })
+                .then(response => response.json())
+                .then(brands => {
+                const brandSelect = document.getElementById('brandSelect');
+                brandSelect.innerHTML = '<option selected>Select brand</option>';
+                brands.forEach(brand => {
+                    const option = document.createElement('option');
+                    option.value = brand.id;
+                    option.textContent = brand.name;
+                    brandSelect.appendChild(option);
+                });
+                });
+            });
+        </script>
+
+        <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Description: </label>
         <div id="input-description">
         <textarea name="description" id="editor" 
         placeholder="Enter description..."

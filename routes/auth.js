@@ -54,6 +54,7 @@ router.post("/register", async (req, res) => {
   const customerRole = await RoleModel.findOne({roleName: "customer"}).lean();
   
   var customer = {
+    id: await CustomerModel.countDocuments() + 1,
     email: email,
     password: password,
     name: name,
