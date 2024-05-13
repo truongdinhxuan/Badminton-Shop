@@ -83,11 +83,23 @@ router.get("/", async (req, res) => {
 })
 // ACCOUNT
 router.get('/account', async (req, res) => {
-  const user = await CustomerModel.findOne({email: req.session.email}).lean();
+
+  const customerEmail = req.session.email; // Get email from session
+    // Fetch customer ID based on email
+  const customer = await CustomerModel.findOne({ email: customerEmail }).lean();
+  if (!customer) {
+    // Handle the case where no customer is found (e.g., redirect to login)
+    return res.redirect('/auth'); 
+  }
+  const customerId = customer.id;
+  // Find orders associated with the customer
+  const orders = await OrderModel.find({ buyerId: customerId }).lean();
+
   res.render('site/account', {
     layout: 'layout',
-    customer: user.name
-  })
+    orders: orders, // Send the array of orders to the view,
+    customer: customer
+  });
 })
 // PRODUCT
 router.get('/product',async(req,res) =>{
@@ -96,12 +108,8 @@ router.get('/product',async(req,res) =>{
     const products = await ProductModel.find().lean();
     
     const category = await CategoryModel.find().lean();
-    
-    const brand = await BrandModel.find().lean();
 
     const user = await CustomerModel.findOne({email: req.session.email}).lean();
-
-  
 
     const productBigData = await Promise.all(products.map(async (product) => {
       
@@ -115,7 +123,7 @@ router.get('/product',async(req,res) =>{
       };
     }));
       
-    res.render('site/product', {
+    res.render('product', {
       layout: "/layout",
       category: category,
       product: productBigData,
@@ -126,6 +134,43 @@ router.get('/product',async(req,res) =>{
     res.status(500).send('Internal Server Error');
   }
 })
+router.get('/product/detail/:urlRewriteName', async (req, res) => {
+  const urlRewriteName = req.params.urlRewriteName;
+
+  try {
+      // 1. Fetch the specific product
+      const product = await ProductModel.findOne({ urlRewriteName }).lean(); // Changed to findOne
+
+      // 2. Handle Image Processing ONLY for the found product
+      const imagesDirectory = path.join(__dirname, product.photo);
+      const imageFiles = getImageFiles(imagesDirectory);
+      const imagesWithUrls = imageFiles.map((file) => `/uploads/${product._id}/${file}`);
+
+      // 3. Combine Product with Images
+      const productWithImages = {
+          ...product,
+          images: imagesWithUrls,
+      };
+
+      // Fetch categories and user (if needed)
+      const category = await CategoryModel.findOne({id: product.categoryId}).lean();
+      const brand = await BrandModel.findOne({id: product.brandId}).lean();
+      const user = await CustomerModel.findOne({ email: req.session.email }).lean();
+
+      // 4. Render the View
+      res.render('product/detail', {
+          layout: "layout",
+          category: category,
+          brand: brand,
+          product: productWithImages, // Pass the single product with images
+          customer: user,
+      });
+  } catch (error) {
+      console.error('Error fetching product details:', error);
+      res.status(500).send('Internal Server Error');
+  }
+});
+
 // CART
 router.get('/cart', async (req, res) => {
   const user = await CustomerModel.findOne({email: req.session.email}).lean();
@@ -226,14 +271,16 @@ router.get('/checkout/success', async (req, res) => {
 
   // Clear the session data
   delete req.session.pendingOrder;
-
+  delete req.session.items
   // Redirect to a success page
   res.redirect('/checkout/success');
 });
 
 router.get('/checkout/cancel' , async (req,res) => {
 
-  res.redirect('/checkout/cancel')
+  res.render('checkout/cancel',{
+    layout: "/layout"
+  })
 });
 
 router.get('/checkout', async(req,res)=>{
@@ -279,7 +326,8 @@ router.post('/checkout',async (req, res) => {
     amount: cart.totalPrice,
     paymentMethod: paymentMethod,
     items: cart.items,
-    status: "Unconfirm"
+    status: "Unconfirm",
+    note: ""
   }
 
   if (paymentMethod === 'bank') {
@@ -312,37 +360,32 @@ const payos = new PayOs(
   "326f33d24c9beb21bcc00ed032a77118820849f0a64bf694762d12ca017a7dc4"
 );
 // Local
-// const DOMAIN_URL='http://localhost:3000'
+const DOMAIN_URL='http://localhost:3000'
 // Server
-const DOMAIN_URL='https://shopbadmintonvn.onrender.com'
+// const DOMAIN_URL='https://shopbadmintonvn.onrender.com'
 
 // ORDER
 router.get('/order', async (req, res) => {
   try {
     const customerEmail = req.session.email; // Get email from session
-    
     // Fetch customer ID based on email
     const customer = await CustomerModel.findOne({ email: customerEmail }).lean();
-
     if (!customer) {
       // Handle the case where no customer is found (e.g., redirect to login)
-      return res.redirect('/login'); 
+      return res.redirect('/auth'); 
     }
-
     const customerId = customer.id;
-
     // Find orders associated with the customer
     const orders = await OrderModel.find({ buyerId: customerId }).lean(); 
-
     res.render('site/order', {
       layout: 'layout',
-      data: orders // Send the array of orders to the view
+      data: orders, // Send the array of orders to the view,
+      customer: customer
     });
-
   } catch (error) {
     console.error("Error fetching orders:", error);
     // Handle the error gracefully (e.g., display an error page)
-    res.render('site/error', { layout: 'layout', message: 'An error occurred while fetching your orders.' });
+    res.render('error', { layout: 'layout', message: 'An error occurred while fetching your orders.' });
   }
 });
 module.exports = router;
