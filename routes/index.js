@@ -120,12 +120,39 @@ router.post('/update-status/:id', async (req, res) => {
   
   res.redirect('/account')
 })
-// router.post('/send-report',async(req,res) => {
-//   const title = req.body.title
-//   const message = req.body.message
+router.post('/send-report/:id', async (req, res) => {
+  try {
+    const title = req.body.title;
+    const message = req.body.message;
+    const orderId = req.params.id;
+    // Find the order using the orderCode
+    const order = await OrderModel.findById(orderId).lean();
+    if (!order) {
+      return res.status(404).send('Order not found');
+    }
+    // Prepare report data
+    const reportData = {
+      id: await ReportModel.countDocuments() + 1,
+      orderId: order.orderCode,  // Assuming orderId refers to the ObjectId of the order document
+      title: title,
+      message: message
+    };
 
+    // Create and save the new report
+    const newReport = new ReportModel(reportData);
+    await newReport.save();
 
-// })
+    await OrderModel.findByIdAndUpdate(orderId, { statusId: 7 });
+    // Redirect with a success message
+    res.redirect('/account');
+  } catch (error) {
+    console.error('Error sending report:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+module.exports = router;
+
 // PRODUCT
 router.get('/product',async(req,res) =>{
   try {
@@ -313,7 +340,7 @@ router.get('/checkout', async(req,res)=>{
   const customer = await CustomerModel.findOne({email: req.session.email}).lean()
   res.render('checkout',{
     layout: 'layout',
-    customer: customer.name,
+    customer: customer,
     totalPrice: cart.totalPrice,
     totalQty: cart.totalQty,
   })

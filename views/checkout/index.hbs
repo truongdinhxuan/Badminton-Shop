@@ -1,3 +1,4 @@
+{{#if customer}}
   <section id="banner" class="py-3" style="background: #F9F3EC;">
     <div class="container">
       <div class="hero-content py-5 my-3">
@@ -20,8 +21,11 @@
             <div class="billing-details">
 
               <label for="name">Full Name*</label>
-              <input type="text" id="name" name="name" class="form-control mt-2 mb-4 ps-3" placeholder="Example: Nguyen Van A">
+              <input type="text" id="name" name="name" class="form-control mt-2 mb-4 ps-3" value="{{customer.name}}" placeholder="{{customer.name}}" >
 
+              <label for="email">Email address *</label>
+              <input type="text" id="email" name="email" class="form-control mt-2 mb-4 ps-3" value="{{customer.email}}" placeholder="{{customer.email}}" >
+                         
               <label for="country">Country*</label>
               <input type="text" id="country" name="country" class="form-control mt-2 mb-4 ps-3" placeholder="Example: Ha Noi">
 
@@ -31,9 +35,6 @@
 
               <label for="email">Phone *</label>
               <input type="text" id="phone" name="phone" class="form-control mt-2 mb-4 ps-3" placeholder="Example: 012345678">
-
-              <label for="email">Email address *</label>
-              <input type="text" id="email" name="email" class="form-control mt-2 mb-4 ps-3" placeholder="Example: abc@gmail.com">
 
             </div>
           </div>
@@ -100,3 +101,4 @@
       </form>
     </div>
   </section>
+  {{/if}}

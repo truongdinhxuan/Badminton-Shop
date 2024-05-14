@@ -4,6 +4,7 @@ const Model = new mongoose.Schema(
   {
     id: Number,
     orderId: Number,
+    title: String,
     message:  String,
   },
 );
