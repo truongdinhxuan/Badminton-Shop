@@ -10,6 +10,7 @@ const CustomerModel = require('../models/customer');
 const CategoryModel = require('../models/category');
 const BrandModel = require('../models/brand');
 const StatusModel = require('../models/status');
+const ReportModel = require('../models/report');
 const Charset = require('../modules/charset');
 const multipart = require("connect-multiparty");
 const multer = require("multer");
@@ -378,6 +379,8 @@ router.get('/delete-all-brand', async (req, res) => {
 // ORDER
 router.get('/order', async (req ,res) => {
   const orders = await OrderModel.find().lean();
+  const report = await ReportModel.find().count();
+
   const bigData = await Promise.all(orders.map(async (order) => {
     const status = await StatusModel.findOne({id: order.statusId}).lean();
     return {
@@ -387,32 +390,46 @@ router.get('/order', async (req ,res) => {
   }))
   res.render('admin/order' , {
     layout: 'admin/layout/layout',
-    data: bigData
+    data: bigData,
+    report: report
   })
 })
 router.get('/update-order/:id', async (req,res) => {
   const orderId = req.params.id
   const updateOrder = await OrderModel.findById(orderId).lean()
+  let orderCode = updateOrder.orderCode
   const status = await StatusModel.find({}).lean()
-
+  const report = await ReportModel.findOne({ orderId: orderCode }).lean();
+  console.log(report)
   const selectedStatus = status.find(status => status.id === updateOrder.statusId)
   res.render('admin/order/update-order', {
     layout: 'admin/layout/layout',
     updateOrder: updateOrder,
     status: status,
-    selectedStatus: selectedStatus
+    selectedStatus: selectedStatus,
+    report: report
   })
 })
-router.post('/update-order/:id', async (req,res) => {
- try { 
-  const orderId = req.params.id
-  const data = req.body
-  await OrderModel.findByIdAndUpdate(orderId, data).lean();
+router.post('/update-order/:id', async (req, res) => {
+  try { 
+    const orderId = req.params.id;
+    const data = req.body;
+    const updatedOrder = await OrderModel.findByIdAndUpdate(orderId, data, { new: true }).lean();
+    if (!updatedOrder) {
+      console.error(`Order with ID ${orderId} not found`);
+      return res.status(404).send("Order not found");
+    }
+    const orderCode = updatedOrder.orderCode;
+    if (!orderCode) {
+      console.error("Order code is missing");
+      return res.status(400).send("Order code is missing");
+    }
+    await ReportModel.findOneAndDelete({ orderId: orderCode }).lean();
 
-  res.redirect('/admin/order')
-} catch (errors) {
-  console.log(errors)
-  res.redirect('/admin')
-}
-})
+    res.redirect('/admin/order');
+  } catch (errors) {
+    console.error("Error updating order:", errors);
+    res.redirect('/admin');
+  }
+});
 module.exports = router;

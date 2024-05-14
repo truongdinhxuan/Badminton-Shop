@@ -55,6 +55,18 @@
             {{/each}}
         </select>
         </div>
+        {{#if report}}
+        <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Report title: {{report.title}}</label>
+        
+        </div>
+        <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Message: </label>
+        
+            <p>{{report.message}}</p>
+        
+        </div>
+        {{/if}}
         <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">Note: </label>
         <input name="note" type="note" class="form-control" id="note" value="{{updateOrder.note}}">
