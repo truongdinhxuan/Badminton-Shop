@@ -361,8 +361,7 @@ router.post('/checkout',async (req, res) => {
       amount: cart.totalPrice,
       description: "ShopBadmintonVn",
       returnUrl: `${DOMAIN_URL}/checkout/success`,
-      cancelUrl: `${DOMAIN_URL}/checkout/cancel`,
-      
+      cancelUrl: `${DOMAIN_URL}/checkout/cancel`,  
   }
   const paymentLink = await payos.createPaymentLink(order);
   req.session.pendingOrder = orderData;
@@ -385,7 +384,7 @@ const payos = new PayOs(
   "326f33d24c9beb21bcc00ed032a77118820849f0a64bf694762d12ca017a7dc4"
 );
 // Local
-const DOMAIN_URL='http://localhost:3000'
+// const DOMAIN_URL='http://localhost:3000'
 // Server
-// const DOMAIN_URL='https://shopbadmintonvn.onrender.com'
+const DOMAIN_URL='https://shopbadmintonvn.onrender.com'
 module.exports = router;
