@@ -114,6 +114,22 @@ router.get('/account', async (req, res) => {
     customer: customer
   });
 })
+router.post('/update-profile/:id', async (req, res)=>{
+  
+  const customerId = req.params.id
+  const name = req.body.name
+  const email = req.body.email
+  const password = req.body.password
+
+  const customerData = {
+    name: name,
+    email: email,
+    password: password
+  }
+  await CustomerModel.findByIdAndUpdate(customerId, customerData).lean()
+
+  res.redirect('/account')
+})
 router.post('/update-status/:id', async (req, res) => {
   const orderId = req.params.id
   await OrderModel.findByIdAndUpdate(orderId, { statusId: 6 }, { new: true, lean: true });

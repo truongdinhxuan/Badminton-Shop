@@ -53,6 +53,15 @@ router.post("/register", async (req, res) => {
   const password = req.body.password
   const customerRole = await RoleModel.findOne({roleName: "customer"}).lean();
   
+  const existingCustomer = await CustomerModel.findOne({
+    email: email
+  })
+  if(existingCustomer) {
+    return res.render('auth',{
+      message: 'Duplicate email'
+    })
+  }
+
   var customer = {
     id: await CustomerModel.countDocuments() + 1,
     email: email,
@@ -60,6 +69,7 @@ router.post("/register", async (req, res) => {
     name: name,
     roleID: customerRole._id
   }
+
   await CustomerModel.create(customer)
   res.redirect('/auth')
   });
