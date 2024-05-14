@@ -195,10 +195,10 @@
             </div>
             <div class="card position-relative">
             {{#if images}}
-              <a href="#"><img src="{{images.[0]}}" class="img-fluid rounded-4" alt="image" style="width: 310px; height: 283px"></a> 
+              <a href="/product/detail/{{urlRewriteName}}"><img src="{{this.images.[0]}}" class="img-fluid rounded-4" alt="image" style="width: 310px; height: 283px"></a> 
             {{/if}}
               <div class="card-body p-0">
-                <a href="single-product.html">
+                <a href="/product/detail/{{urlRewriteName}}">
                   <h3 class="card-title pt-4 m-0">{{name}}</h3>
                 </a>
                 <div class="card-text">

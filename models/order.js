@@ -13,7 +13,7 @@ const Model = new mongoose.Schema(
     amount: Number,
     paymentMethod: String,
     items: Object,
-    status: String,
+    statusId: Number,
     note: String
   },
 );

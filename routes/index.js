@@ -6,6 +6,7 @@ var CustomerModel = require('../models/customer');
 var ProductModel = require('../models/product');
 var BrandModel = require('../models/brand');
 var OrderModel = require('../models/order');
+var StatusModel = require('../models/status');
 var CartModel = require('../models/cart');
 
 const fs = require("fs");
@@ -60,7 +61,7 @@ router.get("/", async (req, res) => {
       
         const imagesDirectory = path.join(__dirname, product.photo);
         const imageFiles = getImageFiles(imagesDirectory);
-        const imagesWithUrls = imageFiles.map((file) => `/uploads/product/${product._id}/${file}`);
+        const imagesWithUrls = imageFiles.map((file) => `/uploads/${product._id}/${file}`);
   
         return {
           ...product,
@@ -94,10 +95,15 @@ router.get('/account', async (req, res) => {
   const customerId = customer.id;
   // Find orders associated with the customer
   const orders = await OrderModel.find({ buyerId: customerId }).lean();
-
+  const status = await StatusModel.findOne({id: customerId}).lean();
+  const statusName = status.name
+  const data = orders.map(order => ({
+    ...order,
+    statusName
+  }));
   res.render('site/account', {
     layout: 'layout',
-    orders: orders, // Send the array of orders to the view,
+    data, // Send the array of orders to the view,
     customer: customer
   });
 })
@@ -259,7 +265,7 @@ router.get('/checkout/success', async (req, res) => {
   if (pendingOrder) { // Check if pendingOrder exists
       
           // Update order status
-          pendingOrder.status = "Paid";
+          pendingOrder.status = 2;
 
           // Save the order to the database
           const newOrder = new OrderModel(pendingOrder);
@@ -326,7 +332,7 @@ router.post('/checkout',async (req, res) => {
     amount: cart.totalPrice,
     paymentMethod: paymentMethod,
     items: cart.items,
-    status: "Unconfirm",
+    statusId: 1,
     note: ""
   }
 
@@ -360,9 +366,9 @@ const payos = new PayOs(
   "326f33d24c9beb21bcc00ed032a77118820849f0a64bf694762d12ca017a7dc4"
 );
 // Local
-// const DOMAIN_URL='http://localhost:3000'
+const DOMAIN_URL='http://localhost:3000'
 // Server
-const DOMAIN_URL='https://shopbadmintonvn.onrender.com'
+// const DOMAIN_URL='https://shopbadmintonvn.onrender.com'
 
 // ORDER
 router.get('/order', async (req, res) => {
@@ -376,10 +382,17 @@ router.get('/order', async (req, res) => {
     }
     const customerId = customer.id;
     // Find orders associated with the customer
-    const orders = await OrderModel.find({ buyerId: customerId }).lean(); 
+    const orders = await OrderModel.find({ buyerId: customerId }).lean();
+    const status = await StatusModel.findOne({id: customerId}).lean();
+    const statusName = status.name
+    const data = orders.map(order => ({
+      ...order,
+      statusName
+    }));
+    console.log(data)
     res.render('site/order', {
       layout: 'layout',
-      data: orders, // Send the array of orders to the view,
+      data, // Send the array of orders to the view,
       customer: customer
     });
   } catch (error) {

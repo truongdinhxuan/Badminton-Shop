@@ -9,6 +9,7 @@ const AdminModel = require('../models/admin');
 const CustomerModel = require('../models/customer');
 const CategoryModel = require('../models/category');
 const BrandModel = require('../models/brand');
+const StatusModel = require('../models/status');
 const Charset = require('../modules/charset');
 const multipart = require("connect-multiparty");
 const multer = require("multer");
@@ -372,5 +373,24 @@ router.get('/delete-all-brand', async (req, res) => {
       // Handle the error appropriately, e.g., display an error message
       res.redirect('/admin/brand?error=true'); 
   }
+})
+
+// ORDER
+router.get('/order', async (req ,res) => {
+  const orders = await OrderModel.find().lean();
+  const bigData = await Promise.all(orders.map(async (order) => {
+    const status = await StatusModel.findOne({id: order.statusId}).lean();
+    return {
+      ...order,
+      statusName: status ? status.name : 'Unknow'
+    };
+  }))
+  res.render('admin/order' , {
+    layout: 'admin/layout/layout',
+    data: bigData
+  })
+})
+router.get('/update-order/:id', async (req,res) => {
+  
 })
 module.exports = router;
