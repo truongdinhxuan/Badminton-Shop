@@ -98,11 +98,15 @@ router.get('/account', async (req, res) => {
   const orders = await OrderModel.find({ buyerId: customerId }).lean();
 
   const statusIds = orders.map(order => order.statusId);
-  const status = await StatusModel.findOne({id: statusIds}).lean();
-  
+  const status = await StatusModel.find({ id: { $in: statusIds } }).lean();
+  const statusMap = status.reduce((acc, status) => {
+    acc[status.id] = status;
+    return acc;
+  }, {});
+  console.log(status)
   const data = orders.map(order => ({
     ...order,
-    status
+    status: statusMap[order.statusId] || null
   }));
   res.render('site/account', {
     layout: 'layout',
@@ -287,7 +291,7 @@ router.get('/checkout/success', async (req, res) => {
           await newOrder.save();
   } else {
     // Optionally redirect to a different page or handle the situation gracefully
-    return res.redirect('/order'); // Redirect to an error page, for example
+    return res.redirect('/account'); // Redirect to an error page, for example
   }
 
   // Clear the session data
@@ -367,7 +371,7 @@ router.post('/checkout',async (req, res) => {
   } else if (paymentMethod === 'cod') {
     const newOrder = new OrderModel(orderData);
     await newOrder.save();
-    res.redirect('/order')
+    res.redirect('/account')
   } else {
     res.render('checkout',{
       layout: 'layout',
@@ -384,36 +388,4 @@ const payos = new PayOs(
 const DOMAIN_URL='http://localhost:3000'
 // Server
 // const DOMAIN_URL='https://shopbadmintonvn.onrender.com'
-
-// ORDER
-router.get('/order', async (req, res) => {
-  try {
-    const customerEmail = req.session.email; // Get email from session
-    // Fetch customer ID based on email
-    const customer = await CustomerModel.findOne({ email: customerEmail }).lean();
-    if (!customer) {
-      // Handle the case where no customer is found (e.g., redirect to login)
-      return res.redirect('/auth'); 
-    }
-    const customerId = customer.id;
-    // Find orders associated with the customer
-    const orders = await OrderModel.find({ buyerId: customerId }).lean();
-    const status = await StatusModel.findOne({id: customerId}).lean();
-    const statusName = status.name
-    const data = orders.map(order => ({
-      ...order,
-      statusName
-    }));
-    console.log(data)
-    res.render('site/order', {
-      layout: 'layout',
-      data, // Send the array of orders to the view,
-      customer: customer
-    });
-  } catch (error) {
-    console.error("Error fetching orders:", error);
-    // Handle the error gracefully (e.g., display an error page)
-    res.render('error', { layout: 'layout', message: 'An error occurred while fetching your orders.' });
-  }
-});
 module.exports = router;
