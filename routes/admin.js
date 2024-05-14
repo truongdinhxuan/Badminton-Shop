@@ -391,6 +391,28 @@ router.get('/order', async (req ,res) => {
   })
 })
 router.get('/update-order/:id', async (req,res) => {
-  
+  const orderId = req.params.id
+  const updateOrder = await OrderModel.findById(orderId).lean()
+  const status = await StatusModel.find({}).lean()
+
+  const selectedStatus = status.find(status => status.id === updateOrder.statusId)
+  res.render('admin/order/update-order', {
+    layout: 'admin/layout/layout',
+    updateOrder: updateOrder,
+    status: status,
+    selectedStatus: selectedStatus
+  })
+})
+router.post('/update-order/:id', async (req,res) => {
+ try { 
+  const orderId = req.params.id
+  const data = req.body
+  await OrderModel.findByIdAndUpdate(orderId, data).lean();
+
+  res.redirect('/admin/order')
+} catch (errors) {
+  console.log(errors)
+  res.redirect('/admin')
+}
 })
 module.exports = router;

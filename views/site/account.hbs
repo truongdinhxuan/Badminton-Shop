@@ -35,15 +35,36 @@
                 <th scope="row" class="px-5">{{orderCode}}</th>
                 <td class="px-5">{{amount}} đ</td>
                 <td class="px-5">{{paymentMethod}}</td>
-                <td class="px-5">{{statusName}}</td>
-                <td class="px-5">unknơ</td>
+                {{#if status}}
                 <td class="px-5">
-                    
-                    <a href="">
-                    <iconify-icon icon="material-symbols:report" width="48" height="48" style="color: red"></iconify-icon>
-                    </a>
-
+                {{status.name}}
+                {{#ifEq status.id 5}}
+                <form action="/update-status/{{this._id}}" method="POST">
+                <button type="submit" class="btn btn-success">Took!</button> 
+                </form>
+                {{/ifEq}}
                 </td>
+                {{/if}}
+                <td class="px-5">{{note}}</td>
+                <td class="px-5">
+                    {{#if status}}
+                    {{#ifEq status.id 6}}
+                    <iconify-icon icon="material-symbols:report" data-bs-toggle="modal" data-bs-target="#exampleModal" width="48" height="48"  style="color: red"></iconify-icon>
+                    {{else}}
+                    <iconify-icon icon="material-symbols:report" width="48" height="48" style="color: white"></iconify-icon>
+                    {{/ifEq}}
+                    {{/if}}
+                </td>
+                {{!-- Script modal  --}}
+                <script>
+                  var myModal = document.getElementById('myModal')
+                  var myInput = document.getElementById('myInput')
+
+                  myModal.addEventListener('shown.bs.modal', function () {
+                    myInput.focus()
+                  })
+                </script>
+
               </tr>
               {{/each}}
             </tbody>
@@ -219,4 +240,33 @@
         </div>
       </div>
     </div>
+    
+    {{!-- Modal for report product --}}
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <b><h5 class="modal-title" id="exampleModalLabel">Report Product</h5></b>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Title:</label>
+            <input type="text" class="form-control" id="recipient-name" name="title" required>
+          </div>
+          <div class="mb-3">
+            <label for="message-text" class="col-form-label">Message:</label>
+            <textarea class="form-control" id="message-text" name="message" required></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <form action="/send-report" method="POST">
+        <button type="submit" class="btn btn-primary">Send message</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
   </section>

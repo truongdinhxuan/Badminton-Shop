@@ -7,6 +7,7 @@ var ProductModel = require('../models/product');
 var BrandModel = require('../models/brand');
 var OrderModel = require('../models/order');
 var StatusModel = require('../models/status');
+var ReportModel = require('../models/report');
 var CartModel = require('../models/cart');
 
 const fs = require("fs");
@@ -95,11 +96,13 @@ router.get('/account', async (req, res) => {
   const customerId = customer.id;
   // Find orders associated with the customer
   const orders = await OrderModel.find({ buyerId: customerId }).lean();
-  const status = await StatusModel.findOne({id: customerId}).lean();
-  const statusName = status.name
+
+  const statusIds = orders.map(order => order.statusId);
+  const status = await StatusModel.findOne({id: statusIds}).lean();
+  
   const data = orders.map(order => ({
     ...order,
-    statusName
+    status
   }));
   res.render('site/account', {
     layout: 'layout',
@@ -107,6 +110,18 @@ router.get('/account', async (req, res) => {
     customer: customer
   });
 })
+router.post('/update-status/:id', async (req, res) => {
+  const orderId = req.params.id
+  await OrderModel.findByIdAndUpdate(orderId, { statusId: 6 }, { new: true, lean: true });
+  
+  res.redirect('/account')
+})
+// router.post('/send-report',async(req,res) => {
+//   const title = req.body.title
+//   const message = req.body.message
+
+
+// })
 // PRODUCT
 router.get('/product',async(req,res) =>{
   try {
