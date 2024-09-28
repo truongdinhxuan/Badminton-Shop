@@ -76,11 +76,15 @@ app.use("/admin", checkAdminSession);
 app.use('/', require('./routes/index'));
 app.use('/admin', require('./routes/admin'));
 app.use('/auth', require('./routes/auth'));
+app.use('/product', require('./routes/product'));
+app.use('/cart', require('./routes/cart'));
 
 hbs.registerHelper('ifEq', function(arg1, arg2, options) {
   return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
 });
-
+hbs.registerHelper('includes', function(array, value) {
+  return array.includes(value);
+});
 // Catch 404 and forward to error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development

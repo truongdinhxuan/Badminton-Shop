@@ -11,10 +11,6 @@ const Model = new mongoose.Schema(
     description: String,
     price: Number,
     isDisplay: Boolean
-    // sale: Number,
-    // sale1: Number,
-    // salePrice: Number,
-    // isDeleted: Boolean,  
   },
 );
 const Product = mongoose.model("Product", Model, "product");

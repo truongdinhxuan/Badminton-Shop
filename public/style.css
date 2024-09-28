@@ -115,14 +115,6 @@ CSS STRUCTURE:
   --light-primary-color: #eef1f3;
 }
 
-/* Fonts */
-:root {
-  --body-font: 'Chilanka', cursive;
-  --heading-font: 'Chilanka', cursive;
-  --secondary-font: 'Montserrat', sans-serif;
-}
-
-
 body {
   --bs-link-color: #333;
   --bs-link-hover-color: #333;
@@ -135,8 +127,8 @@ body {
 
   --bs-light-rgb: 248, 248, 248;
 
-  --bs-font-sans-serif: 'Chilanka', cursive;
-  --bs-body-font-family: var(--bs-font-sans-serif);
+  /* --bs-font-sans-serif: 'Roboto', cursive;
+  --bs-body-font-family: var(--bs-font-sans-serif); */
   --bs-body-font-size: 1rem;
   --bs-body-font-weight: 400;
   --bs-body-line-height: 2;

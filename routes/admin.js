@@ -387,7 +387,7 @@ router.get('/order', async (req ,res) => {
       ...order,
       statusName: status ? status.name : 'Unknow'
     };
-  }))
+  }))   
   res.render('admin/order' , {
     layout: 'admin/layout/layout',
     data: bigData,
@@ -402,12 +402,40 @@ router.get('/update-order/:id', async (req,res) => {
   const report = await ReportModel.findOne({ orderId: orderCode }).lean();
   console.log(report)
   const selectedStatus = status.find(status => status.id === updateOrder.statusId)
+
+  let activeSteps = [];
+  let showreturnsteps = false;
+
+  if (updateOrder.statusId >= 6 && updateOrder.statusId <= 8) {
+    showreturnsteps = true; // Hiển thị bước hoàn trả hàng nếu status là 6, 7, hoặc 8
+  }
+  // hoàn trả
+  if (updateOrder.statusId === 6) {
+    activeSteps = [6]
+  } else if (updateOrder.statusId === 7) {
+    activeSteps = [6,7]
+  } else if (updateOrder.statusId === 8) {
+    activeSteps = [6,7.8]
+  // giao hàng
+  } else if (updateOrder.statusId === 1) {
+    activeSteps = [1]; // chỉ step 1 active
+  } else if (updateOrder.statusId === 2) {
+    activeSteps = [1, 2]; // step 1 và 2 active
+  } else if (updateOrder.statusId === 3) {
+    activeSteps = [1, 2, 3]; // step 1, 2 và 3 active
+  } else if (updateOrder.statusId == 4) {
+    activeSteps = [1,2,3,4]
+  } else if (updateOrder.statusId == 5) {
+    activeSteps = [1,2,3,4,5]
+  }
   res.render('admin/order/update-order', {
     layout: 'admin/layout/layout',
     updateOrder: updateOrder,
     status: status,
     selectedStatus: selectedStatus,
-    report: report
+    report: report,
+    activeSteps: activeSteps,
+    showreturnsteps: showreturnsteps
   })
 })
 router.post('/update-order/:id', async (req, res) => {
