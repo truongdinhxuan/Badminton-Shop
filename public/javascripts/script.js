@@ -183,4 +183,18 @@
 
   }); // End of a document
 
+  // Mở và đóng popup chat
+  const chatBtn = document.getElementById('chat-btn');
+  const chatBox = document.getElementById('chat-box');
+  const closeChat = document.getElementById('close-chat');
+
+  chatBtn.addEventListener('click', () => {
+    chatBox.style.display = chatBox.style.display === 'none' ? 'block' : 'none';
+  });
+
+  closeChat.addEventListener('click', () => {
+    chatBox.style.display = 'none';
+  });
+
+
 })(jQuery);

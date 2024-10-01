@@ -15,20 +15,20 @@
                 {{!-- Các bước giao hàng --}}
                 {{#unless showreturnsteps}}
                     <div class="step {{#if (includes activeSteps 1)}}active{{/if}}"> 
-                    <span class="icon"> <i class="fa fa-check"></i> </span> 
-                    <span class="text">Order confirmed</span> 
+                    <span class="icon"> <i class="fa fa-ellipsis-h"></i> </span> 
+                    <span class="text">Pending order</span> 
                     </div>
                     <div class="step {{#if (includes activeSteps 2)}}active{{/if}}"> 
-                    <span class="icon"> <i class="fa fa-user"></i> </span> 
-                    <span class="text">Picked by courier</span> 
+                    <span class="icon"> <i class="fa fa-check"></i> </span> 
+                    <span class="text">Order onfirmed</span> 
                     </div>
                     <div class="step {{#if (includes activeSteps 3)}}active{{/if}}"> 
-                    <span class="icon"> <i class="fa fa-truck"></i> </span> 
-                    <span class="text">On the way</span> 
+                    <span class="icon"> <i class="fa fa-box"></i> </span> 
+                    <span class="text">Packing order</span> 
                     </div>
                     <div class="step {{#if (includes activeSteps 4)}}active{{/if}}"> 
-                    <span class="icon"> <i class="fa fa-box"></i> </span> 
-                    <span class="text">Ready for pickup</span> 
+                    <span class="icon"> <i class="fa fa-truck"></i> </span> 
+                    <span class="text">Delivering</span> 
                     </div>
                     <div class="step {{#if (includes activeSteps 5)}}active{{/if}}"> 
                     <span class="icon"> <i class="fa fa-box-open"></i> </span> 
@@ -56,17 +56,22 @@
             <hr>
 
             <ul class="row">
-                <li class="col-md-4">
+                {{#each updateOrder.items}}
+                    <li class="col-md-4">
                     <figure class="itemside mb-3">
-                        <div class="aside"><img src="https://i.imgur.com/iDwDQ4o.png" class="img-sm border"></div>
                         <figcaption class="info align-self-center">
-                            <p class="title">Dell Laptop with 500GB HDD <br> 8GB RAM</p> <span class="text-muted">$950 </span>
+                        <p class="title">{{this.item.name}}</p>
+                        <span class="text-muted">Quantity: {{this.qty}}</span><br>
+                        <span class="text-muted">Total: {{this.price}} VND</span>
                         </figcaption>
                     </figure>
-                </li>
+                    </li>
+                {{/each}}
             </ul>
+
+            
             <hr>
-            <a href="#" class="btn btn-warning" data-abc="true"> <i class="fa fa-chevron-left"></i> Back to orders</a>
+            <a href="/admin/order" class="btn btn-warning" data-abc="true"> <i class="fa fa-chevron-left"></i> Back to orders</a>
         </div>
     </article>
 </div>

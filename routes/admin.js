@@ -435,7 +435,7 @@ router.get('/update-order/:id', async (req,res) => {
     selectedStatus: selectedStatus,
     report: report,
     activeSteps: activeSteps,
-    showreturnsteps: showreturnsteps
+    showreturnsteps: showreturnsteps,
   })
 })
 router.post('/update-order/:id', async (req, res) => {

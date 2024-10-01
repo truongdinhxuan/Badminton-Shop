@@ -357,6 +357,23 @@
   </header>
 {{!-- Body --}}
 {{!-- Banner --}}
+<div id="chat-popup" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+  <button id="chat-btn" style="background-color: #007bff; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; font-size: 24px; cursor: pointer;">
+    💬
+  </button>
+</div>
+
+<!-- Chat Popup -->
+<div id="chat-box" style="display: none; position: fixed; bottom: 90px; right: 20px; z-index: 1000; width: 300px; height: 400px; background-color: white; border: 1px solid #ccc; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+  <div style="background-color: #007bff; color: white; padding: 10px; text-align: center; border-radius: 10px 10px 0 0;">
+    Chat with us
+    <button id="close-chat" style="float: right; background: transparent; border: none; color: white;">✖️</button>
+  </div>
+  <div style="padding: 10px; height: 350px; overflow-y: auto;">
+    <!-- Chat content -->
+    <p>Hello! How can I assist you today?</p>
+  </div>
+</div>
 
 {{{body}}}
 
@@ -524,6 +541,7 @@
   <script src="/javascripts/plugins.js"></script>
   <script src="/javascripts/script.js"></script>
   <script src="/javascripts/iconify.js"></script>
+
 </body>
 
 </html>
