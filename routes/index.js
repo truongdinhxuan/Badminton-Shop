@@ -102,8 +102,7 @@ const Product = require('../models/product');
         res.status(500).send('Error occurred while searching');
     }
   });
-
-module.exports = router;
+  //CATEGORY
   
   // ACCOUNT
   router.get('/account', async (req, res) => {
@@ -195,11 +194,10 @@ module.exports = router;
   
     router.get('/checkout/success', async (req, res) => {
       const pendingOrder = req.session.pendingOrder;
-  
+      console.log("pending order code : " + pendingOrder)
       if (pendingOrder) { // Check if pendingOrder exists
-          
               // Update order status
-              pendingOrder.status = 2;
+              pendingOrder.statusId = 2;
   
               // Save the order to the database
               const newOrder = new OrderModel(pendingOrder);
@@ -280,7 +278,7 @@ module.exports = router;
       }
       const paymentLink = await payos.createPaymentLink(order);
       req.session.pendingOrder = orderData;
-      console.log(req.session.pendingOrder)
+      console.log("Pending order: " + req.session.pendingOrder)
       res.redirect(303, paymentLink.checkoutUrl);
       } else if (paymentMethod === 'cod') {
         const newOrder = new OrderModel(orderData);

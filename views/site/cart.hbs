@@ -56,14 +56,14 @@
                 <td class="py-4 align-middle">
                   <div class="input-group product-qty align-items-center w-50">
                     
-                    <a href="cart/reduce/{{this.item._id}}">
+                    <a href="cart/cart/reduce/{{this.item._id}}">
                     <iconify-icon icon="ph:minus" width="30" height="30"></iconify-icon>
                     </a>
 
                     <input type="text" id="quantity" name="quantity"
                       class="form-control input-number text-center p-2 mx-1" value="{{this.qty}}" data-product-id="{{ item.item._id }}">
                     {{!-- <span class="total">{{this.qty}}</span> --}}
-                    <a href="cart/plus/{{this.item._id}}">
+                    <a href="cart/cart/plus/{{this.item._id}}">
                     <iconify-icon icon="basil:plus-outline" width="30" height="30"></iconify-icon>
                     </a>
                   </div>

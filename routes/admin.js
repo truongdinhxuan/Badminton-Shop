@@ -428,6 +428,12 @@ router.get('/update-order/:id', async (req,res) => {
   } else if (updateOrder.statusId == 5) {
     activeSteps = [1,2,3,4,5]
   }
+
+  // const formatMoney = new Intl.NumberFormat('vi-VI', {
+  //   style: 'currency',
+  //   currency: 'VND'
+  // }).format(updateOrder.amount)
+  
   res.render('admin/order/update-order', {
     layout: 'admin/layout/layout',
     updateOrder: updateOrder,
@@ -436,6 +442,7 @@ router.get('/update-order/:id', async (req,res) => {
     report: report,
     activeSteps: activeSteps,
     showreturnsteps: showreturnsteps,
+   
   })
 })
 router.post('/update-order/:id', async (req, res) => {
