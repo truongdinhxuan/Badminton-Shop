@@ -78,13 +78,36 @@ app.use('/admin', require('./routes/admin'));
 app.use('/auth', require('./routes/auth'));
 app.use('/product', require('./routes/product'));
 app.use('/cart', require('./routes/cart'));
+app.use('/category', require('./routes/category'));
+app.use('/order', require('./routes/order'));
 
+// Register Helper
 hbs.registerHelper('ifEq', function(arg1, arg2, options) {
   return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
 });
 hbs.registerHelper('includes', function(array, value) {
   return array.includes(value);
 });
+hbs.registerHelper('ifIn', function(value, ...args) {
+  const options = args[args.length - 1]; // Lấy options từ Handlebars
+  const values = args.slice(0, -1); // Lấy các giá trị so sánh
+  
+  // Kiểm tra nếu value nằm trong danh sách giá trị truyền vào
+  for (let i = 0; i < values.length; i++) {
+    if (value == values[i]) {
+      return options.fn(this); // Nếu đúng, thực hiện block bên trong
+    }
+  }
+  return options.inverse(this); // Nếu sai, thực hiện block {{else}}
+});
+hbs.registerHelper('truncate', function (str, len) {
+  if (str.length > len) {
+      return str.substring(0, len) + '...';
+  }
+  return str;
+});
+
+
 // Catch 404 and forward to error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development

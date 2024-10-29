@@ -24,6 +24,7 @@
     "hbs": "^4.2.0",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
+    "moment-timezone": "^0.5.46",
     "mongodb": "^6.6.1",
     "mongoose": "^8.3.2",
     "morgan": "~1.9.1",
@@ -31,7 +32,8 @@
     "nodemailer": "^6.9.13",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "slugify": "^1.6.6"
   },
   "devDependencies": {
     "@types/node": "^20.12.10"

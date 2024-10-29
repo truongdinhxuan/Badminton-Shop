@@ -1,0 +1,123 @@
+{{#if customer}}
+<section class="h-100 gradient-custom">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-lg-10 col-xl-8">
+        <div class="card" style="border-radius: 10px;">
+          <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <p class="lead fw-normal mb-0" style="color: #ff9c08;">Receipt</p>
+            </div>
+
+            <div class="row d-flex align-items-center">
+                  <div class="col-md-2">
+                    <p class="text-muted mb-0 small">Tracking Order</p>
+                  </div>
+                  <div class="track">
+                  {{#unless showreturnsteps}}
+                    <div class="step {{#if (includes activeSteps 1)}}active{{/if}}"> 
+                    <span class="icon"> <i class="fa fa-ellipsis-h"></i> </span> 
+                    <span class="text">Pending order</span> 
+                    </div>
+                    <div class="step {{#if (includes activeSteps 2)}}active{{/if}}"> 
+                    <span class="icon"> <i class="fa fa-check"></i> </span> 
+                    <span class="text">Order onfirmed</span> 
+                    </div>
+                    <div class="step {{#if (includes activeSteps 3)}}active{{/if}}"> 
+                    <span class="icon"> <i class="fa fa-box"></i> </span> 
+                    <span class="text">Packing order</span> 
+                    </div>
+                    <div class="step {{#if (includes activeSteps 4)}}active{{/if}}"> 
+                    <span class="icon"> <i class="fa fa-truck"></i> </span> 
+                    <span class="text">Delivering</span> 
+                    </div>
+                    <div class="step {{#if (includes activeSteps 5)}}active{{/if}}"> 
+                    <span class="icon"> <i class="fa fa-box-open"></i> </span> 
+                    <span class="text">Delivered</span> 
+                    </div>
+                {{/unless}}
+
+                {{!-- Các bước hoàn trả hàng --}}
+                {{#if showreturnsteps}}
+                    <div class="step {{#if (includes activeSteps 6)}}active{{/if}}"> 
+                    <span class="icon"> <i class="fa fa-arrow-left"></i> </span> 
+                    <span class="text">Request a refund</span> 
+                    </div>
+                    <div class="step {{#if (includes activeSteps 7)}}active{{/if}}"> 
+                    <span class="icon"> <i class="fa fa-reply"></i> </span> 
+                    <span class="text">Accept the refund</span> 
+                    </div>
+                    <div class="step {{#if (includes activeSteps 8)}}active{{/if}}"> 
+                    <span class="icon"> <i class="fa fa-check-circle"></i> </span> 
+                    <span class="text">Refund</span> 
+                    </div>
+                {{/if}}
+                </div>
+                </div>
+            <div class="card shadow-0 border mb-4">
+              <div class="card-body">
+                <div class="row">
+                {{#each items}}
+                  <div class="col-md-2">
+                    <img src="{{item.image}}"
+                      class="img-fluid" alt="{{item.urlRewriteName}}">
+                  </div>
+                  <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                    <p class="text-muted mb-0">{{truncate item.name 12}}</p>
+                  </div>
+                  <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                    <p class="text-muted mb-0 small">{{item.brandName}}</p>
+                  </div>
+                  <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                    <p class="text-muted mb-0 small">{{item.categoryName}}</p>
+                  </div>
+                  <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                    <p class="text-muted mb-0 small">Qty: {{qty}}</p>
+                  </div>
+                  <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                    <p class="text-muted mb-0 small">{{price}}đ</p>
+                  </div>
+                {{/each}}
+                </div>
+                <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">
+                
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between pt-2">
+              <p class="fw-bold mb-0">Order Details</p>
+              <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span>{{order.amount}}đ</p>
+            </div>
+
+
+            <div class="d-flex justify-content-between">
+              <p class="text-muted mb-0">Invoice Date : {{order.orderDate}}</p>
+              <p class="text-muted mb-0"><span class="fw-bold me-4">Note</span>{{order.buyerNote}}</p>
+            </div>
+
+            <div class="d-flex justify-content-between mb-5">
+              <p class="text-muted mb-0">Shipping to : {{order.buyerAddress}}</p>
+              <p class="text-muted mb-0"><span class="fw-bold me-4">Delivery Charges</span> Free</p>
+            </div>
+            {{#if showCancelButton}}
+                <button class="btn btn-danger">Cancel Order</button>
+            {{/if}}
+
+          </div>
+          <div class="card-footer border-0 px-4 py-5"
+            style="background-color: #a8729a; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+            <h5 class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0">Total
+              paid: <span class="h2 mb-0 ms-2">{{order.amount}}đ</span></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+    .card{position: relative;display: -webkit-box;display: -ms-flexbox;display: flex;-webkit-box-orient: vertical;-webkit-box-direction: normal;-ms-flex-direction: column;flex-direction: column;min-width: 0;word-wrap: break-word;background-color: #fff;background-clip: border-box;border: 1px solid rgba(0, 0, 0, 0.1);border-radius: 0.10rem}.card-header:first-child{border-radius: calc(0.37rem - 1px) calc(0.37rem - 1px) 0 0}.card-header{padding: 0.75rem 1.25rem;margin-bottom: 0;background-color: #fff;border-bottom: 1px solid rgba(0, 0, 0, 0.1)}.track{position: relative;background-color: #ddd;height: 7px;display: -webkit-box;display: -ms-flexbox;display: flex;margin-bottom: 60px;margin-top: 50px}.track .step{-webkit-box-flex: 1;-ms-flex-positive: 1;flex-grow: 1;width: 25%;margin-top: -18px;text-align: center;position: relative}.track .step.active:before{background: #e78d27}.track .step::before{height: 7px;position: absolute;content: "";width: 100%;left: 0;top: 18px}.track .step.active .icon{background: #d8ab78;color: #fff}.track .icon{display: inline-block;width: 40px;height: 40px;line-height: 40px;position: relative;border-radius: 100%;background: #ddd}.track .step.active .text{font-weight: 400;color: #000}.track .text{display: block;margin-top: 7px}.itemside{position: relative;display: -webkit-box;display: -ms-flexbox;display: flex;width: 100%}.itemside .aside{position: relative;-ms-flex-negative: 0;flex-shrink: 0}.img-sm{width: 80px;height: 80px;padding: 7px}ul.row, ul.row-sm{list-style: none;padding: 0}.itemside .info{padding-left: 15px;padding-right: 7px}.itemside .title{display: block;margin-bottom: 5px;color: #212529}p{margin-top: 0;margin-bottom: 1rem}.btn-warning{color: #ffffff;background-color: #ee5435;border-color: #ee5435;border-radius: 1px}.btn-warning:hover{color: #ffffff;background-color: #ff2b00;border-color: #ff2b00;border-radius: 1px}
+</style>
+{{else}}
+<h1>you must login</h1>
+{{/if}}

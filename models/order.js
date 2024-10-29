@@ -14,7 +14,9 @@ const Model = new mongoose.Schema(
     paymentMethod: String,
     items: Object,
     statusId: Number,
-    note: String
+    note: String,
+    orderDate: String,
+    isCancel: Boolean
   },
 );
     

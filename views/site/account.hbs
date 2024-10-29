@@ -1,24 +1,61 @@
+  <link rel="stylesheet" href=".css">
   <hr>
   <section class="product-info-tabs py-md-5">
     <div class="container">
       <div class="row">
-        <div class="d-flex flex-column flex-md-row align-items-start gap-5">
-          <div class="nav flex-row flex-wrap flex-md-column nav-pills me-3 col-lg-3" id="v-pills-tab" role="tablist"
+        <div class="d-flex flex-column flex-md-column align-items-start gap-5">
+          <div class="nav flex-row flex-wrap flex-md-row nav-pills me-3 col-lg-3" id="v-pills-tab" role="tablist"
             aria-orientation="vertical">
-            <button class="nav-link fs-5 mb-2 text-start active" id="v-pills-description-tab" data-bs-toggle="pill"
-              data-bs-target="#v-pills-description" type="button" role="tab" aria-controls="v-pills-description"
-              aria-selected="false" tabindex="-1">My Order</button>
-            <button class="nav-link fs-5 mb-2 text-start" id="v-pills-additional-tab" data-bs-toggle="pill"
+            <button class="nav-link fs-5 mb-2 text-start active" id="v-pills-additional-tab" data-bs-toggle="pill"
               data-bs-target="#v-pills-additional" type="button" role="tab" aria-controls="v-pills-additional"
-              aria-selected="false" tabindex="-1">Edit Information</button>
+              aria-selected="false" tabindex="-1">Information</button>
+              
+            <button class="nav-link fs-5 mb-2 text-start" id="v-pills-description-tab" data-bs-toggle="pill"
+              data-bs-target="#v-pills-description" type="button" role="tab" aria-controls="v-pills-description"
+              aria-selected="false" tabindex="-1">Order</button>
           </div>
           
           <div class="tab-content" id="v-pills-tabContent">
-            <div class="tab-pane fade active show" id="v-pills-description" role="tabpanel"
-              aria-labelledby="v-pills-description-tab" tabindex="0">
-              
             {{!-- ORDER --}}
-            <table class="table table-striped">
+            <div class="tab-pane fade active show" id="v-pills-additional" role="tabpanel" aria-labelledby="v-pills-additional-tab"
+              tabindex="0">
+                <div class="edit-profiles">
+                <form action="/update-profile/{{customer._id}}" method="post" id="form" class="form-group">
+                <h3>Hi, {{customer.name}}</h3>
+                  <div class="row pb-3">
+                  <div class="col-md-6">
+                    <label>Full Name</label>
+                    <input type="text" name="name" placeholder="write your name here*" class="form-control" value="{{customer.name}}">
+                  </div>
+                  <div class="pb-3">
+                    <label>Address</label>
+                    <input type="text" name="address" placeholder="write your address here*" class="form-control" value="{{customer.address}}">
+                  </div>
+                  <div class="col-md-6">
+                    <label>Email</label>
+                    <input type="text" name="email" placeholder="write your email here*" class="form-control" value="{{customer.email}}">
+                  </div>
+                  <div class="col-md-6">
+                    <label>Phone Number</label>
+                    <input type="text" name="phone_number" placeholder="write your phone number here*" class="form-control" value="{{customer.phone_number}}">
+                  </div>
+                  </div>              
+                  <div class="col-md-6">
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="write your password here*" class="form-control" value="{{customer.password}}">
+                  </div>
+                  <br>
+
+                  <button type="submit" name="submit"
+                    class="btn btn-dark btn-large text-uppercase w-20">Submit</button>
+                </form>
+              </div>
+            </div>
+            {{!-- Edit INFOR --}}
+            <div class="tab-pane fade " id="v-pills-description" role="tabpanel"
+              aria-labelledby="v-pills-description-tab" tabindex="0" style="width: 120%;">
+            
+            <table class="table table-striped" style="width: 120%;"> 
             <thead>
               <tr>
                 <th scope="col" class="px-5">Order Code</th>
@@ -26,19 +63,24 @@
                 <th scope="col" class="px-5">Pay method</th>
                 <th scope="col" class="px-5">Status</th>
                 <th scope="col" class="px-5">Note</th>
-                <th scope="col" class="px-5">Action</th>
+                {{!-- <th scope="col" class="px-5">Action</th> --}}
               </tr>
             </thead>
             <tbody>
+              
                 {{#each data}}
+                
               <tr>
-                <th scope="row" class="px-5">{{orderCode}}</th>
+                <th scope="row" class="px-5">
+                  
+                  <a href="/order/{{orderCode}}">{{orderCode}}</a>
+                  </th>
                 <td class="px-5">{{amount}} đ</td>
                 <td class="px-5">{{paymentMethod}}</td>
                 {{#if status}}
                 <td class="px-5">
                 {{status.name}}
-                {{#ifEq status.id 5}}
+                {{#ifEq status.id 4}}
                 <form action="/update-status/{{this._id}}" method="POST">
                 <button type="submit" class="btn btn-success">Took!</button> 
                 </form>
@@ -46,43 +88,7 @@
                 </td>
                 {{/if}}
                 <td class="px-5">{{note}}</td>
-                <td class="px-5">
-                    {{#if status}}
-                    {{#ifEq status.id 6}}
-                    <iconify-icon icon="material-symbols:report" data-bs-toggle="modal" data-bs-target="#exampleModal" width="48" height="48"  style="color: red"></iconify-icon>
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    {{!-- MODAL --}}
-                    <div class="modal-dialog">
-                      <form action="/send-report/{{this._id}}" method="POST">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <b><h5 class="modal-title" id="exampleModalLabel">Report Product</h5></b>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          <form>
-                            <div class="mb-3">
-                              <label for="recipient-name" class="col-form-label">Title:</label>
-                              <input type="text" class="form-control" id="recipient-name" name="title" required>
-                            </div>
-                            <div class="mb-3">
-                              <label for="message-text" class="col-form-label">Message:</label>
-                              <textarea class="form-control" id="message-text" name="message" required></textarea>
-                            </div>
-                          </form>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="submit" class="btn btn-primary">Send message</button>
-                        </div>
-                      </div>
-                      </form>
-                      </div>
-                    </div>
-                    {{else}}
-                    <iconify-icon icon="material-symbols:report" width="48" height="48" style="color: rgb(206, 225, 118)"></iconify-icon>
-                    {{/ifEq}}
-                    {{/if}}
-                </td>
+                
                 {{!-- Script modal  --}}
                 <script>
                   var myModal = document.getElementById('myModal')
@@ -94,36 +100,15 @@
                 </script>
 
               </tr>
+              
               {{/each}}
+              
             </tbody>
+            
             </table>
 
             </div>
-            {{!-- Edit INFOR --}}
-            <div class="tab-pane fade" id="v-pills-additional" role="tabpanel" aria-labelledby="v-pills-additional-tab"
-              tabindex="0">
-                <div class="edit-profile mt-5">
-                <form action="/update-profile/{{customer._id}}" method="post" id="form" class="form-group">
-                <h3>Hi, {{customer.name}}</h3>
-                  <div class="pb-3">
-                    <label>Your Name</label>
-                    <input type="text" name="name" placeholder="Write your name here*" class="form-control" value="{{customer.name}}">
-                  </div>
-                  <div class="pb-3">
-                    <label>Your Email</label>
-                    <input type="text" name="email" placeholder="Write your email here*" class="form-control" value="{{customer.email}}">
-                  </div>
-                  <div class="pb-3">
-                    <label>Password</label>
-                    <input type="password" name="password" placeholder="Write your password here*" class="form-control" value="{{customer.password}}">
-                  </div>
-                  <button type="submit" name="submit"
-                    class="btn btn-dark btn-large text-uppercase w-100">Submit</button>
-                </form>
-
-              </div>
-            </div>
-            <div class="tab-pane fade" id="v-pills-reviews" role="tabpanel" aria-labelledby="v-pills-reviews-tab"
+            {{!-- <div class="tab-pane fade" id="v-pills-reviews" role="tabpanel" aria-labelledby="v-pills-reviews-tab"
               tabindex="0">
               <div class="review-box d-flex flex-wrap">
                 <div class="col-lg-6 d-flex flex-wrap gap-3">
@@ -263,7 +248,7 @@
                     class="btn btn-dark btn-large text-uppercase w-100">Submit</button>
                 </form>
               </div>
-            </div>
+            </div> --}}
           </div>
         </div>
       </div>

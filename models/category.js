@@ -4,7 +4,11 @@ const Model = new mongoose.Schema(
   {
     id: Number,
     name:  String,
-    urlRewriteName: String,
+    slug: {
+      type: String,
+      unique: true,
+      required: true
+    }
   },
 );
     

@@ -6,8 +6,9 @@ const Model = new mongoose.Schema(
     email: String,
     password: String,
     name: String,
-    roleID: String,
-    photo: String,
+    address: String,
+    phone_number: String,
+    roleID: String
   }
 );
     

@@ -17,6 +17,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const { count } = require("console");
+const slugify = require('slugify');
 // const OrderStatus = require('../constants/order-status');
 
 // Admin index
@@ -58,6 +59,7 @@ router.post('/add-category', async (req, res) => {
             id: await CategoryModel.countDocuments() + 1,
             name: controlData.name,
             urlRewriteName: Charset.removeUnicode(req.body.name),
+            slug: slugify(controlData.name, { lower: true, strict: true }) // Tạo slug từ tên
         }
         await CategoryModel.create(info);
         res.redirect('/admin/category')
@@ -406,7 +408,7 @@ router.get('/update-order/:id', async (req,res) => {
   let activeSteps = [];
   let showreturnsteps = false;
 
-  if (updateOrder.statusId >= 6 && updateOrder.statusId <= 8) {
+  if (updateOrder.statusId >= 6 && updateOrder.statusId <= 10) {
     showreturnsteps = true; // Hiển thị bước hoàn trả hàng nếu status là 6, 7, hoặc 8
   }
   // hoàn trả

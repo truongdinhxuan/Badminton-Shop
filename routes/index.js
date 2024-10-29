@@ -12,6 +12,7 @@
   const fs = require("fs");
   const path = require("path");
   const PayOs = require('@payos/node');
+  const moment = require('moment-timezone');
 
 const Product = require('../models/product');
   // const { checkLoginSession } = require("../middlewares/auth");
@@ -102,8 +103,6 @@ const Product = require('../models/product');
         res.status(500).send('Error occurred while searching');
     }
   });
-  //CATEGORY
-  
   // ACCOUNT
   router.get('/account', async (req, res) => {
 
@@ -141,11 +140,15 @@ const Product = require('../models/product');
     const name = req.body.name
     const email = req.body.email
     const password = req.body.password
+    const address = req.body.address
+    const phone_number = req.body.phone_number
 
     const customerData = {
       name: name,
       email: email,
-      password: password
+      password: password,
+      address: address,
+      phone_number: phone_number
     }
     await CustomerModel.findByIdAndUpdate(customerId, customerData).lean()
 
@@ -153,7 +156,7 @@ const Product = require('../models/product');
   })
   router.post('/update-status/:id', async (req, res) => {
     const orderId = req.params.id
-    await OrderModel.findByIdAndUpdate(orderId, { statusId: 6 }, { new: true, lean: true });
+    await OrderModel.findByIdAndUpdate(orderId, { statusId: 5 }, { new: true, lean: true });
     
     res.redirect('/account')
   })
@@ -236,7 +239,7 @@ const Product = require('../models/product');
       const customerEmail = req.session.email;
   
       const customer = await CustomerModel.findOne({ email: customerEmail }).lean();
-        
+      
         if (!customer) {
           // Handle the case where no customer is found with the email (e.g., redirect to login)
           return res.redirect('/login'); // Or other error handling
@@ -251,7 +254,7 @@ const Product = require('../models/product');
       const email = req.body.email
       const note = req.body.note
       const paymentMethod = req.body.paymentMethod
-      
+      const orderDate = moment().tz('DD.MM.YYYY HH:mm','Asia/Ho_Chi_Minh').format('MMMM Do YYYY, hh:mm a'); 
       const orderData = {
         orderCode: generateOrderCode(),
         buyerId: customerId,
@@ -265,7 +268,8 @@ const Product = require('../models/product');
         paymentMethod: paymentMethod,
         items: cart.items,
         statusId: 1,
-        note: ""
+        note: "",
+        orderDate: orderDate
       }
   
       if (paymentMethod === 'bank') {
