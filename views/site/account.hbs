@@ -17,40 +17,56 @@
           
           <div class="tab-content" id="v-pills-tabContent">
             {{!-- ORDER --}}
-            <div class="tab-pane fade active show" id="v-pills-additional" role="tabpanel" aria-labelledby="v-pills-additional-tab"
-              tabindex="0">
-                <div class="edit-profiles">
-                <form action="/update-profile/{{customer._id}}" method="post" id="form" class="form-group">
-                <h3>Hi, {{customer.name}}</h3>
-                  <div class="row pb-3">
-                  <div class="col-md-6">
-                    <label>Full Name</label>
-                    <input type="text" name="name" placeholder="write your name here*" class="form-control" value="{{customer.name}}">
-                  </div>
-                  <div class="pb-3">
-                    <label>Address</label>
-                    <input type="text" name="address" placeholder="write your address here*" class="form-control" value="{{customer.address}}">
-                  </div>
-                  <div class="col-md-6">
-                    <label>Email</label>
-                    <input type="text" name="email" placeholder="write your email here*" class="form-control" value="{{customer.email}}">
-                  </div>
-                  <div class="col-md-6">
-                    <label>Phone Number</label>
-                    <input type="text" name="phone_number" placeholder="write your phone number here*" class="form-control" value="{{customer.phone_number}}">
-                  </div>
-                  </div>              
-                  <div class="col-md-6">
-                    <label>Password</label>
-                    <input type="password" name="password" placeholder="write your password here*" class="form-control" value="{{customer.password}}">
-                  </div>
-                  <br>
+            <div class="tab-pane fade active show" id="v-pills-additional" role="tabpanel" aria-labelledby="v-pills-additional-tab" tabindex="0">
+  <div class="edit-profiles">
+    <form action="/update-profile/{{customer._id}}" method="post" id="form" class="form-group">
+      <h3>Hi, {{customer.name}}</h3>
 
-                  <button type="submit" name="submit"
-                    class="btn btn-dark btn-large text-uppercase w-20">Submit</button>
-                </form>
-              </div>
+      <div class="profile-grid">
+        <div class="information-column"> 
+          <div class="row pb-3">
+            <div class="col-md-12">
+              <label>Full Name</label>
+              <input type="text" name="name" placeholder="write your name here*" class="form-control" value="{{customer.name}}">
             </div>
+            <div class="pb-3">
+              <label>Address</label>
+              <input type="text" name="address" placeholder="write your address here*" class="form-control" value="{{customer.address}}">
+            </div>
+            <div class="col-md-12">
+              <label>Email</label>
+              <input type="text" name="email" placeholder="write your email here*" class="form-control" value="{{customer.email}}">
+            </div>
+            <div class="col-md-12">
+              <label>Phone Number</label>
+              <input type="text" name="phone_number" placeholder="write your phone number here*" class="form-control" value="{{customer.phone_number}}">
+            </div>
+            <div class="col-md-12">
+              <label>Password</label>
+              <input type="password" name="password" placeholder="write your password here*" class="form-control" value="{{customer.password}}">
+            </div>
+          </div> 
+        </div>
+
+        <div class="banking-column">
+          <div class="row pb-3">
+            <div class="col-md-12">
+              <label>Bank Account Number</label>
+              <input type="text" name="bank_account_number" placeholder="write your bank account number here*" class="form-control" value="{{customer.bank_account_number}}">
+            </div>
+            <div class="col-md-12">
+              <label>Bank Name</label>
+              <input type="text" name="bank_name" placeholder="write your bank account name here*" class="form-control" value="{{customer.bank_name}}">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <br>
+      <button type="submit" name="submit" class="btn btn-dark btn-large text-uppercase w-20">Submit</button>
+    </form>
+  </div>
+</div>
             {{!-- Edit INFOR --}}
             <div class="tab-pane fade " id="v-pills-description" role="tabpanel"
               aria-labelledby="v-pills-description-tab" tabindex="0" style="width: 120%;">
@@ -254,3 +270,15 @@
       </div>
     </div>
   </section>
+<style>
+  .profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Chia thành 2 cột bằng nhau */
+  gap: 20px; /* Khoảng cách giữa 2 cột */
+}
+
+.information-column {
+  border-right: 1px solid #ccc; /* Thêm đường phân cách */
+  padding-right: 20px; /* Thêm padding cho đẹp */
+}
+</style>

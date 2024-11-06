@@ -142,13 +142,17 @@ const Product = require('../models/product');
     const password = req.body.password
     const address = req.body.address
     const phone_number = req.body.phone_number
+    const bank_account_number = req.body.bank_account_number
+    const bank_name = req.body.bank_name
 
     const customerData = {
       name: name,
       email: email,
       password: password,
       address: address,
-      phone_number: phone_number
+      phone_number: phone_number,
+      bank_account_number: bank_account_number,
+      bank_name: bank_name
     }
     await CustomerModel.findByIdAndUpdate(customerId, customerData).lean()
 

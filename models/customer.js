@@ -8,6 +8,8 @@ const Model = new mongoose.Schema(
     name: String,
     address: String,
     phone_number: String,
+    bank_account_number: String,
+    bank_name: String,
     roleID: String
   }
 );
