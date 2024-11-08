@@ -76,7 +76,7 @@
   </div>
           </div>
             {{!-- Edit INFOR --}}
-            <div style="overflow-x: auto;">
+            {{!-- <div style="overflow-x: auto;">
   <table class="table table-striped"> 
     <thead>
       <tr>
@@ -101,30 +101,110 @@
           {{note}}
         </td>
         <td class="px-5">
-          {{#if status}}
-            {{#ifEq status.id 4}}
-              <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Took!">
-                <i class="fas fa-check"></i> 
-              </button> 
-            {{else ifEq status.id 1}}
-              <form action="/update-status/{{this._id}}" method="POST">
-                <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Cancel order">
-                  <i class="fas fa-times"></i> 
-                </button>  
-              </form>
-            {{else ifEq status.id 11}}
-              <button type="submit" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Buy back">
-                <i class="fas fa-undo"></i> 
-              </button> 
-            {{/ifEq}}
-          {{/if}}
-        </td>
+  {{#if status}}
+    {{#ifEq status.id 4}}
+      <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Took!">
+        <i class="fas fa-check"></i> 
+      </button> 
+    {{else ifEq status.id 1}}
+      <form action="/update-status/{{this._id}}" method="POST">
+        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="right" title="Cancel order">
+          <i class="fas fa-times">abc</i> 
+        </button>  
+      </form>
+    {{else ifEq status.id 11}}
+      <button type="submit" class="btn btn-warning" data-toggle="tooltip" data-placement="right" title="Buy back">
+        <i class="fas fa-undo"></i> 
+      </button>
+      <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="right" title="Delete order">
+        <i class="fas fa-trash"></i> 
+      </button>
+    {{/ifEq}}
+  {{/if}}
+</td>
       </tr>
       {{/each}}
     </tbody>
   </table>
-</div>
+</div> --}}
+            <div class="tab-pane fade " id="v-pills-description" role="tabpanel"
+              aria-labelledby="v-pills-description-tab" tabindex="0" style="width: 120%;">
+            
+            <table class="table table-striped" style="width: 120%;"> 
+            <thead>
+              <tr>
+                <th scope="col" class="px-5">Order Code</th>
+                <th scope="col" class="px-5">Amount</th>
+                <th scope="col" class="px-5">Pay method</th>
+                <th scope="col" class="px-5">Status</th>
+                <th scope="col" class="px-5">Note</th>
+                <th scope="col" class="px-5">Action</th>
+                {{!-- <th scope="col" class="px-5">Action</th> --}}
+              </tr>
+            </thead>
+            <tbody>
+              
+                {{#each data}}
+                
+              <tr>
+                <th scope="row" class="px-5">
+                  
+                  <a href="/order/{{orderCode}}">{{orderCode}}</a>
+                  </th>
+                <td class="px-5">{{amount}} đ</td>
+                <td class="px-5">{{paymentMethod}}</td>
+                {{#if status}}
+                <td class="px-5">
+                {{status.name}}
+                {{#ifEq status.id 4}}
+                <form action="/update-status/{{this._id}}" method="POST">
+                <button type="submit" class="btn btn-success">Took!</button> 
+                </form>
+                {{/ifEq}}
+                </td>
+                {{/if}}
+                <td class="px-5">{{note}}</td>
+                <td>
+                  {{#if status}}
+                    {{#ifEq status.id 4}}
+                      <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Took!">
+                        <i class="fas fa-check"></i> 
+                      </button> 
+                    {{else ifEq status.id 1}}
+                      <form action="/update-status/{{this._id}}" method="POST">
+                        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="right" title="Cancel order">
+                          <i class="fas fa-times">abc</i> 
+                        </button>  
+                      </form>
+                    {{else ifEq status.id 11}}
+                      <button type="submit" class="btn btn-warning" data-toggle="tooltip" data-placement="right" title="Buy back">
+                        <i class="fas fa-undo"></i>
+                      </button>
+                      <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="right" title="Delete order">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    {{/ifEq}}
+                  {{/if}}
+                </td>
+                {{!-- Script modal  --}}
+                <script>
+                  var myModal = document.getElementById('myModal')
+                  var myInput = document.getElementById('myInput')
 
+                  myModal.addEventListener('shown.bs.modal', function () {
+                    myInput.focus()
+                  })
+                </script>
+
+              </tr>
+              
+              {{/each}}
+              
+            </tbody>
+            
+            </table>
+
+            </div>
 <script>
   $(function () {
     $('[data-toggle="tooltip"]').tooltip()
@@ -288,3 +368,10 @@
   padding-right: 20px; /* Thêm padding cho đẹp */
 }
 </style>
+<script>
+  // Kích hoạt tooltip cho tất cả các phần tử có data-toggle="tooltip"
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
+</script>

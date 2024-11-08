@@ -16,7 +16,8 @@ const Model = new mongoose.Schema(
     statusId: Number,
     note: String,
     orderDate: String,
-    isCancel: Boolean
+    isCancel: Boolean,
+    isDelete: Boolean
   },
 );
     
