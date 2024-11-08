@@ -13,7 +13,7 @@
   const path = require("path");
   const PayOs = require('@payos/node');
   const moment = require('moment-timezone');
-
+  const axios = require('axios');
 const Product = require('../models/product');
   // const { checkLoginSession } = require("../middlewares/auth");
   /* GET home page. */
@@ -128,10 +128,15 @@ const Product = require('../models/product');
       ...order,
       status: statusMap[order.statusId] || null
     }));
+    // Craw api list ngân hàng
+    const response = await axios.get('https://api.vietqr.io/v2/banks');
+    const bank = response.data.data;
+
     res.render('site/account', {
       layout: 'layout',
       data, // Send the array of orders to the view,
-      customer: customer
+      customer: customer,
+      bank: bank
     });
   })
   router.post('/update-profile/:id', async (req, res)=>{
@@ -159,11 +164,44 @@ const Product = require('../models/product');
     res.redirect('/account')
   })
   router.post('/update-status/:id', async (req, res) => {
-    const orderId = req.params.id
-    await OrderModel.findByIdAndUpdate(orderId, { statusId: 5 }, { new: true, lean: true });
-    
-    res.redirect('/account')
-  })
+    const orderId = req.params.id;
+  
+    try {
+      // Lấy thông tin đơn hàng hiện tại
+      const order = await OrderModel.findById(orderId);
+  
+      if (!order) {
+        // Xử lý trường hợp không tìm thấy đơn hàng
+        return res.status(404).send('Order not found');
+      }
+  
+      let newStatusId;
+      switch (order.statusId) {
+        case 4: 
+          // Đơn hàng đang ở trạng thái "Chờ lấy hàng"
+          newStatusId = 5; // Cập nhật trạng thái thành "Đã lấy hàng" (hoặc trạng thái phù hợp)
+          break;
+        case 1:
+          // Đơn hàng đang ở trạng thái "Chờ xác nhận"
+          newStatusId = 11; // Cập nhật trạng thái thành "Đã hủy" (hoặc trạng thái phù hợp)
+          break;
+        default:
+          // Xử lý các trường hợp status.id khác hoặc trả về lỗi
+          return res.status(400).send('Invalid status');
+      }
+  
+      // Cập nhật trạng thái đơn hàng trong database
+      await OrderModel.findByIdAndUpdate(orderId, { statusId: newStatusId }, { new: true, lean: true });
+  
+      // Chuyển hướng người dùng hoặc trả về kết quả thành công
+      res.redirect('/account'); 
+  
+    } catch (error) {
+      // Xử lý lỗi
+      console.error(error);
+      res.status(500).send('Error updating order status');
+    }
+  });
   router.post('/send-report/:id', async (req, res) => {
     try {
       const title = req.body.title;

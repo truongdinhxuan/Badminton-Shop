@@ -85,6 +85,12 @@ app.use('/order', require('./routes/order'));
 hbs.registerHelper('ifEq', function(arg1, arg2, options) {
   return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
 });
+// hbs.registerHelper('or', function() {
+//   return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
+// });
+hbs.registerHelper('eq', function(a, b) {
+  return a === b;
+});
 hbs.registerHelper('includes', function(array, value) {
   return array.includes(value);
 });

@@ -49,81 +49,87 @@
         </div>
 
         <div class="banking-column">
-          <div class="row pb-3">
-            <div class="col-md-12">
-              <label>Bank Account Number</label>
-              <input type="text" name="bank_account_number" placeholder="write your bank account number here*" class="form-control" value="{{customer.bank_account_number}}">
-            </div>
-            <div class="col-md-12">
-              <label>Bank Name</label>
-              <input type="text" name="bank_name" placeholder="write your bank account name here*" class="form-control" value="{{customer.bank_name}}">
-            </div>
-          </div>
+  <div class="row pb-3">
+    <div class="col-md-12">
+      <label>Bank Account Number</label>
+      <input type="text" name="bank_account_number" placeholder="write your bank account number here*" class="form-control" value="{{customer.bank_account_number}}">
+    </div>
+    <div class="col-md-12">
+          <label for="bank_name">Bank Name</label>
+          <select name="bank_name" id="bank_name" class="form-control">
+            {{#each bank}}
+              <option value="{{this.short_name}}" {{#if (eq ../customer.bank_name this.short_name)}}selected{{/if}}>
+                <img src="{{this.logo}}" alt="{{this.short_name}}" style="width: 20px; height: auto;"> 
+                {{this.short_name}} - {{this.name}}
+              </option>
+            {{/each}}
+          </select>
         </div>
+        <p style="color: red;">* Please note that: Use only bank account same as your Full Name</p>
+      </div>
+    </div>
       </div>
 
       <br>
       <button type="submit" name="submit" class="btn btn-dark btn-large text-uppercase w-20">Submit</button>
     </form>
   </div>
-</div>
+          </div>
             {{!-- Edit INFOR --}}
-            <div class="tab-pane fade " id="v-pills-description" role="tabpanel"
-              aria-labelledby="v-pills-description-tab" tabindex="0" style="width: 120%;">
-            
-            <table class="table table-striped" style="width: 120%;"> 
-            <thead>
-              <tr>
-                <th scope="col" class="px-5">Order Code</th>
-                <th scope="col" class="px-5">Amount</th>
-                <th scope="col" class="px-5">Pay method</th>
-                <th scope="col" class="px-5">Status</th>
-                <th scope="col" class="px-5">Note</th>
-                {{!-- <th scope="col" class="px-5">Action</th> --}}
-              </tr>
-            </thead>
-            <tbody>
-              
-                {{#each data}}
-                
-              <tr>
-                <th scope="row" class="px-5">
-                  
-                  <a href="/order/{{orderCode}}">{{orderCode}}</a>
-                  </th>
-                <td class="px-5">{{amount}} đ</td>
-                <td class="px-5">{{paymentMethod}}</td>
-                {{#if status}}
-                <td class="px-5">
-                {{status.name}}
-                {{#ifEq status.id 4}}
-                <form action="/update-status/{{this._id}}" method="POST">
-                <button type="submit" class="btn btn-success">Took!</button> 
-                </form>
-                {{/ifEq}}
-                </td>
-                {{/if}}
-                <td class="px-5">{{note}}</td>
-                
-                {{!-- Script modal  --}}
-                <script>
-                  var myModal = document.getElementById('myModal')
-                  var myInput = document.getElementById('myInput')
+            <div style="overflow-x: auto;">
+  <table class="table table-striped"> 
+    <thead>
+      <tr>
+        <th scope="col" class="px-5">Order Code</th>
+        <th scope="col" class="px-5">Amount</th>
+        <th scope="col" class="px-5">Pay method</th>
+        <th scope="col" class="px-5">Status</th>
+        <th scope="col" class="px-5">Note</th>
+        <th scope="col" class="px-5">Action</th> 
+      </tr>
+    </thead>
+    <tbody>
+      {{#each data}}
+      <tr>
+        <th scope="row" class="px-5">
+          <a href="/order/{{orderCode}}">{{orderCode}}</a>
+        </th>
+        <td class="px-5">{{amount}} đ</td>
+        <td class="px-5">{{paymentMethod}}</td>
+        <td class="px-5">{{status.name}}</td>
+        <td class="px-5" data-toggle="tooltip" data-placement="top" title="{{note}}">
+          {{note}}
+        </td>
+        <td class="px-5">
+          {{#if status}}
+            {{#ifEq status.id 4}}
+              <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Took!">
+                <i class="fas fa-check"></i> 
+              </button> 
+            {{else ifEq status.id 1}}
+              <form action="/update-status/{{this._id}}" method="POST">
+                <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Cancel order">
+                  <i class="fas fa-times"></i> 
+                </button>  
+              </form>
+            {{else ifEq status.id 11}}
+              <button type="submit" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Buy back">
+                <i class="fas fa-undo"></i> 
+              </button> 
+            {{/ifEq}}
+          {{/if}}
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
 
-                  myModal.addEventListener('shown.bs.modal', function () {
-                    myInput.focus()
-                  })
-                </script>
-
-              </tr>
-              
-              {{/each}}
-              
-            </tbody>
-            
-            </table>
-
-            </div>
+<script>
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+</script>
             {{!-- <div class="tab-pane fade" id="v-pills-reviews" role="tabpanel" aria-labelledby="v-pills-reviews-tab"
               tabindex="0">
               <div class="review-box d-flex flex-wrap">
