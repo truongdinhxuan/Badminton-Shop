@@ -28,8 +28,14 @@ var express = require('express');
 
 router.get('/', async (req, res) => {
     const user = await CustomerModel.findOne({email: req.session.email}).lean();
-    if (!req.session.cart) {
-      return res.render('site/cart', { products: null });
+    if (!req.session.cart || Object.keys(req.session.cart.items).length === 0) { 
+      return res.render('site/cart', { 
+          layout: 'layout',
+          products: null, 
+          totalPrice: 0,
+          totalQty: 0,
+          customer: user ? user.name : null // Handle case where user might not be logged in
+      });
     }
     const cart = new CartModel(req.session.cart);
     // Get product data with image URLs

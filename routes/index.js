@@ -246,6 +246,7 @@ const Product = require('../models/product');
   
               // Save the order to the database
               const newOrder = new OrderModel(pendingOrder);
+              req.session.cart = { items: {}, totalQty: 0, totalPrice: 0 }; 
               await newOrder.save();
       } else {
         // Optionally redirect to a different page or handle the situation gracefully
@@ -329,6 +330,8 @@ const Product = require('../models/product');
       } else if (paymentMethod === 'cod') {
         const newOrder = new OrderModel(orderData);
         await newOrder.save();
+        //remote cart session
+        req.session.cart = { items: {}, totalQty: 0, totalPrice: 0 };
         res.redirect('/account')
       } else {
         res.render('checkout',{
