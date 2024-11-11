@@ -195,7 +195,7 @@ const Product = require('../models/product');
   
       // Chuyển hướng người dùng hoặc trả về kết quả thành công
       res.redirect('/account'); 
-  
+   
     } catch (error) {
       // Xử lý lỗi
       console.error(error);
