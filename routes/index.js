@@ -13,7 +13,7 @@
   const path = require("path");
   const PayOs = require('@payos/node');
   const moment = require('moment-timezone');
-  const axios = require('axios');
+
 const Product = require('../models/product');
   // const { checkLoginSession } = require("../middlewares/auth");
   /* GET home page. */
@@ -128,15 +128,36 @@ const Product = require('../models/product');
       ...order,
       status: statusMap[order.statusId] || null
     }));
-    // Craw api list ngân hàng
-    const response = await axios.get('https://api.vietqr.io/v2/banks');
-    const bank = response.data.data;
-
+    // Hiện tại chỉ dùng name để lưu, việc craw khiến việc data thừa load khá lâu
+    const bank = {
+      "bank": [
+        {"name": "Vietcombank"},
+        {"name": "Agribank"},
+        {"name": "BIDV"},
+        {"name": "Vietinbank"},
+        {"name": "Techcombank"},
+        {"name": "ACB"},
+        {"name": "MB"},
+        {"name": "Sacombank"},
+        {"name": "DongA Bank"},
+        {"name": "Eximbank"},
+        {"name": "ABBank"},
+        {"name": "TPBank"},
+        {"name": "VPBank"},
+        {"name": "SCB"},
+        {"name": "Viet Capital Bank"},
+        {"name": "LienVietPostBank"},
+        {"name": "MSB"},
+        {"name": "Nam A Bank"},
+        {"name": "OCB"},
+        {"name": "SHB"}
+      ]
+    }
     res.render('site/account', {
       layout: 'layout',
       data, // Send the array of orders to the view,
       customer: customer,
-      bank: bank
+      bank: bank.bank
     });
   })
   router.post('/update-profile/:id', async (req, res)=>{
@@ -165,25 +186,40 @@ const Product = require('../models/product');
   })
   router.post('/update-status/:id', async (req, res) => {
     const orderId = req.params.id;
-  
+    /*
+          Status            -       Action (button)
+        1 pending                     cancel -> status(canceled), if paymethod = cod -> none
+        2 confirmed                   cancel -> status(canceled), if paymethod = ck -> hoàn tiền
+        3 packing                     cancel -> status(canceled), if paymethod = cod -> none, if paymethod = ck -> hoàn tiền
+        4 delivering                  took -> status(delivered)
+        5 delivered                   buy again -> return(/cart) cùng với order được mua lại, rq a refund -> update note
+        6 rq a refund                 
+        7 acp the refund
+        8 refuse the refund
+        9 returning
+        10 order has arrived to store-buy again -> return(/cart) cùng với order được mua lại
+        11 canceled                   buy again -> return(/cart) cùng với order được mua lại
+                          
+          */
     try {
       // Lấy thông tin đơn hàng hiện tại
       const order = await OrderModel.findById(orderId);
-  
       if (!order) {
         // Xử lý trường hợp không tìm thấy đơn hàng
         return res.status(404).send('Order not found');
       }
-  
       let newStatusId;
       switch (order.statusId) {
-        case 4: 
-          // Đơn hàng đang ở trạng thái "Chờ lấy hàng"
-          newStatusId = 5; // Cập nhật trạng thái thành "Đã lấy hàng" (hoặc trạng thái phù hợp)
-          break;
         case 1:
           // Đơn hàng đang ở trạng thái "Chờ xác nhận"
           newStatusId = 11; // Cập nhật trạng thái thành "Đã hủy" (hoặc trạng thái phù hợp)
+          break;
+        
+        // các case sau làm ở đây 
+
+        case 4: 
+          // Đơn hàng đang ở trạng thái "Chờ lấy hàng"
+          newStatusId = 5; // Cập nhật trạng thái thành "Đã lấy hàng" (hoặc trạng thái phù hợp)
           break;
         default:
           // Xử lý các trường hợp status.id khác hoặc trả về lỗi
