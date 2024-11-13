@@ -3,3 +3,8 @@ Project về bán sản phẩm đồ cầu lông.
 
 ![image](https://github.com/user-attachments/assets/344a6a82-2a45-424f-8b03-8b315944c317)
 
+<b>Tài nguyên</b>
+
+<i class="fa fa-github" aria-hidden="true"></i><a href="https://git-scm.com/downloads/win">Git</a>
+<a href="https://nodejs.org/en/download/prebuilt-installer">NodeJs</a>
+<a href="https://code.visualstudio.com/docs/?dv=win64user">Visual Studio Code</a>
