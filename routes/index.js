@@ -333,7 +333,8 @@ const Product = require('../models/product');
       const email = req.body.email
       const note = req.body.note
       const paymentMethod = req.body.paymentMethod
-      const orderDate = moment().tz('DD.MM.YYYY HH:mm','Asia/Ho_Chi_Minh').format('MMMM Do YYYY, hh:mm a'); 
+      const orderDate = moment().tz('DD.MM.YYYY HH:mm','Asia/Ho_Chi_Minh').format('MMMM Do YYYY, hh:mm a'),
+      isDelete = false
       const orderData = {
         orderCode: generateOrderCode(),
         buyerId: customerId,
@@ -348,7 +349,8 @@ const Product = require('../models/product');
         items: cart.items,
         statusId: 1,
         note: "",
-        orderDate: orderDate
+        orderDate: orderDate,
+        isDelete: isDelete
       }
   
       if (paymentMethod === 'bank') {
