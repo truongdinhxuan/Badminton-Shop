@@ -163,7 +163,7 @@ router.post('/send-report/:id', async (req, res) => {
       const newReport = new ReportModel(reportData);
       await newReport.save();
 
-      await OrderModel.findByIdAndUpdate(orderId, { statusId: 7 });
+      await OrderModel.findByIdAndUpdate(orderId, { statusId: 6 });
       // Redirect with a success message
       res.redirect('/account');
     } catch (error) {
