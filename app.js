@@ -76,10 +76,12 @@ app.use("/admin", checkAdminSession);
 app.use('/', require('./routes/index'));
 app.use('/admin', require('./routes/admin'));
 app.use('/auth', require('./routes/auth'));
+app.use('/account', require('./routes/account'));
 app.use('/product', require('./routes/product'));
 app.use('/cart', require('./routes/cart'));
 app.use('/category', require('./routes/category'));
 app.use('/order', require('./routes/order'));
+app.use('/checkout', require('./routes/checkout'));
 
 // Register Helper
 hbs.registerHelper('ifEq', function(arg1, arg2, options) {

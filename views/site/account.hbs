@@ -1,4 +1,7 @@
   <link rel="stylesheet" href=".css">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   <hr>
   <section class="product-info-tabs py-md-5">
     <div class="container">
@@ -19,7 +22,7 @@
             {{!-- ACCOUNT --}}
             <div class="tab-pane fade active show" id="v-pills-additional" role="tabpanel" aria-labelledby="v-pills-additional-tab" tabindex="0">
   <div class="edit-profiles">
-    <form action="/update-profile/{{customer._id}}" method="post" id="form" class="form-group">
+    <form action="/account/update-profile/{{customer._id}}" method="post" id="form" class="form-group">
       <h3>Hi, {{customer.name}}</h3>
 
       <div class="profile-grid">
@@ -29,7 +32,11 @@
               <label>Full Name</label>
               <input type="text" name="name" placeholder="write your name here*" class="form-control" value="{{customer.name}}">
             </div>
-            <div class="pb-3">
+            <div class="col-md-12">
+              <label>Country</label>
+              <input type="text" name="country" placeholder="write your country here*" class="form-control" value="{{customer.country}}">
+            </div>
+            <div class="col-md-12">
               <label>Address</label>
               <input type="text" name="address" placeholder="write your address here*" class="form-control" value="{{customer.address}}">
             </div>
@@ -122,26 +129,26 @@
                     11 canceled                   buy again -> return(/cart) cùng với order được mua lại
                      --}}
                     {{#ifEq status.id 1}}
-                      <form action="/update-status/{{this._id}}" method="POST">
+                      <form action="/account/update-status/{{this._id}}" method="POST">
                         <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="right" title="Cancel order">
                           <i class="fas fa-times"></i> 
                         </button>  
                       </form>
                     {{!-- Cần bổ sung trường hợp paymethod = code thì sẽ được hoàn tiền cho status 2 va` 3 --}}
                     {{else ifEq status.id 2}}
-                      <form action="/update-status/{{this._id}}" method="POST">
+                      <form action="/account/update-status/{{this._id}}" method="POST">
                         <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="right" title="Cancel order">
                           <i class="fas fa-times"></i> 
                         </button>
                       </form>
                     {{else ifEq status.id 3}}
-                      <form action="/update-status/{{this._id}}" method="POST">
+                      <form action="/account/update-status/{{this._id}}" method="POST">
                         <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="right" title="Cancel order">
                           <i class="fas fa-times"></i> 
                         </button>
                       </form>        
                     {{else ifEq status.id 4}}
-                    <form action="/update-status/{{this._id}}" method="POST">
+                    <form action="/account/update-status/{{this._id}}" method="POST">
                       <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Took!">
                         <i class="fas fa-check"></i> 
                       </button> 
@@ -151,9 +158,41 @@
                     <button type="submit" class="btn btn-warning" data-toggle="tooltip" data-placement="right" title="Buy again">
                         <i class="fas fa-undo"></i>
                     </button>
-                    <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="right" title="Request a refund">
+                    
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#reportModal" data-placement="right" title="Request a refund">
                         <i class="fas fa-flag"></i>
                     </button>
+
+                    <!-- Modal cho report button-->
+                    <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalTitle" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                          <form action="/account/send-report/{{this._id}}" method="POST">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="reportModalTitle">Send Report</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="border: none; background: transparent; font-size: 1.8rem; color: #333; position: absolute; top: 15px; right: 15px;">
+                                &times;
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              <div class="form-group">
+                                <label for="reportTitle">Title</label>
+                                <input type="text" class="form-control" id="reportTitle" name="title" required>
+                              </div>
+                              <div class="form-group">
+                                <label for="reportMessage">Description</label>
+                                <textarea class="form-control" id="reportMessage" name="message" rows="4" required></textarea>
+                              </div>
+                            </div>
+                            <div class="modal-footer" style="justify-content: space-between;">
+                              <button type="submit" class="btn btn-primary btn-sm">Send</button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+
+
                     {{!-- đây nữa --}}
                     {{else ifEq status.id 10}}
                       <button type="submit" class="btn btn-warning" data-toggle="tooltip" data-placement="right" title="Buy again">
@@ -356,4 +395,7 @@ $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
 
+$('#myModal').on('shown.bs.modal', function () {
+  $('#myInput').trigger('focus')
+})
 </script>

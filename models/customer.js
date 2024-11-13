@@ -6,6 +6,7 @@ const Model = new mongoose.Schema(
     email: String,
     password: String,
     name: String,
+    country: String,
     address: String,
     phone_number: String,
     bank_account_number: String,
