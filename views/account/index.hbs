@@ -1,312 +1,81 @@
-  <link rel="stylesheet" href=".css">
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  <hr>
-  <section class="product-info-tabs py-md-5">
-    <div class="container">
-      <div class="row">
-        <div class="d-flex flex-column flex-md-column align-items-start gap-5">
-          <div class="nav flex-row flex-wrap flex-md-row nav-pills me-3 col-lg-3" id="v-pills-tab" role="tablist"
-            aria-orientation="vertical">
-            <button class="nav-link fs-5 mb-2 text-start active" id="v-pills-additional-tab" data-bs-toggle="pill"
-              data-bs-target="#v-pills-additional" type="button" role="tab" aria-controls="v-pills-additional"
-              aria-selected="false" tabindex="-1">Information</button>
-              
-            <button class="nav-link fs-5 mb-2 text-start" id="v-pills-description-tab" data-bs-toggle="pill"
-              data-bs-target="#v-pills-description" type="button" role="tab" aria-controls="v-pills-description"
-              aria-selected="false" tabindex="-1">Order</button>
-          </div>
-          
-          <div class="tab-content" id="v-pills-tabContent">
-            {{!-- ACCOUNT --}}
-            <div class="tab-pane fade active show" id="v-pills-additional" role="tabpanel" aria-labelledby="v-pills-additional-tab" tabindex="0">
-  <div class="edit-profiles">
-    <form action="/account/update-profile/{{customer._id}}" method="post" id="form" class="form-group">
-      <h3>Hi, {{customer.name}}</h3>
+<div class="account-index d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="account-card">
+        <h1>Xin chào, Nguyễn Văn A!</h1>
 
-      <div class="profile-grid">
-        <div class="information-column"> 
-          <div class="row pb-3">
-            <div class="col-md-12">
-              <label>Full Name</label>
-              <input type="text" name="name" placeholder="write your name here*" class="form-control" value="{{customer.name}}">
-            </div>
-            <div class="col-md-12">
-              <label>Country</label>
-              <input type="text" name="country" placeholder="write your country here*" class="form-control" value="{{customer.country}}">
-            </div>
-            <div class="col-md-12">
-              <label>Address</label>
-              <input type="text" name="address" placeholder="write your address here*" class="form-control" value="{{customer.address}}">
-            </div>
-            <div class="col-md-12">
-              <label>Email</label>
-              <input type="text" name="email" placeholder="write your email here*" class="form-control" value="{{customer.email}}">
-            </div>
-            <div class="col-md-12">
-              <label>Phone Number</label>
-              <input type="text" name="phone_number" placeholder="write your phone number here*" class="form-control" value="{{customer.phone_number}}">
-            </div>
-            <div class="col-md-12">
-              <label>Password</label>
-              <input type="password" name="password" placeholder="write your password here*" class="form-control" value="{{customer.password}}">
-            </div>
-          </div> 
+        <!-- Thông tin người dùng -->
+        <div class="user-info">
+            <h4>Email: nguyenvana@example.com</h4>
+            <h4>Số điện thoại: 0987 654 321</h4>
         </div>
 
-        <div class="banking-column">
-  <div class="row pb-3">
-    <div class="col-md-12">
-      <label>Bank Account Number</label>
-      <input type="text" name="bank_account_number" placeholder="write your bank account number here*" class="form-control" value="{{customer.bank_account_number}}">
+        <!-- Nút điều hướng -->
+        <a href="/profile" class="btn btn-custom btn-profile">Trang Hồ Sơ</a>
+        <a href="/order" class="btn btn-custom btn-order">Lịch Sử Đơn Hàng</a>
     </div>
-    <div class="col-md-12">
-          <label for="bank_name">Bank Name</label>
-          <select name="bank_name" id="bank_name" class="form-control">
-            {{#each bank}}
-              <option value="{{this.name}}" {{#if (eq ../customer.bank_name this.name)}}selected{{/if}}> 
-                {{this.name}}
-              </option>
-            {{/each}}
-          </select>
-        </div>
-        <p style="color: red;">* Please note that: Use only bank account same as your Full Name</p>
-      </div>
-    </div>
-      </div>
+</div>
 
-      <br>
-      <button type="submit" name="submit" class="btn btn-dark btn-large text-uppercase w-20">Submit</button>
-    </form>
-  </div>
-          </div>
-          {{!-- Order --}}
-            <div class="tab-pane fade " id="v-pills-description" role="tabpanel"
-              aria-labelledby="v-pills-description-tab" tabindex="0">
-            
-            <table class="table table-striped"> 
-            <thead>
-              <tr>
-                <th scope="col" class="px-5">Order Code</th>
-                <th scope="col" class="px-5">Amount</th>
-                <th scope="col" class="px-5">Pay method</th>
-                <th scope="col" class="px-5">Status</th>
-                <th scope="col" class="px-5">Note</th>
-                <th scope="col" class="px-5">Action</th>
-                {{!-- <th scope="col" class="px-5">Action</th> --}}
-              </tr>
-            </thead>
-            <tbody>
-                {{#if data.length}}
-                {{#each data}}
-              <tr>
-                <th scope="row" class="px-5">   
-                  <a href="/order/{{orderCode}}">{{orderCode}}</a>
-                  </th>
-                <td class="px-5">{{amount}} đ</td>
-                <td class="px-5">{{paymentMethod}}</td>
-                {{#if status}}
-                <td class="px-5">
-                {{status.name}}
-                {{#ifEq status.id 4}}
-                {{/ifEq}}
-                </td>
-                {{/if}}
-                <td class="px-5">{{note}}</td>
-                <td>
-                  {{#if status}}
-                  {{!-- Status            -       Action (button)
-                    1 pending                     cancel -> status(canceled), if paymethod = cod -> none
-                    2 confirmed                   cancel -> status(canceled), if paymethod = ck -> hoàn tiền
-                    3 packing                     cancel -> status(canceled), if paymethod = cod -> none, if paymethod = ck -> hoàn tiền
-                    4 delivering                  took -> status(delivered)
-                    5 delivered                   buy again -> return(/cart) cùng với order được mua lại, rq a refund -> update note
-                    6 rq a refund                 
-                    7 acp the refund
-                    8 refuse the refund
-                    9 returning
-                    10 order has arrived to store-buy again -> return(/cart) cùng với order được mua lại
-                    11 canceled                   buy again -> return(/cart) cùng với order được mua lại
-                     --}}
-                    {{#ifEq status.id 1}}
-                      <form action="/account/update-status/{{this._id}}" method="POST">
-                        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="right" title="Cancel order">
-                          <i class="fas fa-times"></i> 
-                        </button>  
-                      </form>
-                    {{!-- Cần bổ sung trường hợp paymethod = code thì sẽ được hoàn tiền cho status 2 va` 3 --}}
-                    {{else ifEq status.id 2}}
-                      <form action="/account/update-status/{{this._id}}" method="POST">
-                        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="right" title="Cancel order">
-                          <i class="fas fa-times"></i> 
-                        </button>
-                      </form>
-                    {{else ifEq status.id 3}}
-                      <form action="/account/update-status/{{this._id}}" method="POST">
-                        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="right" title="Cancel order">
-                          <i class="fas fa-times"></i> 
-                        </button>
-                      </form>        
-                    {{else ifEq status.id 4}}
-                    <form action="/account/update-status/{{this._id}}" method="POST">
-                      <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Took!">
-                        <i class="fas fa-check"></i> 
-                      </button> 
-                    </form>
-                    {{!-- Rebuy to return cart và Report gửi note và update status --}}
-                    {{else ifEq status.id 5}}
-                    
-                    {{!-- Buy again button --}}
-                    <button type="button" class="btn btn-warning" data-target="#buyAgainModal" data-toggle="modal" data-placement="right" title="Buy again">
-                      <i class="fas fa-undo"></i>
-                    </button>
-                    <div class="modal fade" id="buyAgainModal" tabindex="-1" role="dialog" aria-labelledby="buyAgainModalConfirm" aria-hidden="true">
-                      <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                          <div class="modal-body">
-                            Successfully <i class="fa fa-check"></i>
-                          </div>
-                          <div class="modal-footer">
-                            <form action="/account/buy-again" method="POST">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-danger">Move to cart</button>
-                            </form>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {{!-- Report button --}}
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#reportModal" data-placement="right" title="Request a refund">
-                        <i class="fas fa-flag"></i>
-                    </button>
-                    <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalTitle" aria-hidden="true">
-                      <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-body">
-                              <div class="form-group">
-                                <label for="reportTitle">Title of report</label>
-                                <input type="text" class="form-control" id="reportTitle" name="title" required>
-                              </div>
-                              <div class="form-group">
-                                <label for="reportMessage">Description</label>
-                                <textarea class="form-control" id="reportMessage" name="message" rows="4" required></textarea>
-                              </div>
-                            </div>
-                            <div class="modal-footer">
-                              <form action="/account/send-report/{{this._id}}" method="POST">
-                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                              <button type="submit" class="btn btn-danger">Send</button>
-                              </form>
-                            </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {{!-- Delete button --}}
-                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#deleteModal" data-placement="right" title="Delete order">
-                        <i class="fas fa-trash"></i>
-                      </button>
-                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalConfirm" aria-hidden="true">
-                      <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                          <div class="modal-body">
-                            Are you sure want to delete?
-                          </div>
-                          <div class="modal-footer">
-                            <form action="/account/delete/{{this._id}}" method="POST">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {{!-- đây nữa --}}
-                    {{else ifEq status.id 10}}
-                      <button type="submit" class="btn btn-warning" data-toggle="tooltip" data-placement="right" title="Buy again">
-                        <i class="fas fa-undo"></i>
-                      </button>
-                      <button type="submit" class="btn btn-secondary" data-toggle="tooltip" data-placement="right" title="Delete order">
-                        <i class="fas fa-trash"></i>
-                      </button>
-                    {{else ifEq status.id 11}}
-                      <button type="submit" class="btn btn-warning" data-toggle="tooltip" data-placement="right" title="Buy again">
-                        <i class="fas fa-undo"></i>
-                      </button>
-                      
-                      {{!-- Delete order core --}}
-                      <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#deleteModal" data-placement="right" title="Delete order">
-                        <i class="fas fa-trash"></i>
-                      </button>
-
-                      <!-- Modal cho delete button-->
-                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalConfirm" aria-hidden="true">
-                      <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                          <div class="modal-body">
-                            Are you sure want to delete?
-                          </div>
-                          <div class="modal-footer">
-                            <form action="/account/delete/{{this._id}}" method="POST">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {{/ifEq}}
-                  {{/if}}
-                </td>
-                {{!-- Script modal  --}}
-                <script>
-                  var myModal = document.getElementById('myModal')
-                  var myInput = document.getElementById('myInput')
-
-                  myModal.addEventListener('shown.bs.modal', function () {
-                    myInput.focus()
-                  })
-                </script>
-
-              </tr>
-              
-              {{/each}}
-              {{else}} <!-- Nếu không có đơn hàng nào -->
-                <tr>
-                  <td colspan="6" class="text-center">No orders found.</td>
-                </tr>
-              {{/if}}
-            </tbody>
-            
-            </table>
-
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+<!-- CSS cho phần Index -->
 <style>
-  .profile-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* Chia thành 2 cột bằng nhau */
-  gap: 20px; /* Khoảng cách giữa 2 cột */
-}
+    /* Nền tổng thể */
+    .account-index {
+        background: linear-gradient(to right, #003f87, #ff5722); /* Gradient năng động */
+        padding: 20px; /* Đệm xung quanh nếu cần */
+    }
 
-.information-column {
-  border-right: 1px solid #ccc; /* Thêm đường phân cách */
-  padding-right: 20px; /* Thêm padding cho đẹp */
-}
+    /* Hộp nội dung chính */
+    .account-card {
+        background: white;
+        color: #333;
+        border-radius: 10px;
+        padding: 30px;
+        max-width: 600px;
+        width: 100%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        text-align: center;
+    }
+
+    /* Tiêu đề */
+    .account-card h1 {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    /* Thông tin người dùng */
+    .user-info {
+        margin-bottom: 20px;
+    }
+
+    .user-info h4 {
+        font-weight: 600;
+    }
+
+    /* Nút điều hướng */
+    .btn-custom {
+        margin: 10px;
+        font-size: 16px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+
+    .btn-profile {
+        background: #003f87;
+        color: white;
+        border: none;
+    }
+
+    .btn-profile:hover {
+        background: #0056b3;
+    }
+
+    .btn-order {
+        background: #ff5722;
+        color: white;
+        border: none;
+    }
+
+    .btn-order:hover {
+        background: #e64a19;
+    }
 </style>
-<script>
-  // Kích hoạt tooltip cho tất cả các phần tử có data-toggle="tooltip"
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})
-
-$('#myModal').on('shown.bs.modal', function () {
-  $('#myInput').trigger('focus')
-})
-</script>
