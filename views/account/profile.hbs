@@ -1,0 +1,62 @@
+{{!-- ACCOUNT --}}
+            <div class="tab-pane fade active show" id="v-pills-additional" role="tabpanel" aria-labelledby="v-pills-additional-tab" tabindex="0">
+  <div class="edit-profiles">
+    <form action="/account/update-profile/{{customer._id}}" method="post" id="form" class="form-group">
+      <h3>Hi, {{customer.name}}</h3>
+
+      <div class="profile-grid">
+        <div class="information-column"> 
+          <div class="row pb-3">
+            <div class="col-md-12">
+              <label>Full Name</label>
+              <input type="text" name="name" placeholder="write your name here*" class="form-control" value="{{customer.name}}">
+            </div>
+            <div class="col-md-12">
+              <label>Country</label>
+              <input type="text" name="country" placeholder="write your country here*" class="form-control" value="{{customer.country}}">
+            </div>
+            <div class="col-md-12">
+              <label>Address</label>
+              <input type="text" name="address" placeholder="write your address here*" class="form-control" value="{{customer.address}}">
+            </div>
+            <div class="col-md-12">
+              <label>Email</label>
+              <input type="text" name="email" placeholder="write your email here*" class="form-control" value="{{customer.email}}">
+            </div>
+            <div class="col-md-12">
+              <label>Phone Number</label>
+              <input type="text" name="phone_number" placeholder="write your phone number here*" class="form-control" value="{{customer.phone_number}}">
+            </div>
+            <div class="col-md-12">
+              <label>Password</label>
+              <input type="password" name="password" placeholder="write your password here*" class="form-control" value="{{customer.password}}">
+            </div>
+          </div> 
+        </div>
+
+        <div class="banking-column">
+  <div class="row pb-3">
+    <div class="col-md-12">
+      <label>Bank Account Number</label>
+      <input type="text" name="bank_account_number" placeholder="write your bank account number here*" class="form-control" value="{{customer.bank_account_number}}">
+    </div>
+    <div class="col-md-12">
+          <label for="bank_name">Bank Name</label>
+          <select name="bank_name" id="bank_name" class="form-control">
+            {{#each bank}}
+              <option value="{{this.name}}" {{#if (eq ../customer.bank_name this.name)}}selected{{/if}}> 
+                {{this.name}}
+              </option>
+            {{/each}}
+          </select>
+        </div>
+        <p style="color: red;">* Please note that: Use only bank account same as your Full Name</p>
+      </div>
+    </div>
+      </div>
+
+      <br>
+      <button type="submit" name="submit" class="btn btn-dark btn-large text-uppercase w-20">Submit</button>
+    </form>
+  </div>
+          </div>

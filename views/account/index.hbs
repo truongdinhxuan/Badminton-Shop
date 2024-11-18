@@ -98,6 +98,7 @@
               </tr>
             </thead>
             <tbody>
+                {{#if data.length}}
                 {{#each data}}
               <tr>
                 <th scope="row" class="px-5">   
@@ -155,28 +156,36 @@
                     </form>
                     {{!-- Rebuy to return cart và Report gửi note và update status --}}
                     {{else ifEq status.id 5}}
-                    <button type="submit" class="btn btn-warning" data-toggle="tooltip" data-placement="right" title="Buy again">
-                        <i class="fas fa-undo"></i>
-                    </button>
                     
+                    {{!-- Buy again button --}}
+                    <button type="button" class="btn btn-warning" data-target="#buyAgainModal" data-toggle="modal" data-placement="right" title="Buy again">
+                      <i class="fas fa-undo"></i>
+                    </button>
+                    <div class="modal fade" id="buyAgainModal" tabindex="-1" role="dialog" aria-labelledby="buyAgainModalConfirm" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                          <div class="modal-body">
+                            Successfully <i class="fa fa-check"></i>
+                          </div>
+                          <div class="modal-footer">
+                            <form action="/account/buy-again" method="POST">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-danger">Move to cart</button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {{!-- Report button --}}
                     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#reportModal" data-placement="right" title="Request a refund">
                         <i class="fas fa-flag"></i>
                     </button>
-
-                    <!-- Modal cho report button-->
                     <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalTitle" aria-hidden="true">
                       <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
-                          <form action="/account/send-report/{{this._id}}" method="POST">
-                            <div class="modal-header">
-                              <h5 class="modal-title" id="reportModalTitle">Send Report</h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="border: none; background: transparent; font-size: 1.8rem; color: #333; position: absolute; top: 15px; right: 15px;">
-                                &times;
-                              </button>
-                            </div>
                             <div class="modal-body">
                               <div class="form-group">
-                                <label for="reportTitle">Title</label>
+                                <label for="reportTitle">Title of report</label>
                                 <input type="text" class="form-control" id="reportTitle" name="title" required>
                               </div>
                               <div class="form-group">
@@ -184,14 +193,35 @@
                                 <textarea class="form-control" id="reportMessage" name="message" rows="4" required></textarea>
                               </div>
                             </div>
-                            <div class="modal-footer" style="justify-content: space-between;">
-                              <button type="submit" class="btn btn-primary btn-sm">Send</button>
+                            <div class="modal-footer">
+                              <form action="/account/send-report/{{this._id}}" method="POST">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                              <button type="submit" class="btn btn-danger">Send</button>
+                              </form>
                             </div>
-                          </form>
                         </div>
                       </div>
                     </div>
 
+                    {{!-- Delete button --}}
+                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#deleteModal" data-placement="right" title="Delete order">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalConfirm" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                          <div class="modal-body">
+                            Are you sure want to delete?
+                          </div>
+                          <div class="modal-footer">
+                            <form action="/account/delete/{{this._id}}" method="POST">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
                     {{!-- đây nữa --}}
                     {{else ifEq status.id 10}}
@@ -205,9 +235,28 @@
                       <button type="submit" class="btn btn-warning" data-toggle="tooltip" data-placement="right" title="Buy again">
                         <i class="fas fa-undo"></i>
                       </button>
-                      <button type="submit" class="btn btn-secondary" data-toggle="tooltip" data-placement="right" title="Delete order">
+                      
+                      {{!-- Delete order core --}}
+                      <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#deleteModal" data-placement="right" title="Delete order">
                         <i class="fas fa-trash"></i>
                       </button>
+
+                      <!-- Modal cho delete button-->
+                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalConfirm" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                          <div class="modal-body">
+                            Are you sure want to delete?
+                          </div>
+                          <div class="modal-footer">
+                            <form action="/account/delete/{{this._id}}" method="POST">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     {{/ifEq}}
                   {{/if}}
                 </td>
@@ -224,154 +273,16 @@
               </tr>
               
               {{/each}}
-              
+              {{else}} <!-- Nếu không có đơn hàng nào -->
+                <tr>
+                  <td colspan="6" class="text-center">No orders found.</td>
+                </tr>
+              {{/if}}
             </tbody>
             
             </table>
 
             </div>
-
-            {{!-- <div class="tab-pane fade" id="v-pills-reviews" role="tabpanel" aria-labelledby="v-pills-reviews-tab"
-              tabindex="0">
-              <div class="review-box d-flex flex-wrap">
-                <div class="col-lg-6 d-flex flex-wrap gap-3">
-                  <div class="col-md-2">
-                    <div class="image-holder">
-                      <img src="images/reviewer-1.jpg" alt="review" class="img-fluid rounded-circle">
-                    </div>
-                  </div>
-                  <div class="col-md-8">
-                    <div class="review-content">
-                      <div class="rating-container d-flex align-items-center">
-                        <div class="rating" data-rating="1">
-                          <svg width="24" height="24" class="text-primary">
-                            <use xlink:href="#star-solid"></use>
-                          </svg>
-                        </div>
-                        <div class="rating" data-rating="2">
-                          <svg width="24" height="24" class="text-primary">
-                            <use xlink:href="#star-solid"></use>
-                          </svg>
-                        </div>
-                        <div class="rating" data-rating="3">
-                          <svg width="24" height="24" class="text-primary">
-                            <use xlink:href="#star-solid"></use>
-                          </svg>
-                        </div>
-                        <div class="rating" data-rating="4">
-                          <svg width="24" height="24" class="text-secondary">
-                            <use xlink:href="#star-solid"></use>
-                          </svg>
-                        </div>
-                        <div class="rating" data-rating="5">
-                          <svg width="24" height="24" class="text-secondary">
-                            <use xlink:href="#star-solid"></use>
-                          </svg>
-                        </div>
-                        <span class="rating-count">(3.5)</span>
-                      </div>
-                      <div class="review-header">
-                        <span class="author-name">Tina Johnson</span>
-                        <span class="review-date">– 03/07/2023</span>
-                      </div>
-                      <p>Vitae tortor condimentum lacinia quis vel eros donec ac. Nam at lectus urna duis convallis
-                        convallis</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-6 d-flex flex-wrap gap-3">
-                  <div class="col-md-2">
-                    <div class="image-holder">
-                      <img src="images/reviewer-2.jpg" alt="review" class="img-fluid rounded-circle">
-                    </div>
-                  </div>
-                  <div class="col-md-8">
-                    <div class="review-content">
-                      <div class="rating-container d-flex align-items-center">
-                        <div class="rating" data-rating="1">
-                          <svg width="24" height="24" class="text-primary">
-                            <use xlink:href="#star-solid"></use>
-                          </svg>
-                        </div>
-                        <div class="rating" data-rating="2">
-                          <svg width="24" height="24" class="text-primary">
-                            <use xlink:href="#star-solid"></use>
-                          </svg>
-                        </div>
-                        <div class="rating" data-rating="3">
-                          <svg width="24" height="24" class="text-primary">
-                            <use xlink:href="#star-solid"></use>
-                          </svg>
-                        </div>
-                        <div class="rating" data-rating="4">
-                          <svg width="24" height="24" class="text-secondary">
-                            <use xlink:href="#star-solid"></use>
-                          </svg>
-                        </div>
-                        <div class="rating" data-rating="5">
-                          <svg width="24" height="24" class="text-secondary">
-                            <use xlink:href="#star-solid"></use>
-                          </svg>
-                        </div>
-                        <span class="rating-count">(3.5)</span>
-                      </div>
-                      <div class="review-header">
-                        <span class="author-name">Jenny Willis</span>
-                        <span class="review-date">– 03/06/2022</span>
-                      </div>
-                      <p>Vitae tortor condimentum lacinia quis vel eros donec ac. Nam at lectus urna duis convallis
-                        convallis</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="add-review mt-5">
-                <h3>Add a review</h3>
-                <p>Your email address will not be published. Required fields are marked *</p>
-                <form id="form" class="form-group">
-
-                  <div class="pb-3">
-                    <div class="review-rating">
-                      <span>Your rating *</span>
-                      <div class="rating-container d-flex align-items-center">
-                        <span class="rating secondary-font">
-                          <iconify-icon icon="clarity:star-solid" class="text-primary me-2"></iconify-icon>
-                          <iconify-icon icon="clarity:star-solid" class="text-primary me-2"></iconify-icon>
-                          <iconify-icon icon="clarity:star-solid" class="text-primary me-2"></iconify-icon>
-                          <iconify-icon icon="clarity:star-solid" class="text-primary me-2"></iconify-icon>
-                          <iconify-icon icon="clarity:star-solid" class="text-primary me-2"></iconify-icon>
-                          (5.0)</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="pb-3">
-                    <input type="file" class="form-control" data-text="Choose your file">
-                  </div>
-                  <div class="pb-3">
-                    <label>Your Name</label>
-                    <input type="text" name="name" placeholder="Write your name here*" class="form-control">
-                  </div>
-                  <div class="pb-3">
-                    <label>Your Email</label>
-                    <input type="text" name="email" placeholder="Write your email here*" class="form-control">
-                  </div>
-                  <div class="pb-3">
-                    <label>Your Review</label>
-                    <textarea class="form-control" placeholder="Write your review here*"></textarea>
-                  </div>
-                  <div class="pb-3">
-                    <label>
-                      <input type="checkbox" required="">
-                      <span class="label-body">Save my name, email, and website in this browser for the next
-                        time.</span>
-                    </label>
-                  </div>
-                  <button type="submit" name="submit"
-                    class="btn btn-dark btn-large text-uppercase w-100">Submit</button>
-                </form>
-              </div>
-            </div> --}}
           </div>
         </div>
       </div>

@@ -14,52 +14,122 @@ router.get('/', async (req, res) => {
       // Handle the case where no customer is found (e.g., redirect to login)
       return res.redirect('/auth'); 
     }
-    const customerId = customer.id;
-    // Find orders associated with the customer
-    const orders = await OrderModel.find({ buyerId: customerId }).lean();
+    // const customerId = customer.id;
+    // // Find orders associated with the customer
+    // const orders = await OrderModel.find({ buyerId: customerId, isDelete: false }).lean();
 
-    const statusIds = orders.map(order => order.statusId);
-    const status = await StatusModel.find({ id: { $in: statusIds } }).lean();
-    const statusMap = status.reduce((acc, status) => {
-      acc[status.id] = status;
-      return acc;
-    }, {});
-    console.log(status)
-    const data = orders.map(order => ({
-      ...order,
-      status: statusMap[order.statusId] || null
-    }));
-    // Hiện tại chỉ dùng name để lưu, việc craw khiến việc data thừa load khá lâu
-    const bank = {
-      "bank": [
-        {"name": "Vietcombank"},
-        {"name": "Agribank"},
-        {"name": "BIDV"},
-        {"name": "Vietinbank"},
-        {"name": "Techcombank"},
-        {"name": "ACB"},
-        {"name": "MB"},
-        {"name": "Sacombank"},
-        {"name": "DongA Bank"},
-        {"name": "Eximbank"},
-        {"name": "ABBank"},
-        {"name": "TPBank"},
-        {"name": "VPBank"},
-        {"name": "SCB"},
-        {"name": "Viet Capital Bank"},
-        {"name": "LienVietPostBank"},
-        {"name": "MSB"},
-        {"name": "Nam A Bank"},
-        {"name": "OCB"},
-        {"name": "SHB"}
-      ]
-    }
-    res.render('site/account', {
+    // const statusIds = orders.map(order => order.statusId);
+    // const status = await StatusModel.find({ id: { $in: statusIds } }).lean();
+    // const statusMap = status.reduce((acc, status) => {
+    //   acc[status.id] = status;
+    //   return acc;
+    // }, {});
+    // console.log(status)
+    // const data = orders.map(order => ({
+    //   ...order,
+    //   status: statusMap[order.statusId] || null
+    // }));
+    // // Hiện tại chỉ dùng name để lưu, việc craw khiến việc data thừa load khá lâu
+    // const bank = {
+    //   "bank": [
+    //     {"name": "Vietcombank"},
+    //     {"name": "Agribank"},
+    //     {"name": "BIDV"},
+    //     {"name": "Vietinbank"},
+    //     {"name": "Techcombank"},
+    //     {"name": "ACB"},
+    //     {"name": "MB"},
+    //     {"name": "Sacombank"},
+    //     {"name": "DongA Bank"},
+    //     {"name": "Eximbank"},
+    //     {"name": "ABBank"},
+    //     {"name": "TPBank"},
+    //     {"name": "VPBank"},
+    //     {"name": "SCB"},
+    //     {"name": "Viet Capital Bank"},
+    //     {"name": "LienVietPostBank"},
+    //     {"name": "MSB"},
+    //     {"name": "Nam A Bank"},
+    //     {"name": "OCB"},
+    //     {"name": "SHB"}
+    //   ]
+    // }
+    res.render('account', {
       layout: 'layout',
-      data, // Send the array of orders to the view,
+      // data, // Send the array of orders to the view,
       customer: customer,
-      bank: bank.bank
+      // bank: bank.bank
     });
+  })
+router.get('/profile', async (req, res) => {
+  const customerEmail = req.session.email; // Get email from session
+  // Fetch customer ID based on email
+  const customer = await CustomerModel.findOne({ email: customerEmail }).lean();
+  if (!customer) {
+    // Handle the case where no customer is found (e.g., redirect to login)
+    return res.redirect('/auth'); 
+  }
+  // Hiện tại chỉ dùng name để lưu, việc craw khiến việc data thừa load khá lâu
+  const bank = {
+    "bank": [
+      {"name": "Vietcombank"},
+      {"name": "Agribank"},
+      {"name": "BIDV"},
+      {"name": "Vietinbank"},
+      {"name": "Techcombank"},
+      {"name": "ACB"},
+      {"name": "MB"},
+      {"name": "Sacombank"},
+      {"name": "DongA Bank"},
+      {"name": "Eximbank"},
+      {"name": "ABBank"},
+      {"name": "TPBank"},
+      {"name": "VPBank"},
+      {"name": "SCB"},
+      {"name": "Viet Capital Bank"},
+      {"name": "LienVietPostBank"},
+      {"name": "MSB"},
+      {"name": "Nam A Bank"},
+      {"name": "OCB"},
+      {"name": "SHB"}
+    ]
+  }
+  res.render('account/profile', {
+    layout:'layout',
+    customer: customer,
+    bank: bank.bank
+  })
+  })
+
+router.get('/order', async (req, res) => {
+  const customerEmail = req.session.email; // Get email from session
+  // Fetch customer ID based on email
+  const customer = await CustomerModel.findOne({ email: customerEmail }).lean();
+  if (!customer) {
+    // Handle the case where no customer is found (e.g., redirect to login)
+    return res.redirect('/auth'); 
+  }
+  const customerId = customer.id;
+  // Find orders associated with the customer
+  const orders = await OrderModel.find({ buyerId: customerId, isDelete: false }).lean();
+
+  const statusIds = orders.map(order => order.statusId);
+  const status = await StatusModel.find({ id: { $in: statusIds } }).lean();
+  const statusMap = status.reduce((acc, status) => {
+    acc[status.id] = status;
+    return acc;
+  }, {});
+  console.log(status)
+  const data = orders.map(order => ({
+    ...order,
+    status: statusMap[order.statusId] || null
+  }));
+  console.log(data)
+  res.render('account/order', {
+    layout: 'layout',
+    data, // Send the array of orders to the view,
+    customer: customer,
+  });
   })
 router.post('/update-profile/:id', async (req, res)=>{
     
@@ -91,10 +161,10 @@ router.post('/update-status/:id', async (req, res) => {
     const orderId = req.params.id;
     /*
           Status            -       Action (button)
-        1 pending                     cancel -> status(canceled), if paymethod = cod -> none
+x       1 pending                     cancel -> status(canceled), if paymethod = cod -> none
         2 confirmed                   cancel -> status(canceled), if paymethod = ck -> hoàn tiền
-        3 packing                     cancel -> status(canceled), if paymethod = cod -> none, if paymethod = ck -> hoàn tiền
-        4 delivering                  took -> status(delivered)
+x       3 packing                     cancel -> status(canceled), if paymethod = cod -> none, if paymethod = ck -> hoàn tiền
+x       4 delivering                  took -> status(delivered)
         5 delivered                   buy again -> return(/cart) cùng với order được mua lại, rq a refund -> update note
         6 rq a refund                 
         7 acp the refund
@@ -119,7 +189,9 @@ router.post('/update-status/:id', async (req, res) => {
           break;
         
         // các case sau làm ở đây 
-
+        case 3:
+          newStatusId = 11;
+          break
         case 4: 
           // Đơn hàng đang ở trạng thái "Chờ lấy hàng"
           newStatusId = 5; // Cập nhật trạng thái thành "Đã lấy hàng" (hoặc trạng thái phù hợp)
@@ -140,6 +212,50 @@ router.post('/update-status/:id', async (req, res) => {
       console.error(error);
       res.status(500).send('Error updating order status');
     }
+  });
+router.post('/buy-again', (req, res) => {
+    const orderId = req.body.orderId;
+    const userSession = req.session;
+  
+    // Retrieve the previous order data from session (or database if needed)
+    const order = userSession.orders.find(order => order.id === orderId);
+    if (!order) {
+      return res.status(400).json({ message: 'Order not found' });
+    }
+  
+    // Assuming your session cart structure looks like this:
+    if (!userSession.cart) {
+      userSession.cart = { items: {}, totalQty: 0, totalPrice: 0 };
+    }
+  
+    // Add items from the previous order to the cart
+    order.items.forEach(item => {
+      if (!userSession.cart.items[item.id]) {
+        userSession.cart.items[item.id] = item;
+        userSession.cart.totalQty += item.qty;
+        userSession.cart.totalPrice += item.qty * item.price;
+      } else {
+        userSession.cart.items[item.id].qty += item.qty; // Add more if the item is already in cart
+        userSession.cart.totalQty += item.qty;
+        userSession.cart.totalPrice += item.qty * item.price;
+      }
+    });
+  
+    // Save the updated session and send a response
+    req.session.cart = userSession.cart;
+    res.json({ message: 'Cart updated successfully' });
+  });
+router.post('/delete/:id', async (req, res) => {
+  const {id} = req.params
+
+  const order = await OrderModel.findById(id)
+  if(!order) {
+    console.log("no order")
+  }
+  order.isDelete=true
+  await order.save()
+  res.redirect("/account")
+
   });
 router.post('/send-report/:id', async (req, res) => {
     try {
