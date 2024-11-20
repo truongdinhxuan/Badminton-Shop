@@ -1,10 +1,12 @@
 var express = require("express");
 var router = express.Router();
-
-const CustomerModel = require('../models/customer');
-const OrderModel = require('../models/order');
+const mongoose = require('mongoose');
+var CustomerModel = require('../models/customer');
+var OrderModel = require('../models/order');
 var StatusModel = require('../models/status');
 var ReportModel = require('../models/report')
+var CartModel = require('../models/cart')
+var ProductModel = require('../models/product')
 router.get('/', async (req, res) => {
 
     const customerEmail = req.session.email; // Get email from session
@@ -155,7 +157,7 @@ router.post('/update-profile/:id', async (req, res)=>{
     }
     await CustomerModel.findByIdAndUpdate(customerId, customerData).lean()
 
-    res.redirect('/account')
+    res.redirect('/account/profile')
   })
 router.post('/update-status/:id', async (req, res) => {
     const orderId = req.params.id;
@@ -213,38 +215,36 @@ x       4 delivering                  took -> status(delivered)
       res.status(500).send('Error updating order status');
     }
   });
-router.post('/buy-again', (req, res) => {
-    const orderId = req.body.orderId;
-    const userSession = req.session;
+router.post('/buy-again/:id', async (req, res) => {
+    try {
+      const orderId = req.params.id;
   
-    // Retrieve the previous order data from session (or database if needed)
-    const order = userSession.orders.find(order => order.id === orderId);
-    if (!order) {
-      return res.status(400).json({ message: 'Order not found' });
-    }
-  
-    // Assuming your session cart structure looks like this:
-    if (!userSession.cart) {
-      userSession.cart = { items: {}, totalQty: 0, totalPrice: 0 };
-    }
-  
-    // Add items from the previous order to the cart
-    order.items.forEach(item => {
-      if (!userSession.cart.items[item.id]) {
-        userSession.cart.items[item.id] = item;
-        userSession.cart.totalQty += item.qty;
-        userSession.cart.totalPrice += item.qty * item.price;
-      } else {
-        userSession.cart.items[item.id].qty += item.qty; // Add more if the item is already in cart
-        userSession.cart.totalQty += item.qty;
-        userSession.cart.totalPrice += item.qty * item.price;
+      // Lấy đơn hàng từ database
+      const order = await OrderModel.findById(orderId);
+      if (!order) {
+        return res.status(404).send('Order not found');
       }
-    });
   
-    // Save the updated session and send a response
-    req.session.cart = userSession.cart;
-    res.json({ message: 'Cart updated successfully' });
+      // Khôi phục giỏ hàng từ đơn hàng
+      const cart = new CartModel({});
+      for (let itemId in order.items) {
+        const orderItem = order.items[itemId];
+        cart.add(orderItem.item, itemId);
+      }
+  
+      // Lưu giỏ hàng vào session
+      req.session.cart = cart;
+  
+      console.log('Cart restored:', req.session.cart);
+  
+      // Chuyển hướng người dùng
+      res.redirect('/cart');
+    } catch (error) {
+      console.error('Error in buy-again:', error);
+      res.status(500).send('Internal Server Error');
+    }
   });
+  
 router.post('/delete/:id', async (req, res) => {
   const {id} = req.params
 

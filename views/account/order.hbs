@@ -3,235 +3,168 @@
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   <hr>
-  <section class="product-info-tabs py-md-5">
-    <div class="container">
-      <div class="row">
-        <div class="d-flex flex-column flex-md-column align-items-start gap-5">
-{{!-- Order --}}
-            <div class="tab-pane " id="v-pills-description" role="tabpanel"
-              aria-labelledby="v-pills-description-tab" tabindex="0">
-            
-            <table class="table table-striped"> 
-            <thead>
-              <tr>
-                <th scope="col" class="px-5">Order Code</th>
-                <th scope="col" class="px-5">Amount</th>
-                <th scope="col" class="px-5">Pay method</th>
-                <th scope="col" class="px-5">Status</th>
-                <th scope="col" class="px-5">Note</th>
-                <th scope="col" class="px-5">Action</th>
-                {{!-- <th scope="col" class="px-5">Action</th> --}}
-              </tr>
-            </thead>
-            <tbody>
-                {{#if data.length}}
-                {{#each data}}
-              <tr>
-                <th scope="row" class="px-5">   
-                  <a href="/order/{{orderCode}}">{{orderCode}}</a>
-                  </th>
-                <td class="px-5">{{amount}} đ</td>
-                <td class="px-5">{{paymentMethod}}</td>
-                {{#if status}}
-                <td class="px-5">
-                {{status.name}}
-                {{#ifEq status.id 4}}
-                {{/ifEq}}
-                </td>
-                {{/if}}
-                <td class="px-5">{{note}}</td>
-                <td>
-                  {{#if status}}
-                  {{!-- Status            -       Action (button)
-                    1 pending                     cancel -> status(canceled), if paymethod = cod -> none
-                    2 confirmed                   cancel -> status(canceled), if paymethod = ck -> hoàn tiền
-                    3 packing                     cancel -> status(canceled), if paymethod = cod -> none, if paymethod = ck -> hoàn tiền
-                    4 delivering                  took -> status(delivered)
-                    5 delivered                   buy again -> return(/cart) cùng với order được mua lại, rq a refund -> update note
-                    6 rq a refund                 
-                    7 acp the refund
-                    8 refuse the refund
-                    9 returning
-                    10 order has arrived to store-buy again -> return(/cart) cùng với order được mua lại
-                    11 canceled                   buy again -> return(/cart) cùng với order được mua lại
-                     --}}
-                    {{#ifEq status.id 1}}
-                      <form action="/account/update-status/{{this._id}}" method="POST">
-                        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="right" title="Cancel order">
-                          <i class="fas fa-times"></i> 
-                        </button>  
-                      </form>
-                    {{!-- Cần bổ sung trường hợp paymethod = code thì sẽ được hoàn tiền cho status 2 va` 3 --}}
-                    {{else ifEq status.id 2}}
-                      <form action="/account/update-status/{{this._id}}" method="POST">
-                        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="right" title="Cancel order">
-                          <i class="fas fa-times"></i> 
-                        </button>
-                      </form>
-                    {{else ifEq status.id 3}}
-                      <form action="/account/update-status/{{this._id}}" method="POST">
-                        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="right" title="Cancel order">
-                          <i class="fas fa-times"></i> 
-                        </button>
-                      </form>        
-                    {{else ifEq status.id 4}}
-                    <form action="/account/update-status/{{this._id}}" method="POST">
-                      <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Took!">
-                        <i class="fas fa-check"></i> 
-                      </button> 
-                    </form>
-                    {{!-- Rebuy to return cart và Report gửi note và update status --}}
-                    {{else ifEq status.id 5}}
-                    
-                    {{!-- Buy again button --}}
-                    <button type="button" class="btn btn-warning" data-target="#buyAgainModal" data-toggle="modal" data-placement="right" title="Buy again">
-                      <i class="fas fa-undo"></i>
-                    </button>
-                    <div class="modal fade" id="buyAgainModal" tabindex="-1" role="dialog" aria-labelledby="buyAgainModalConfirm" aria-hidden="true">
-                      <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                          <div class="modal-body">
-                            Successfully <i class="fa fa-check"></i>
-                          </div>
-                          <div class="modal-footer">
-                            <form action="/account/buy-again" method="POST">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-danger">Move to cart</button>
-                            </form>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {{!-- Report button --}}
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#reportModal" data-placement="right" title="Request a refund">
-                        <i class="fas fa-flag"></i>
-                    </button>
-                    <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalTitle" aria-hidden="true">
-                      <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
+<section class="product-info-tabs py-md-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="text-center mb-4">Order Management</h2>
+      </div>
+      <div class="col-12">
+        <div class="tab-content">
+          <div class="tab-pane active" id="v-pills-description" role="tabpanel" aria-labelledby="v-pills-description-tab">
+            <div class="table-responsive">
+              <table class="table table-striped table-hover align-middle">
+                <thead class="table-dark">
+                  <tr>
+                    <th scope="col" class="text-center">Order Code</th>
+                    <th scope="col" class="text-center">Amount</th>
+                    <th scope="col" class="text-center">Pay Method</th>
+                    <th scope="col" class="text-center">Status</th>
+                    <th scope="col" class="text-center">Note</th>
+                    <th scope="col" class="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#if data.length}}
+                    {{#each data}}
+                      <tr>
+                        <td class="text-center">
+                          <a href="/order/{{orderCode}}" class="text-decoration-none">{{orderCode}}</a>
+                        </td>
+                        <td class="text-center">{{amount}} đ</td>
+                        <td class="text-center">{{paymentMethod}}</td>
+                        <td class="text-center">
+                          {{#if status}}
+                            {{status.name}}
+                          {{/if}}
+                        </td>
+                        <td class="text-center">{{note}}</td>
+                        <td class="text-center">
+                          {{#if status}}
+                            {{#ifEq status.id 1}}
+                              <form action="/account/update-status/{{this._id}}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm" title="Cancel Order">
+                                  <i class="fas fa-times"></i>
+                                </button>
+                              </form>
+                            {{else ifEq status.id 4}}
+                              <form action="/account/update-status/{{this._id}}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-success btn-sm" title="Mark as Delivered">
+                                  <i class="fas fa-check"></i>
+                                </button>
+                              </form>
+                            {{else ifEq status.id 5}}
+                              <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#buyAgainModal-{{this._id}}" title="Buy Again">
+                                <i class="fas fa-undo"></i>
+                              </button>
+                              <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#reportModal-{{this._id}}" title="Request Refund">
+                                <i class="fas fa-flag"></i>
+                              </button>
+                              <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#deleteModal-{{this._id}}" title="Delete Order">
+                                <i class="fas fa-trash"></i>
+                              </button>
+
+                            {{else ifEq status.id 10}}
+                              <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#buyAgainModal-{{this._id}}" title="Buy Again">
+                                <i class="fas fa-undo"></i>
+                              </button>
+                              <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#deleteModal-{{this._id}}" title="Delete Order">
+                                <i class="fas fa-trash"></i>
+                              </button>
+                            {{else ifEq status.id 11}}
+                              <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#buyAgainModal-{{this._id}}" title="Buy Again">
+                                <i class="fas fa-undo"></i>
+                              </button>
+                              <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#deleteModal-{{this._id}}" title="Delete Order">
+                                <i class="fas fa-trash"></i>
+                              </button>
+                            {{/ifEq}}
+                          {{/if}}
+                        </td>
+                      </tr>
+
+                      <!-- Buy Again Modal -->
+                      <div class="modal fade" id="buyAgainModal-{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="buyAgainModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="buyAgainModalLabel">Buy Again</h5>
+                            </div>
                             <div class="modal-body">
-                              <div class="form-group">
-                                <label for="reportTitle">Title of report</label>
-                                <input type="text" class="form-control" id="reportTitle" name="title" required>
-                              </div>
-                              <div class="form-group">
-                                <label for="reportMessage">Description</label>
-                                <textarea class="form-control" id="reportMessage" name="message" rows="4" required></textarea>
-                              </div>
+                              Are you sure you want to add this order to the cart again?
                             </div>
                             <div class="modal-footer">
-                              <form action="/account/send-report/{{this._id}}" method="POST">
-                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                              <button type="submit" class="btn btn-danger">Send</button>
+                              <form action="/account/buy-again/{{this._id}}" method="POST">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-danger">Confirm</button>
                               </form>
                             </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {{!-- Delete button --}}
-                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#deleteModal" data-placement="right" title="Delete order">
-                        <i class="fas fa-trash"></i>
-                      </button>
-                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalConfirm" aria-hidden="true">
-                      <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                          <div class="modal-body">
-                            Are you sure want to delete?
-                          </div>
-                          <div class="modal-footer">
-                            <form action="/account/delete/{{this._id}}" method="POST">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    {{!-- đây nữa --}}
-                    {{else ifEq status.id 10}}
-                      <button type="submit" class="btn btn-warning" data-toggle="tooltip" data-placement="right" title="Buy again">
-                        <i class="fas fa-undo"></i>
-                      </button>
-                      <button type="submit" class="btn btn-secondary" data-toggle="tooltip" data-placement="right" title="Delete order">
-                        <i class="fas fa-trash"></i>
-                      </button>
-                    {{else ifEq status.id 11}}
-                      <button type="submit" class="btn btn-warning" data-toggle="tooltip" data-placement="right" title="Buy again">
-                        <i class="fas fa-undo"></i>
-                      </button>
-                      
-                      {{!-- Delete order core --}}
-                      <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#deleteModal" data-placement="right" title="Delete order">
-                        <i class="fas fa-trash"></i>
-                      </button>
-
-                      <!-- Modal cho delete button-->
-                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalConfirm" aria-hidden="true">
-                      <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                          <div class="modal-body">
-                            Are you sure want to delete?
-                          </div>
-                          <div class="modal-footer">
-                            <form action="/account/delete/{{this._id}}" method="POST">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
+                      <!-- Request Refund Modal -->
+                      <div class="modal fade" id="reportModal-{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="reportModalLabel">Request Refund</h5>
+                            </div>
+                            <div class="modal-body">
+                              <form action="/account/send-report/{{this._id}}" method="POST">
+                                <div class="form-group">
+                                  <label for="reportTitle-{{this._id}}">Title</label>
+                                  <input type="text" class="form-control" id="reportTitle-{{this._id}}" name="title" required>
+                                </div>
+                                <div class="form-group">
+                                  <label for="reportMessage-{{this._id}}">Message</label>
+                                  <textarea class="form-control" id="reportMessage-{{this._id}}" name="message" rows="4" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-danger mt-2">Send Report</button>
+                              </form>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    {{/ifEq}}
+
+                      <!-- Delete Modal -->
+                      <div class="modal fade" id="deleteModal-{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="deleteModalLabel">Delete Order</h5>
+                            </div>
+                            <div class="modal-body">
+                              Are you sure you want to delete this order?
+                            </div>
+                            <div class="modal-footer">
+                              <form action="/account/delete/{{this._id}}" method="POST">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    {{/each}}
+                  {{else}}
+                    <tr>
+                      <td colspan="6" class="text-center">No orders found.</td>
+                    </tr>
                   {{/if}}
-                </td>
-                {{!-- Script modal  --}}
-                <script>
-                  var myModal = document.getElementById('myModal')
-                  var myInput = document.getElementById('myInput')
-
-                  myModal.addEventListener('shown.bs.modal', function () {
-                    myInput.focus()
-                  })
-                </script>
-
-              </tr>
-              
-              {{/each}}
-              {{else}} <!-- Nếu không có đơn hàng nào -->
-                <tr>
-                  <td colspan="6" class="text-center">No orders found.</td>
-                </tr>
-              {{/if}}
-            </tbody>
-            
-            </table>
-
+                </tbody>
+              </table>
             </div>
+          </div>
         </div>
       </div>
     </div>
-  </section>
-  <style>
-  .profile-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* Chia thành 2 cột bằng nhau */
-  gap: 20px; /* Khoảng cách giữa 2 cột */
-}
+  </div>
+</section>
 
-.information-column {
-  border-right: 1px solid #ccc; /* Thêm đường phân cách */
-  padding-right: 20px; /* Thêm padding cho đẹp */
-}
-</style>
 <script>
-  // Kích hoạt tooltip cho tất cả các phần tử có data-toggle="tooltip"
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})
-
-$('#myModal').on('shown.bs.modal', function () {
-  $('#myInput').trigger('focus')
-})
+  // Initialize tooltips
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
 </script>
