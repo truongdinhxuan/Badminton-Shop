@@ -33,7 +33,7 @@ router.get('/:orderCode', async (req, res) => {
 
             const promises = Object.values(items).map(async (itemObj) => {
                 const item = itemObj.item;
-                
+                console.log(item)
                 // Tìm category và brand theo id
                 const category = await Category.findOne({ id: item.categoryId });
                 const brand = await Brand.findOne({ id: item.brandId });

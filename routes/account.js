@@ -1,12 +1,29 @@
 var express = require("express");
 var router = express.Router();
 const mongoose = require('mongoose');
+
 var CustomerModel = require('../models/customer');
 var OrderModel = require('../models/order');
 var StatusModel = require('../models/status');
 var ReportModel = require('../models/report')
 var CartModel = require('../models/cart')
 var ProductModel = require('../models/product')
+var BrandModel = require('../models/brand')
+var CategoryModel = require('../models/category')
+
+const fs = require("fs");
+const path = require('path');
+const imagesExtensions = /.(png|jpg|jpeg)$/i;
+const getImageFiles = (directory) => {
+  try {
+    return fs
+      .readdirSync(directory)
+      .filter((file) => imagesExtensions.test(file));
+  } catch (error) {
+    console.error(error.message);
+    return [];
+  }
+};
 router.get('/', async (req, res) => {
 
     const customerEmail = req.session.email; // Get email from session
@@ -16,46 +33,6 @@ router.get('/', async (req, res) => {
       // Handle the case where no customer is found (e.g., redirect to login)
       return res.redirect('/auth'); 
     }
-    // const customerId = customer.id;
-    // // Find orders associated with the customer
-    // const orders = await OrderModel.find({ buyerId: customerId, isDelete: false }).lean();
-
-    // const statusIds = orders.map(order => order.statusId);
-    // const status = await StatusModel.find({ id: { $in: statusIds } }).lean();
-    // const statusMap = status.reduce((acc, status) => {
-    //   acc[status.id] = status;
-    //   return acc;
-    // }, {});
-    // console.log(status)
-    // const data = orders.map(order => ({
-    //   ...order,
-    //   status: statusMap[order.statusId] || null
-    // }));
-    // // Hiện tại chỉ dùng name để lưu, việc craw khiến việc data thừa load khá lâu
-    // const bank = {
-    //   "bank": [
-    //     {"name": "Vietcombank"},
-    //     {"name": "Agribank"},
-    //     {"name": "BIDV"},
-    //     {"name": "Vietinbank"},
-    //     {"name": "Techcombank"},
-    //     {"name": "ACB"},
-    //     {"name": "MB"},
-    //     {"name": "Sacombank"},
-    //     {"name": "DongA Bank"},
-    //     {"name": "Eximbank"},
-    //     {"name": "ABBank"},
-    //     {"name": "TPBank"},
-    //     {"name": "VPBank"},
-    //     {"name": "SCB"},
-    //     {"name": "Viet Capital Bank"},
-    //     {"name": "LienVietPostBank"},
-    //     {"name": "MSB"},
-    //     {"name": "Nam A Bank"},
-    //     {"name": "OCB"},
-    //     {"name": "SHB"}
-    //   ]
-    // }
     res.render('account', {
       layout: 'layout',
       // data, // Send the array of orders to the view,
@@ -104,35 +81,104 @@ router.get('/profile', async (req, res) => {
   })
 
 router.get('/order', async (req, res) => {
-  const customerEmail = req.session.email; // Get email from session
-  // Fetch customer ID based on email
-  const customer = await CustomerModel.findOne({ email: customerEmail }).lean();
-  if (!customer) {
-    // Handle the case where no customer is found (e.g., redirect to login)
-    return res.redirect('/auth'); 
-  }
-  const customerId = customer.id;
-  // Find orders associated with the customer
-  const orders = await OrderModel.find({ buyerId: customerId, isDelete: false }).lean();
-
-  const statusIds = orders.map(order => order.statusId);
-  const status = await StatusModel.find({ id: { $in: statusIds } }).lean();
-  const statusMap = status.reduce((acc, status) => {
-    acc[status.id] = status;
-    return acc;
-  }, {});
-  console.log(status)
-  const data = orders.map(order => ({
-    ...order,
-    status: statusMap[order.statusId] || null
-  }));
-  console.log(data)
-  res.render('account/order', {
-    layout: 'layout',
-    data, // Send the array of orders to the view,
-    customer: customer,
+    try {
+      const customerEmail = req.session.email; // Get email from session
+  
+      // Fetch customer ID based on email
+      const customer = await CustomerModel.findOne({ email: customerEmail }).lean();
+      if (!customer) {
+        // Handle the case where no customer is found (e.g., redirect to login)
+        return res.redirect('/auth');
+      }
+  
+      const customerId = customer.id;
+  
+      // Find orders associated with the customer
+      const orders = await OrderModel.find({ buyerId: customerId, isDelete: false }).lean();
+  
+      // Check if orders exist
+      if (!orders || orders.length === 0) {
+        return res.render('account/order', {
+          layout: 'layout',
+          data: [], // No orders to render
+          customer,
+        });
+      }
+  
+      // Process items for each order
+      const processedOrders = await Promise.all(
+        orders.map(async (order) => {
+          const items = order.items || {}; // Ensure `items` is an object
+          const processedItems = await Promise.all(
+            Object.values(items).map(async (itemObj) => {
+              const item = itemObj.item;
+              console.log(item)
+              // Skip if `item` is not defined
+              if (!item) {
+                return null;
+              }
+  
+              // Fetch category and brand information
+              const category = await CategoryModel.findOne({ id: item.categoryId }).lean();
+              const brand = await BrandModel.findOne({ id: item.brandId }).lean();
+              console.log(category)
+              
+              // Process images
+              const imagesDirectory = path.join(__dirname, '..', 'public', 'uploads', item._id.toString());
+              let imagesWithUrls = [];
+              try {
+                const imageFiles = getImageFiles(imagesDirectory); // Make sure this function is defined
+                imagesWithUrls = imageFiles.map((file) => `/uploads/${item._id}/${file}`);
+              } catch (error) {
+                console.error(`Error fetching images for item ${item._id}:`, error.message);
+              }
+  
+              return {
+                ...itemObj,
+                item: {
+                  ...item,
+                  categoryName: category ? category.name : 'Unknown Category',
+                  brandName: brand ? brand.name : 'Unknown Brand',
+                  image: imagesWithUrls,
+                },
+              };
+            })
+          );
+  
+          // Return processed order
+          return {
+            ...order,
+            items: processedItems.filter((item) => item !== null), // Filter out invalid items
+          };
+        })
+      );
+  
+      // Fetch statuses for orders
+      const statusIds = processedOrders.map((order) => order.statusId);
+      const statuses = await StatusModel.find({ id: { $in: statusIds } }).lean();
+      const statusMap = statuses.reduce((acc, status) => {
+        acc[status.id] = status;
+        return acc;
+      }, {});
+  
+      // Attach status information to each order
+      const data = processedOrders.map((order) => ({
+        ...order,
+        status: statusMap[order.statusId] || null,
+      }));
+  
+      // Render the view
+      res.render('account/order', {
+        layout: 'layout',
+        data, // Send the array of orders to the view
+        customer,
+      });
+    } catch (error) {
+      console.error('Error fetching orders:', error.message);
+      res.status(500).send('Internal Server Error');
+    }
   });
-  })
+  
 router.post('/update-profile/:id', async (req, res)=>{
     
     const customerId = req.params.id
