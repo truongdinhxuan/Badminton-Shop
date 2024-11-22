@@ -235,7 +235,6 @@ x       4 delivering                  took -> status(delivered)
           // Đơn hàng đang ở trạng thái "Chờ xác nhận"
           newStatusId = 11; // Cập nhật trạng thái thành "Đã hủy" (hoặc trạng thái phù hợp)
           break;
-        
         // các case sau làm ở đây 
         case 3:
           newStatusId = 11;
@@ -253,7 +252,7 @@ x       4 delivering                  took -> status(delivered)
       await OrderModel.findByIdAndUpdate(orderId, { statusId: newStatusId }, { new: true, lean: true });
   
       // Chuyển hướng người dùng hoặc trả về kết quả thành công
-      res.redirect('/account'); 
+      res.redirect('/account/order'); 
    
     } catch (error) {
       // Xử lý lỗi
@@ -300,7 +299,7 @@ router.post('/delete/:id', async (req, res) => {
   }
   order.isDelete=true
   await order.save()
-  res.redirect("/account")
+  res.redirect("/account/order")
 
   });
 router.post('/send-report/:id', async (req, res) => {
@@ -327,7 +326,7 @@ router.post('/send-report/:id', async (req, res) => {
 
       await OrderModel.findByIdAndUpdate(orderId, { statusId: 6 });
       // Redirect with a success message
-      res.redirect('/account');
+      res.redirect('/account/order');
     } catch (error) {
       console.error('Error sending report:', error);
       res.status(500).send('Internal Server Error');
