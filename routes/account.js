@@ -235,7 +235,10 @@ x       6 rq a refund                 view request -> comment của admin reply 
           // Đơn hàng đang ở trạng thái "Chờ xác nhận"
           newStatusId = 11; // Cập nhật trạng thái thành "Đã hủy" (hoặc trạng thái phù hợp)
           break;
-        // các case sau làm ở đây 
+        // các case sau làm ở đây
+        case 2:
+          newStatusId = 11;
+          break;
         case 3:
           newStatusId = 11;
           break

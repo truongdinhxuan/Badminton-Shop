@@ -215,11 +215,13 @@
         <div class="card-footer bg-light">
           {{#if status}}
             {{#ifEq status.id 1}}
-              <form action="/account/update-status/{{this._id}}" method="POST" class="d-inline">
-                <button type="submit" class="btn btn-danger btn-sm" title="Cancel Order">
-                  <i class="fas fa-times"></i> Cancel order
-                </button>
-              </form>
+              <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#cancelModel-{{this._id}}" title="Cancel order">
+                <i class="fas fa-undo"></i> Cancel order
+              </button>
+            {{else ifEq status.id 2}}
+            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#cancelModel-{{this._id}}" title="Cancel order">
+                <i class="fas fa-undo"></i> Cancel order
+              </button>
             {{else ifEq status.id 4}}
               <form action="/account/update-status/{{this._id}}" method="POST" class="d-inline">
                 <button type="submit" class="btn btn-success btn-sm" title="Mark as Delivered">
@@ -315,6 +317,26 @@
                   <form action="/account/delete/{{this._id}}" method="POST">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-danger">Delete</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {{!-- Cancel Model --}}
+          <div class="modal fade" id="cancelModel-{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="cancelModalLabel">Cancel order</h5>
+                </div>
+                <div class="modal-body">
+                  Are you sure you want to cancel this order?
+                </div>
+                <div class="modal-footer">
+                  <form action="/account/update-status/{{this._id}}" method="POST">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Cancel order</button>
                   </form>
                 </div>
               </div>
