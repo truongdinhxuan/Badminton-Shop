@@ -232,7 +232,7 @@
               </button>
               <br>
               <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#reportModal-{{this._id}}" title="Request Refund">
-                <i class="fas fa-flag"></i> Report product
+                <i class="fas fa-flag"></i> Refund
               </button>
               <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#deleteModal-{{this._id}}" title="Delete Order">
                 <i class="fas fa-trash"></i> Delete order
@@ -254,6 +254,7 @@
                 <i class="fas fa-trash"></i> Delete order
               </button>
             {{/ifEq}} 
+            <a href="/order/{{orderCode}}" class="float-end btn btn-outline-danger btn-sm">More detail</a>
           {{/if}}
         </div>
           <!-- Buy Again Modal -->

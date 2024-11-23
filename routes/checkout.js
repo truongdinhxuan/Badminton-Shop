@@ -10,6 +10,9 @@ var OrderModel = require('../models/order');
 function generateOrderCode() {
     return Math.floor(Math.random() * 99999); // Generate a random 6-digit number
 }
+function generateOrderId() {
+  return 
+}
 
 router.get('/success', async (req, res) => {
     const pendingOrder = req.session.pendingOrder;
@@ -73,7 +76,12 @@ router.get('/cancel' , async (req,res) => {
     const paymentMethod = req.body.paymentMethod
     const orderDate = moment().tz('DD.MM.YYYY HH:mm','Asia/Ho_Chi_Minh').format('MMMM Do YYYY, hh:mm a'),
     isDelete = false
+
+    const orderCount = await OrderModel.countDocuments({ buyerId: customerId });
+    const orderId = orderCount + 1; // Tạo orderId mới dựa trên số lượng đơn hàng hiện tại
+
     const orderData = {
+      orderId: orderId,
       orderCode: generateOrderCode(),
       buyerId: customerId,
       buyerName: name,

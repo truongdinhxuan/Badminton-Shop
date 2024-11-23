@@ -85,7 +85,7 @@ router.get('/order', async (req, res) => {
       const customerEmail = req.session.email; // Get email from session
   
       // Fetch customer ID based on email
-      const customer = await CustomerModel.findOne({ email: customerEmail }).lean();
+      const customer = await CustomerModel.findOne({ email: customerEmail }).sort({ orderId: -1 }).lean();
       if (!customer) {
         // Handle the case where no customer is found (e.g., redirect to login)
         return res.redirect('/auth');
@@ -210,16 +210,16 @@ router.post('/update-status/:id', async (req, res) => {
     /*
           Status            -       Action (button)
 x       1 pending                     cancel -> status(canceled), if paymethod = cod -> none
-        2 confirmed                   cancel -> status(canceled), if paymethod = ck -> hoàn tiền
+1       2 confirmed                   cancel -> status(canceled), if paymethod = ck -> hoàn tiền
 x       3 packing                     cancel -> status(canceled), if paymethod = cod -> none, if paymethod = ck -> hoàn tiền
 x       4 delivering                  took -> status(delivered)
-        5 delivered                   buy again -> return(/cart) cùng với order được mua lại, rq a refund -> update note
-        6 rq a refund                 
-        7 acp the refund
-        8 refuse the refund
-        9 returning
-        10 order has arrived to store-buy again -> return(/cart) cùng với order được mua lại
-        11 canceled                   buy again -> return(/cart) cùng với order được mua lại
+x       5 delivered                   buy again -> return(/cart) cùng với order được mua lại, rq a refund -> update note
+x       6 rq a refund                 view request -> comment của admin reply cho đơn hàng
+2       7 acp the refund              view request -> comment của admin reply cho đơn hàng
+2       8 refuse the refund           view request -> comment của admin reply cho đơn hàng
+2       9 returning                   view request -> comment của admin reply cho đơn hàng
+        10 order has arrived to store-buy again -> return(/cart) cùng với order được mua lại, view request -> comment của admin reply cho đơn hàng
+        11 canceled                   buy again -> return(/cart) cùng với order được mua lại, view request -> comment của admin reply cho đơn hàng
                           
           */
     try {

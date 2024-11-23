@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const Model = new mongoose.Schema(
   {
+    orderId: Number,
     orderCode: Number,
     buyerId: Number,
     buyerName: String,
