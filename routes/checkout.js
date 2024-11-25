@@ -129,6 +129,5 @@ router.get('/cancel' , async (req,res) => {
     "364eea32-f6bc-4b81-884b-66c3eb436424",
     "326f33d24c9beb21bcc00ed032a77118820849f0a64bf694762d12ca017a7dc4"
   );
-  // const DOMAIN_URL='http://localhost:3000'
-  const DOMAIN_URL='https://fuzzy-lamp-pqr7q6g9gg7h79vw-3000.app.github.dev'
+  const DOMAIN_URL='http://localhost:3000'
 module.exports = router; 

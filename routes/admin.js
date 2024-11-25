@@ -381,19 +381,38 @@ router.get('/delete-all-brand', async (req, res) => {
 // ORDER
 router.get('/order', async (req ,res) => {
   const orders = await OrderModel.find().lean();
-  const report = await ReportModel.find().count();
+  
+  const orderData = await Promise.all(
+    orders.map(async (order) => {
+        const status = await StatusModel.findOne({id: order.statusId}).lean();
+        const report = await ReportModel.findOne({ orderId: order.orderCode }).lean();
+        return {
+            ...order,
+            iscancelled: status && status.name === 'Canceled' && order.paymentMethod === 'bank',
+            statusName: status ? status.name : 'Unknow',
+            reportTitle: report ? report.title : null,
+            reportMessage: report ? report.message : null,
+        };
+    })
+  );
 
-  const bigData = await Promise.all(orders.map(async (order) => {
-    const status = await StatusModel.findOne({id: order.statusId}).lean();
-    return {
-      ...order,
-      statusName: status ? status.name : 'Unknow'
-    };
-  }))   
+  console.log(orderData)
+
+  const countReport = await ReportModel.countDocuments()
+  const countCanceledOrder = await OrderModel.findOne({statusId: 11, paymentMethod: 'bank'}).countDocuments()
+  // const bigData = await Promise.all(orders.map(async (order) => {
+  //   const status = await StatusModel.findOne({id: order.statusId}).lean();
+  //   return {
+  //     ...order,
+  //     statusName: status ? status.name : 'Unknow'
+  //   };
+  // }))   
   res.render('admin/order' , {
     layout: 'admin/layout/layout',
-    data: bigData,
-    report: report
+    // data: bigData,
+    order: orderData,
+    countReport: countReport,
+    countCanceledOrder: countCanceledOrder
   })
 })
 router.get('/update-order/:id', async (req,res) => {
