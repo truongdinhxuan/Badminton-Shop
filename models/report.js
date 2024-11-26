@@ -6,6 +6,7 @@ const Model = new mongoose.Schema(
     orderId: Number,
     title: String,
     message:  String,
+    isAccepted: Boolean,
   },
 );
     

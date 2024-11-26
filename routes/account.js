@@ -320,7 +320,8 @@ router.post('/send-report/:id', async (req, res) => {
         id: await ReportModel.countDocuments() + 1,
         orderId: order.orderCode,  // Assuming orderId refers to the ObjectId of the order document
         title: title,
-        message: message
+        message: message,
+        isAccepted: false
       };
 
       // Create and save the new report
