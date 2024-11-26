@@ -1,3 +1,15 @@
+<script src="https://cdn.jsdelivr.net/npm/@goongmaps/goong-geocoder/dist/goong-geocoder.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<link
+href="https://cdn.jsdelivr.net/npm/@goongmaps/goong-geocoder/dist/goong-geocoder.css"
+rel="stylesheet"
+type="text/css"
+/>
+ 
+<!-- Promise polyfill script is required -->
+<!-- to use Goong Geocoder in IE 11. -->
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
 <!-- ACCOUNT -->
 <div class="tab-pane fade active show" id="v-pills-additional" role="tabpanel" aria-labelledby="v-pills-additional-tab" tabindex="0">
   <div class="container py-4">
@@ -9,28 +21,20 @@
           <div class="col-md-6">
             <h5 class="mb-3">Personal Information</h5>
             <div class="mb-3">
-              <label for="name" class="form-label">Full Name</label>
-              <input type="text" id="name" name="name" placeholder="Write your name here*" class="form-control" value="{{customer.name}}">
-            </div>
-            <div class="mb-3">
-              <label for="country" class="form-label">Country</label>
-              <input type="text" id="country" name="country" placeholder="Write your country here*" class="form-control" value="{{customer.country}}">
-            </div>
-            <div class="mb-3">
-              <label for="address" class="form-label">Address</label>
-              <input type="text" id="address" name="address" placeholder="Write your address here*" class="form-control" value="{{customer.address}}">
+              <label for="name" class="form-label">Full name</label>
+              <input style="color: black;" type="text" id="name" name="name" placeholder="Write your name here*" class="form-control" value="{{customer.name}}">
             </div>
             <div class="mb-3">
               <label for="email" class="form-label">Email</label>
-              <input type="email" id="email" name="email" placeholder="Write your email here*" class="form-control" value="{{customer.email}}" disabled>
+              <input style="color: black;" type="email" id="email" name="email" placeholder="Write your email here*" class="form-control" value="{{customer.email}}" disabled>
             </div>
             <div class="mb-3">
-              <label for="phone_number" class="form-label">Phone Number</label>
-              <input type="text" id="phone_number" name="phone_number" placeholder="Write your phone number here*" class="form-control" value="{{customer.phone_number}}">
+              <label for="phone_number" class="form-label">Phone number</label>
+              <input style="color: black;" type="text" id="phone_number" name="phone_number" placeholder="Write your phone number here*" class="form-control" value="{{customer.phone_number}}">
             </div>
             <div class="mb-3">
               <label for="password" class="form-label">Password</label>
-              <input type="password" id="password" name="password" placeholder="Write your password here*" class="form-control" value="{{customer.password}}">
+              <input style="color: black;" type="password" id="password" name="password" placeholder="Write your password here*" class="form-control" value="{{customer.password}}">
             </div>
           </div>
 
@@ -38,20 +42,46 @@
           <div class="col-md-6">
             <h5 class="mb-3">Banking Details</h5>
             <div class="mb-3">
-              <label for="bank_account_number" class="form-label">Bank Account Number</label>
-              <input type="text" id="bank_account_number" name="bank_account_number" placeholder="Write your bank account number here*" class="form-control" value="{{customer.bank_account_number}}">
+              <label for="bank_account_number" class="form-label">Bank account number</label>
+              <input style="color: black;" type="text" id="bank_account_number" name="bank_account_number" placeholder="Write your bank account number here*" class="form-control" value="{{customer.bank_account_number}}">
             </div>
             <div class="mb-3">
-              <label for="bank_name" class="form-label">Bank Name</label>
-              <select name="bank_name" id="bank_name" class="form-control">
+              <label for="bank_name" class="form-label">Bank name</label>
+              <select style="color: black;" name="bank_name" id="bank_name" class="form-control">
                 {{#each bank}}
-                <option value="{{this.name}}" {{#if (eq ../customer.bank_name this.name)}}selected{{/if}}>
+                <option style="color: black;" value="{{this.name}}" {{#if (eq ../customer.bank_name this.name)}}selected{{/if}}>
                   {{this.name}}
                 </option>
                 {{/each}}
               </select>
             </div>
-            <p class="text-danger small">* Please note: Use only a bank account matching your Full Name</p>
+            <p style="color: red" class="small">* Please note: Use only a bank account matching your Full Name</p>
+            
+            <hr>
+
+          <!-- Full address -->
+        <div class="mb-3">
+          <label for="full_address" class="form-label">Full address</label>
+          <input style="color: black;" type="text" id="full_address" name="full_address" placeholder="Write your full address here*" class="form-control" value="{{customer.full_address}}">
+          <ul id="autocomplete-results" class="list-group mt-2"></ul>
+        </div>
+
+        <!-- Commune, District, and Province in a row -->
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="commune" class="form-label">Commune</label>
+            <input style="color: black;" type="text" id="commune" name="commune" class="form-control" value="{{customer.commune}}" readonly>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="district" class="form-label">District</label>
+            <input style="color: black;" type="text" id="district" name="district" class="form-control" value="{{customer.district}}" readonly>
+          </div>
+          
+          <div class="col-md-4 mb-3">
+            <label for="province" class="form-label">Province</label>
+            <input style="color: black;" type="text" id="province" name="province" class="form-control" value="{{customer.province}}" readonly>
+          </div>
+        </div>
           </div>
         </div>
         <!-- Submit Button -->
@@ -62,3 +92,73 @@
     </div>
   </div>
 </div>
+<style>
+  .form-control {
+  width: 100%;
+  box-sizing: border-box;
+}
+</style>
+
+<script>
+    const apiKey = 'eJFx4gB066IGVFA21YfDvLMD0IglwWDslGgpFAoD'; // Replace with your API key
+    const geocoderInput = document.getElementById('full_address');
+    const resultsContainer = document.getElementById('autocomplete-results');
+    const communeInput = document.getElementById('commune');
+    const districtInput = document.getElementById('district');
+    const provinceInput = document.getElementById('province');
+
+    // Debounce function to limit API calls
+    let debounceTimeout;
+    function debounce(callback, delay) {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(callback, delay);
+    }
+
+    // Fetch autocomplete suggestions
+    async function fetchSuggestions(query) {
+        if (!query.trim()) {
+            resultsContainer.innerHTML = '';
+            return;
+        }
+        try {
+            const response = await axios.get(`https://rsapi.goong.io/Place/AutoComplete`, {
+                params: {
+                    api_key: apiKey,
+                    input: query
+                }
+            });
+            const predictions = response.data.predictions || [];
+            displaySuggestions(predictions);
+        } catch (error) {
+            console.error('Error fetching suggestions:', error);
+        }
+    }
+
+    // Display suggestions in the dropdown
+    function displaySuggestions(predictions) {
+        resultsContainer.innerHTML = '';
+        predictions.forEach(prediction => {
+            const li = document.createElement('li');
+            li.classList.add('list-group-item', 'list-group-item-action');
+            li.textContent = prediction.description;
+            li.addEventListener('click', () => selectAddress(prediction));
+            resultsContainer.appendChild(li);
+        });
+    }
+
+    // Handle address selection
+    function selectAddress(prediction) {
+        geocoderInput.value = prediction.description;
+        resultsContainer.innerHTML = '';
+
+        const compound = prediction.compound || {};
+        communeInput.value = compound.commune || '';
+        districtInput.value = compound.district || '';
+        provinceInput.value = compound.province || '';
+    }
+
+    // Listen for input changes
+    geocoderInput.addEventListener('input', (event) => {
+        debounce(() => fetchSuggestions(event.target.value), 300);
+    });
+</script>

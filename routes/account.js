@@ -184,10 +184,14 @@ router.post('/update-profile/:id', async (req, res)=>{
     const customerId = req.params.id
     const name = req.body.name
     const email = req.body.email
-    const password = req.body.password
-    const country = req.body.country
-    const address = req.body.address
     const phone_number = req.body.phone_number
+    const password = req.body.password
+
+    const full_address = req.body.full_address
+    const commune = req.body.commune
+    const district = req.body.district
+    const province = req.body.province
+    
     const bank_account_number = req.body.bank_account_number
     const bank_name = req.body.bank_name
 
@@ -195,9 +199,11 @@ router.post('/update-profile/:id', async (req, res)=>{
       name: name,
       email: email,
       password: password,
-      country: country,
-      address: address,
       phone_number: phone_number,
+      full_address: full_address,
+      commune: commune,
+      district: district,
+      province: province,
       bank_account_number: bank_account_number,
       bank_name: bank_name
     }

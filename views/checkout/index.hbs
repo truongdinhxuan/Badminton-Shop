@@ -1,3 +1,15 @@
+<script src="https://cdn.jsdelivr.net/npm/@goongmaps/goong-geocoder/dist/goong-geocoder.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<link
+href="https://cdn.jsdelivr.net/npm/@goongmaps/goong-geocoder/dist/goong-geocoder.css"
+rel="stylesheet"
+type="text/css"
+/>
+ 
+<!-- Promise polyfill script is required -->
+<!-- to use Goong Geocoder in IE 11. -->
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
 {{#if customer}}
   <section id="banner" class="py-3" style="background: #F9F3EC;">
     <div class="container">
@@ -26,12 +38,22 @@
               <label for="email">Email address *</label>
               <input type="text" id="email" name="email" class="form-control mt-2 mb-4 ps-3" value="{{customer.email}}" placeholder="{{customer.email}}" >
                          
-              <label for="country">Country*</label>
-              <input type="text" id="country" name="country" class="form-control mt-2 mb-4 ps-3" value="{{customer.country}}" placeholder="Example: Ha Noi" required>
+              <div class="form-group mb-4">
+              <!-- Label và nút Edit -->
+              <div class="d-flex justify-content-between align-items-center">
+                <label for="address" class="form-label">Full address*</label>
+                {{#if customer.full_address}}
+                <button type="button" class="btn btn-link" id="edit-address">Go to edit address page</button>
+                {{/if}}
+              </div>
 
-              <label for="address">Street Address*</label>
-              <input type="text" id="address" name="address" value="{{customer.address}}" placeholder="Example: 171 Nguyen Ngoc Vu, Trung Hoa, Cau Giay"
-                class="form-control mt-3 ps-3 mb-3" required>
+              <!-- Input cho Full address -->
+              <input type="text" id="full_address" name="full_address" value="{{customer.full_address}}" 
+                    placeholder="Example: 171 Nguyen Ngoc Vu, Trung Hoa, Cau Giay"
+                    class="form-control mt-3 ps-3" required {{#if customer.full_address}}readonly{{/if}}>
+              <ul id="autocomplete-results" class="list-group mt-2"></ul>
+            </div>
+
 
               <label for="email">Phone *</label>
               <input type="text" id="phone" name="phone" class="form-control mt-2 mb-4 ps-3" value="{{customer.phone_number}}" placeholder="Example: 012345678" required>
@@ -102,3 +124,58 @@
     </div>
   </section>
   {{/if}}
+<script>
+    const apiKey = 'eJFx4gB066IGVFA21YfDvLMD0IglwWDslGgpFAoD'; // Replace with your API key
+    const geocoderInput = document.getElementById('full_address');
+    const resultsContainer = document.getElementById('autocomplete-results');
+
+    // Debounce function to limit API calls
+    let debounceTimeout;
+    function debounce(callback, delay) {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(callback, delay);
+    }
+
+    // Fetch autocomplete suggestions
+    async function fetchSuggestions(query) {
+        if (!query.trim()) {
+            resultsContainer.innerHTML = '';
+            return;
+        }
+        try {
+            const response = await axios.get(`https://rsapi.goong.io/Place/AutoComplete`, {
+                params: {
+                    api_key: apiKey,
+                    input: query
+                }
+            });
+            const predictions = response.data.predictions || [];
+            displaySuggestions(predictions);
+        } catch (error) {
+            console.error('Error fetching suggestions:', error);
+        }
+    }
+
+    // Display suggestions in the dropdown
+    function displaySuggestions(predictions) {
+        resultsContainer.innerHTML = '';
+        predictions.forEach(prediction => {
+            const li = document.createElement('li');
+            li.classList.add('list-group-item', 'list-group-item-action');
+            li.textContent = prediction.description;
+            li.addEventListener('click', () => selectAddress(prediction));
+            resultsContainer.appendChild(li);
+        });
+    }
+
+    // Handle address selection
+    function selectAddress(prediction) {
+        geocoderInput.value = prediction.description;
+        resultsContainer.innerHTML = '';
+    }
+
+    // Listen for input changes
+    geocoderInput.addEventListener('input', (event) => {
+        debounce(() => fetchSuggestions(event.target.value), 300);
+    });
+</script>

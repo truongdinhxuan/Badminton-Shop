@@ -68,8 +68,7 @@ router.get('/cancel' , async (req,res) => {
 
     const cart = new CartModel(req.session.cart)
     const name = req.body.name
-    const country = req.body.country
-    const address = req.body.address
+    const full_address = req.body.full_address
     const phone = req.body.phone
     const email = req.body.email
     const note = req.body.note
@@ -87,8 +86,7 @@ router.get('/cancel' , async (req,res) => {
       buyerName: name,
       buyerEmail: email,
       buyerPhone: phone,
-      buyerCountry: country,
-      buyerAddress: address,
+      buyerAddress: full_address,
       buyerNote: note,
       amount: cart.totalPrice,
       paymentMethod: paymentMethod,

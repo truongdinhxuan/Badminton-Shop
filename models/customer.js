@@ -6,9 +6,13 @@ const Model = new mongoose.Schema(
     email: String,
     password: String,
     name: String,
-    country: String,
-    address: String,
     phone_number: String,
+    // address
+    full_address: String,
+    commune: String,
+    district: String,
+    province: String,
+    // bank 
     bank_account_number: String,
     bank_name: String,
     roleID: String
