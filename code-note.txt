@@ -1,1 +1,2 @@
-                    <button style=" width: 118px" "submit" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Request for return/refund</button> 
+1. khách bank khi cancel đơn thì hoàn trả tiền
+2. phân trang order: đơn đang chờ, đã xác nhận, đang giao, đã giao, đã hủy

@@ -94,7 +94,7 @@ router.get('/order', async (req, res) => {
       const customerId = customer.id;
   
       // Find orders associated with the customer
-      const orders = await OrderModel.find({ buyerId: customerId, isDelete: false }).lean();
+      const orders = await OrderModel.find({ buyerId: customerId, isDelete: false }).sort({orderDate: -1}).lean();
   
       // Check if orders exist
       if (!orders || orders.length === 0) {
@@ -220,7 +220,7 @@ x       1 pending                     cancel -> status(canceled), if paymethod =
 x       3 packing                     cancel -> status(canceled), if paymethod = cod -> none, if paymethod = ck -> hoàn tiền
 x       4 delivering                  took -> status(delivered)
 x       5 delivered                   buy again -> return(/cart) cùng với order được mua lại, rq a refund -> update note
-x       6 rq a refund                 view request -> comment của admin reply cho đơn hàng
+2       6 rq a refund                 view request -> comment của admin reply cho đơn hàng
 2       7 acp the refund              view request -> comment của admin reply cho đơn hàng
 2       8 refuse the refund           view request -> comment của admin reply cho đơn hàng
 2       9 returning                   view request -> comment của admin reply cho đơn hàng

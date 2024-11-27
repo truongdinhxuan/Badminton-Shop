@@ -152,9 +152,10 @@ type="text/css"
         resultsContainer.innerHTML = '';
 
         const compound = prediction.compound || {};
-        communeInput.value = compound.commune || '';
-        districtInput.value = compound.district || '';
-        provinceInput.value = compound.province || '';
+        communeInput.value = compound.commune || 'Invalid commune';  // Default to 'Không xác định' if commune is null
+        districtInput.value = compound.district || 'Invalid district'; // Default to 'Không xác định' if district is null
+        provinceInput.value = compound.province || 'Invalid province'; // Default to 'Không xác định' if province is null
+
     }
 
     // Listen for input changes
