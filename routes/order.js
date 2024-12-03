@@ -59,14 +59,13 @@ router.get('/:orderCode', async (req, res) => {
             //xử lý status order
             let activeSteps = [];
             let showreturnsteps = false;
-            let showCancelButton = false;
+            let showCancelsteps = false;
 
             if (order.statusId >= 6 && order.statusId <= 10) {
                 showreturnsteps = true; // Hiển thị bước hoàn trả hàng nếu status là 6, 7, hoặc 8
             }
-            //canceled
-            if (order.statusId === 1 || order.statusId === 2 || order.statusId === 3) {
-                showCancelButton = true; // Hiển thị nút canceled cho status 1, 2, 3
+            if (order.statusId === 11) {
+                showCancelsteps = true
             }
             // hoàn trả
             if (order.statusId === 6) {
@@ -86,6 +85,8 @@ router.get('/:orderCode', async (req, res) => {
                 activeSteps = [1,2,3,4]
             } else if (order.statusId == 5) {
                 activeSteps = [1,2,3,4,5]
+            } else if (order.statusId == 11) {
+                activeSteps = [11]
             }
 
             res.render('order/orderPage', {
@@ -95,7 +96,7 @@ router.get('/:orderCode', async (req, res) => {
                 items: updatedItems,
                 activeSteps: activeSteps,
                 showreturnsteps: showreturnsteps,
-                showCancelButton: showCancelButton
+                showCancelsteps:showCancelsteps
             });
         } else {
             // chỗ này làm cái render no login

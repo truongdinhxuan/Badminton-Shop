@@ -111,7 +111,7 @@
                                         {{#each order}}
                                         <tr>
                                             <td>
-                                                {{#if reportTitle}}
+                                                {{#if reportTitle}}  {{!-- display if isaccept = false --}}
                                                     <b>{{orderCode}}</b> <i class="fas fa-exclamation-circle" style="color:red"></i>
                                                 {{else iscancelled}}
                                                     <b>{{orderCode}}</b> <i class="fas fa-ban" style="color: rgb(0, 0, 255)"></i>

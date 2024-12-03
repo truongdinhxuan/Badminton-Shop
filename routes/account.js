@@ -97,7 +97,7 @@ router.get('/order', async (req, res) => {
       const orders = await OrderModel.find({ buyerId: customerId, isDelete: false }).sort({orderDate: -1}).lean();
   
       // Check if orders exist
-      if (!orders || orders.length === 0) {
+      if (!orders || orders.length === 0) { 
         return res.render('account/order', {
           layout: 'layout',
           data: [], // No orders to render
@@ -259,7 +259,6 @@ x       5 delivered                   buy again -> return(/cart) cùng với ord
   
       // Cập nhật trạng thái đơn hàng trong database
       await OrderModel.findByIdAndUpdate(orderId, { statusId: newStatusId }, { new: true, lean: true });
-  
       // Chuyển hướng người dùng hoặc trả về kết quả thành công
       res.redirect('/account/order'); 
    

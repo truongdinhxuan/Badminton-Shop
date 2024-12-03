@@ -252,7 +252,7 @@ h6 {
   font-family: var(--heading-font);
   color: var(--bs-body-color);
   font-weight: 400;
-  text-transform: capitalize;
+  /* text-transform: capitalize; */
 }
 
 a {

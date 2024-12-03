@@ -100,7 +100,7 @@ type="text/css"
 </style>
 
 <script>
-    const apiKey = 'eJFx4gB066IGVFA21YfDvLMD0IglwWDslGgpFAoD'; // Replace with your API key
+    const apiKey = 'my api key'; //api key
     const geocoderInput = document.getElementById('full_address');
     const resultsContainer = document.getElementById('autocomplete-results');
     const communeInput = document.getElementById('commune');
@@ -121,7 +121,7 @@ type="text/css"
             return;
         }
         try {
-            const response = await axios.get(`https://rsapi.goong.io/Place/AutoComplete`, {
+            const response = await axios.get(`https://rsapi.goong.io/Place/AutoComplete`, { //Get data from Api link
                 params: {
                     api_key: apiKey,
                     input: query
@@ -152,10 +152,9 @@ type="text/css"
         resultsContainer.innerHTML = '';
 
         const compound = prediction.compound || {};
-        communeInput.value = compound.commune || 'Invalid commune';  // Default to 'Không xác định' if commune is null
-        districtInput.value = compound.district || 'Invalid district'; // Default to 'Không xác định' if district is null
-        provinceInput.value = compound.province || 'Invalid province'; // Default to 'Không xác định' if province is null
-
+        communeInput.value = compound.commune || 'Invalid commune'; 
+        districtInput.value = compound.district || 'Invalid district';
+        provinceInput.value = compound.province || 'Invalid province'; 
     }
 
     // Listen for input changes

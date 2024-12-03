@@ -1,16 +1,15 @@
 <div class="account-index d-flex justify-content-center align-items-center" style="min-height: 100vh;">
     <div class="account-card">
-        <h1>Xin chào, Nguyễn Văn A!</h1>
+        <h1>Welcome, {{customer.name}}!</h1>
 
         <!-- Thông tin người dùng -->
         <div class="user-info">
-            <h4>Email: nguyenvana@example.com</h4>
-            <h4>Số điện thoại: 0987 654 321</h4>
+            <h4>Email: {{customer.email}}</h4>
         </div>
 
         <!-- Nút điều hướng -->
-        <a href="/account/profile" class="btn btn-custom btn-profile">Trang Hồ Sơ</a>
-        <a href="/account/order" class="btn btn-custom btn-order">Lịch Sử Đơn Hàng</a>
+        <a href="/account/profile" class="btn btn-custom btn-profile">Profile</a>
+        <a href="/account/order" class="btn btn-custom btn-order">My order</a>
     </div>
 </div>
 

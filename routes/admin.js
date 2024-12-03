@@ -432,7 +432,7 @@ router.get('/update-order/:id', async (req,res) => {
   let orderCode = updateOrder.orderCode
   const status = await StatusModel.find({}).lean()
   const report = await ReportModel.findOne({ orderId: orderCode }).lean();
-  console.log(report.isAccepted)
+
   const selectedStatus = status.find(status => status.id === updateOrder.statusId)
 
   let activeSteps = [];
