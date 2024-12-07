@@ -6,8 +6,6 @@
   var ProductModel = require('../models/product');
   const fs = require("fs");
   const path = require("path");
-
-const Product = require('../models/product');
   // const { checkLoginSession } = require("../middlewares/auth");
   /* GET home page. */
   // router.get('/', async (req, res, next) {
@@ -78,22 +76,27 @@ const Product = require('../models/product');
       res.status(500).send('Internal Server Error');
     }
   })
-  router.get("/search", async (req, res) => {
-    try {
-        let searchKey = req.query.key;
-        
-        let searchResults = await Product.find({
-            name: { $regex: searchKey, $options: 'i' } 
-        });
-
-        res.render("site/search", {
-            layout: 'layout',
-            searchResults, // Pass search results to the template
-            searchKey      // Pass the search key back for display
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error occurred while searching');
-    }
+  router.get('/search', async (req, res) => {
+    const searchQuery = req.query.key || '';
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = 10;
+    
+    // Truy vấn tìm kiếm trong cơ sở dữ liệu
+    const products = await ProductModel.find({
+      name: { $regex: searchQuery, $options: 'i' }
+    })
+    .skip((page - 1) * pageSize)
+    .limit(pageSize);
+    
+    const totalProducts = await ProductModel.countDocuments({
+      name: { $regex: searchQuery, $options: 'i' }
+    });
+    
+    res.render('site/search', {
+      products,
+      searchQuery,
+      totalPages: Math.ceil(totalProducts / pageSize),
+      currentPage: page
+    });
   });
   module.exports = router;
