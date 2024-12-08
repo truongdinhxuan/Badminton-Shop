@@ -329,7 +329,7 @@ router.post('/add-brand', async (req, res) => {
           id: await BrandModel.countDocuments() + 1,
           name: controlData.name,
           categoryId: controlData.categoryId,
-          urlRewriteName: Charset.removeUnicode(req.body.name),
+          slug: Charset.removeUnicode(req.body.name),
       }
       await BrandModel.create(info);
       res.redirect('/admin/brand')

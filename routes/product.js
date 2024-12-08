@@ -32,6 +32,8 @@ router.get('/',async(req,res) =>{
       
       const category = await CategoryModel.find().lean();
 
+      const brand = await BrandModel.find().lean();
+
       const user = await CustomerModel.findOne({email: req.session.email}).lean();
 
       const productBigData = await Promise.all(products.map(async (product) => {
@@ -49,6 +51,7 @@ router.get('/',async(req,res) =>{
       res.render('product', {
         layout: "/layout",
         category: category,
+        brand: brand,
         product: productBigData,
         customer: user,
       }); 

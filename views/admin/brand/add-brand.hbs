@@ -46,12 +46,12 @@
         
         <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">Brand name: </label>
-        <input name="name" type="name" class="form-control" id="name">
+        <input name="name" type="name" class="form-control" id="name" required>
         </div>
 
         <div class="mb-3">
-        <select class="form-select" name="categoryId" id="categoryId">
-        <option selected>Select category</option>
+        <select class="form-select" name="categoryId" id="categoryId" >
+        <option selected required>Select category</option>
             {{#each data}}
                 <option value="{{this.id}}">
                     {{this.name}}

@@ -5,7 +5,7 @@ const Model = new mongoose.Schema(
     id: Number,
     categoryId: Number,
     name:  String,
-    urlRewriteName: String,
+    slug: String,
   },
 );
     

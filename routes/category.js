@@ -3,23 +3,24 @@ var router = express.Router();
 
 
 var CategoryModel = require('../models/category');
-var Product = require('../models/product');
+var ProductModel = require('../models/product');
 
 router.get('/:slug', async (req,res)=>{
     try
     {
-        const {categorySlug} = req.params;
-        console.log(categorySlug)
-        const category = await CategoryModel.findOne({slug: categorySlug})
+        const {slug} = req.params;
+        const category = await CategoryModel.find().lean();
+        const selectedCategory = await CategoryModel.findOne({slug: slug})
 
-        if(!category) {
+        if(!selectedCategory) {
             return res.status(404).send('Category not found')
         }
-        const products = await Product.findOne({categoryId: category.id})
-
+        const products = await ProductModel.find({categoryId: selectedCategory.id})
+        console.log(products)
         res.render('category/categoryPage',{
             products: products,
-            category: category
+            category: category,
+            selectedCategory: selectedCategory
         })
     } catch (error) {
         console.error(error);
