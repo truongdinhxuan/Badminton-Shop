@@ -7,6 +7,7 @@ const OrderModel = require('../models/order');
 const ProductModel = require('../models/product');
 const AdminModel = require('../models/admin');
 const CustomerModel = require('../models/customer');
+const StaffModel = require('../models/staff');
 const CategoryModel = require('../models/category');
 const BrandModel = require('../models/brand');
 const StatusModel = require('../models/status');
@@ -538,5 +539,81 @@ router.post('/order/update-status-order/:id', async (req, res) => {
       res.redirect('/admin/order');
   }
 });
+router.get('/account/customer', async (req,res) =>{
+  const customer = await CustomerModel.find().lean()
+  console.log(customer)
 
+  res.render('admin/account/customer',{
+    layout: 'admin/layout/layout',
+    customer
+  })
+})
+// Staff
+router.get('/account/staff', async (req,res) =>{
+  const staff = await StaffModel.find().lean()
+  console.log(staff)
+
+  res.render('admin/account/staff',{
+    layout: 'admin/layout/layout',
+    staff
+  })
+})
+router.get('/account/staff/add-staff', async (req,res) =>{
+  res.render("admin/account/staff/add-staff" , {
+    layout: "admin/layout/layout",
+    })
+})
+router.post('/account/staff/add-staff', async (req,res) =>{
+  const name = req.body.name
+  const email = req.body.email
+  const password = req.body.password
+    
+    try {
+        let info = {
+            id: await StaffModel.countDocuments() + 1,
+            email: email,
+            name: name,
+            password: password
+        }
+        await StaffModel.create(info);
+        res.redirect('/admin/account/staff')
+    } catch (errors) {
+        console.log(errors)
+        res.redirect('/admin/account/staff')
+    }
+})
+router.get('/account/staff/update-staff/:id', async (req,res) =>{
+  const staffId = req.params.id
+  const updateStaff = await StaffModel.findById(staffId).lean()
+
+  res.render('admin/account/staff/update-staff', {
+    layout: 'admin/layout/layout',
+    updateStaff: updateStaff
+  })
+})
+router.post('/account/staff/update-staff/:id', async (req,res) =>{
+  try {
+    const staffId = req.params.id;
+    const email = req.body.email
+    const name = req.body.name
+    const password = req.body.password
+
+    await StaffModel.findByIdAndUpdate(staffId, {
+      email: email,
+      name: name,
+      password: password
+    });
+
+    res.redirect("/admin/account/staff")
+} catch (errors) {
+    console.log(errors)
+    res.redirect('/admin/account/staff')
+}
+})
+router.post('/account/staff/delete-staff/:id', async (req,res) => {
+  const staffId = req.params.id;
+  await StaffModel.findByIdAndDelete(staffId).lean();
+  
+  res.redirect("/admin/account/staff");
+})
 module.exports = router;

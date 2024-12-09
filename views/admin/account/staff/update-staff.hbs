@@ -1,0 +1,98 @@
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4">Update Staff</h2>
+        
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{updateStaff.email}}">
+            </div>
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{updateStaff.name}}">
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="password" name="password" value="{{updateStaff.password}}">
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-secondary" id="generate-password">Auto-generate</button>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <form action="/admin/account/staff/update-staff/{{updateStaff._id}}" method="POST">
+            <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+            <br>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
+              Delete
+            </button>
+            
+            <!-- Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                            <div class="modal-header">
+                                    <h5 class="modal-title">Confirmation</h5>
+                                </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                Are you sure want to delete this staff?
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <form action="/admin/account/staff/delete-staff/{{updateStaff._id}}" method="POST">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <script>
+                $('#exampleModal').on('show.bs.modal', event => {
+                    var button = $(event.relatedTarget);
+                    var modal = $(this);
+                    // Use above variables to manipulate the DOM
+                    
+                });
+            </script>
+            <br>
+            <br>
+    
+    </div>
+</body>
+<style>
+        
+        .container {
+            max-width: 400px; 
+            margin-top: 50px;
+            outline: 2px solid black;
+        }
+        .form-group input {
+            font-size: 14px;
+        }
+        button {
+            font-size: 14px;
+        }
+</style>
+<script>
+        // Hàm tạo mật khẩu ngẫu nhiên
+        function generatePassword(length = 4) {
+            const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+            let password = "";
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * charset.length);
+                password += charset[randomIndex];
+            }
+            return password;
+        }
+
+        // Gán chức năng tạo mật khẩu tự động cho nút
+        document.getElementById('generate-password').addEventListener('click', function() {
+            const passwordField = document.getElementById('password');
+            passwordField.value = generatePassword(6);
+        });
+    </script>

@@ -1,0 +1,61 @@
+                        <main>
+                            <div class="container-fluid px-4">
+                        <h1 class="mt-4">Staff</h1>
+                        
+                        
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Action</h6>
+                            </div>
+                            <div class="card-body">
+                                <a href="/admin/account/staff/add-staff" class="btn btn-success btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        <i class="fas fa-plus"></i>
+                                    </span>
+                                    <span class="text">Add new staff</span>
+                                </a>
+                            </div>
+                        </div>
+                            <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-table me-1"></i>
+                                Staff Management
+                            </div>
+                            
+                            <div class="card-body">
+                                <table id="datatablesSimple">
+                                    <thead>
+                                        <tr>
+                                            <th>Email</th>
+                                            <th>Name</th>
+                                            <th>Phone number</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Email</th>
+                                            <th>Name</th>
+                                            <th>Phone number</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        {{#each staff}}
+                                        <tr>
+                                            <td>{{email}}</td>
+                                            <td>{{name}}</td>
+                                            <td>{{phone_number}}</td>
+                                            <td>
+                                                <a href="/admin/account/staff/update-staff/{{_id}}">
+                                                <iconify-icon icon="icon-park:edit-two" width="32" height="32"></iconify-icon>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {{/each}}
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+</main>

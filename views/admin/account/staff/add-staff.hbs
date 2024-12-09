@@ -1,0 +1,60 @@
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4">Add Staff</h2>
+        <form action="/admin/account/staff/add-staff" method="POST">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="password" name="password" required>
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-secondary" id="generate-password">Auto-generate</button>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Create</button>
+            <br>
+            <br>
+        </form>
+    </div>
+</body>
+<style>
+        
+        .container {
+            max-width: 400px; 
+            margin-top: 50px;
+            outline: 2px solid black;
+        }
+        .form-group input {
+            font-size: 14px;
+        }
+        button {
+            font-size: 14px;
+        }
+</style>
+<script>
+        // Hàm tạo mật khẩu ngẫu nhiên
+        function generatePassword(length = 4) {
+            const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+            let password = "";
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * charset.length);
+                password += charset[randomIndex];
+            }
+            return password;
+        }
+
+        // Gán chức năng tạo mật khẩu tự động cho nút
+        document.getElementById('generate-password').addEventListener('click', function() {
+            const passwordField = document.getElementById('password');
+            passwordField.value = generatePassword(6);
+        });
+    </script>
