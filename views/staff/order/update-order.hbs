@@ -97,7 +97,7 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <form action="/admin/order/update-status-order/{{this.updateOrder._id}}" method="POST">
+                                    <form action="/staff/update-status-order/{{this.updateOrder._id}}" method="POST">
                                     <input type="hidden" name="action" value="accept">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     <button type="submit" class="btn btn-success">Accept</button>
@@ -125,7 +125,7 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <form action="/update-status-order/{{this.updateOrder._id}}" method="POST">
+                                    <form action="staff/update-status-order/{{this.updateOrder._id}}" method="POST">
                                     <input type="hidden" name="action" value="refuse">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     <button type="submit" class="btn btn-danger">Refuse</button>
@@ -150,7 +150,7 @@
                 
             </div>
             <hr>
-            <a href="/admin/order" class="btn btn-warning" data-abc="true"> <i class="fa fa-chevron-left"></i> Back to orders</a>
+            <a href="/staff/order" class="btn btn-warning" data-abc="true"> <i class="fa fa-chevron-left"></i> Back to orders</a>
         </div>
     </article>
 </div>
