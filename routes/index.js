@@ -77,26 +77,42 @@
     }
   })
   router.get('/search', async (req, res) => {
+    const customerEmail = req.session.email; // Get email from session
+  
+      // Fetch customer ID based on email
+      const customer = await CustomerModel.findOne({ email: customerEmail });
     const searchQuery = req.query.key || '';
     const page = parseInt(req.query.page) || 1;
     const pageSize = 10;
-    
+    const category = await CategoryModel.find().lean()
     // Truy vấn tìm kiếm trong cơ sở dữ liệu
     const products = await ProductModel.find({
       name: { $regex: searchQuery, $options: 'i' }
     })
     .skip((page - 1) * pageSize)
-    .limit(pageSize);
-    
+    .limit(pageSize).lean();
+    const productBigData = await Promise.all(products.map(async (product) => {
+        
+      const imagesDirectory = path.join(__dirname, product.photo);
+      const imageFiles = getImageFiles(imagesDirectory);
+      const imagesWithUrls = imageFiles.map((file) => `/uploads/${product._id}/${file}`);
+
+      return {
+        ...product,
+        images: imagesWithUrls,
+      };
+    }));
     const totalProducts = await ProductModel.countDocuments({
       name: { $regex: searchQuery, $options: 'i' }
     });
     
     res.render('site/search', {
-      products,
+      products: productBigData,
       searchQuery,
+      category,
       totalPages: Math.ceil(totalProducts / pageSize),
-      currentPage: page
+      currentPage: page,
+      customer
     });
   });
   module.exports = router;

@@ -3,6 +3,7 @@ var router = express.Router();
 
 const AdminModel = require('../models/admin');
 const CustomerModel = require('../models/customer')
+const StaffModel = require('../models/staff')
 const RoleModel = require('../models/roles')
 
 router.get("/", function (req, res, next) {
@@ -15,16 +16,16 @@ router.post("/login", async (req, res) => {
     console.log(role)
     try {
       var admin = await AdminModel.findOne({
-            email: email,
-            password: password,
-          }).lean();
-          if (admin) {
-            var role = await RoleModel.findById(admin.roleID).lean();
-            if (role && role.roleName == "admin") {
-              req.session.email = admin.email;
-              return res.redirect("/admin");
-            }
-          }
+        email: email,
+        password: password,
+      }).lean();
+      if (admin) {
+        var role = await RoleModel.findById(admin.roleID).lean();
+        if (role && role.roleName == "admin") {
+          req.session.email = admin.email;
+          return res.redirect("/admin");
+        }
+      }
       var customer = await CustomerModel.findOne({
         email: email,
         password: password,
@@ -34,6 +35,17 @@ router.post("/login", async (req, res) => {
         if (role && role.roleName == "customer") {
           req.session.email = customer.email;
           return res.redirect("/");
+        }
+      }
+      var staff = await StaffModel.findOne({
+        email: email,
+        password: password,
+      }).lean();
+      if (staff) {
+        var role = await RoleModel.findById(staff.roleID).lean();
+        if (role && role.roleName == "staff") {
+          req.session.email = staff.email;
+          return res.redirect("/staff");
         }
       }
       res.render('auth', { 

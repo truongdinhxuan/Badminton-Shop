@@ -1,0 +1,165 @@
+<main>
+                    <div class="container-fluid px-4">
+                        <h1 class="mt-4">Tables</h1>
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Tables</li>
+                        </ol>
+                        <div class="row">
+                        {{#if countReport}}
+                        <div class="col-xl-3 col-md-6">
+                        <div class="card text-white bg-danger mb-3" style="max-width: 18rem;">
+                        <div class="card-header"><i class="fas fa-exclamation-circle"></i> Request</div>
+                        <div class="card-body">
+                            <p class="card-text">{{countReport}} request for return/refund</p>
+                        </div>
+                        </div>
+                        </div>
+                        {{else}}
+                        <div class="col-xl-3 col-md-6">
+                        <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+                        <div class="card-header">Request</div>
+                        <div class="card-body">
+                            <p class="card-text">0 request for return/refund </p>
+                        </div>
+                        </div>
+                        </div>
+                        {{/if}}
+
+                        {{#if countCanceledOrder}}
+                        <div class="col-xl-3 col-md-6">
+                        <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+                        <div class="card-header"><i class="fas fa-ban"></i> Cancelled</div>
+                        <div class="card-body">
+                            <p class="card-text">{{countCanceledOrder}} cancelled order need to payback</p>
+                        </div>
+                        </div>
+                        </div>
+                        {{else}}
+                        <div class="col-xl-3 col-md-6">
+                        <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+                        <div class="card-header"><i class="fas fa-ban"></i> Cancelled</div>
+                        <div class="card-body">
+                            <p class="card-text">0 cancelled order need to payback</p>
+                        </div>
+                        </div>
+                        </div>
+                        {{/if}}
+                        </div>
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3 m-1">
+                                <h6 class="m-0 font-weight-bold text-danger">Danger Zone</h6>
+                            </div>
+                            <div class="card-body">
+                                {{!-- <a href="/admin/add-category" class="btn btn-success btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        <i class="fas fa-plus"></i>
+                                    </span>
+                                    <span class="text">Add new category</span>
+                                </a> --}}
+                                {{!-- <a href="/admin/delete-all-category" class="btn btn-danger btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        <i class="fas fa-trash"></i>
+                                    </span>
+                                    <span class="text">Delete all</span>
+                                </a> --}}
+                                <a href="/admin/order/isdeleted">View deleted order</a>
+                            </div>
+                        </div>
+
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-table me-1"></i>
+                                Category Table
+                            </div>
+                            
+                            <div class="card-body">
+                                <table id="datatablesSimple">
+                                    <thead>
+                                        <tr>
+                                            <th>Order Code</th>
+                                            <th>Buyer name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Address</th>
+                                            <th>Country</th>
+                                            <th>Note</th>
+                                            <th>Amount</th>
+                                            <th>Payment method</th>
+                                            <th>Note</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Order Code</th>
+                                            <th>Buyer name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Address</th>
+                                            <th>Country</th>
+                                            <th>Note</th>
+                                            <th>Amount</th>
+                                            <th>Payment method</th>
+                                            <th>Note</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        {{#each order}}
+                                        <tr>
+                                            <td>
+                                                {{#if reportTitle}}  {{!-- display if isaccept = false --}}
+                                                    <b>{{orderCode}}</b> <i class="fas fa-exclamation-circle" style="color:red"></i>
+                                                {{else iscancelled}}
+                                                    <b>{{orderCode}}</b> <i class="fas fa-ban" style="color: rgb(0, 0, 255)"></i>
+                                                {{else}}
+                                                    {{orderCode}}
+                                                {{/if}}
+                                            </td>
+
+                                            <td>{{buyerName}}</td>
+                                            <td>{{buyerEmail}}</td>
+                                            <td>{{buyerPhone}}</td>
+                                            <td>{{buyerAddress}}</td>
+                                            <td>{{buyerCountry}}</td>
+                                            <td>{{buyerNote}}</td>
+                                            <td>{{amount}}</td>
+                                            <td>{{paymentMethod}}</td>
+                                            <td>{{note}}</td>
+                                            <td>
+                                                <b>{{statusName}}</b>
+                                            </td>  
+                                            <td>
+                                                <a href="/admin/update-order/{{_id}}">
+                                                <iconify-icon icon="icon-park:edit-two" width="32" height="32"></iconify-icon>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {{/each}}
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const table = new simpleDatatables.DataTable("#datatablesSimple");
+
+    // Áp dụng CSS sau khi bảng được khởi tạo
+    table.on('datatable.init', () => {
+        document.querySelectorAll('#datatablesSimple tbody tr').forEach((row) => {
+            const td = row.querySelector('td'); // Cột đầu tiên
+            if (td && td.innerText.includes('Report')) {
+                td.classList.add('has-report');
+        });
+    });
+});
+
+<style>
+    
+</style>

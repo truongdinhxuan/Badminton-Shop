@@ -7,7 +7,7 @@
   <div class="container">
     <div class="row">
       <div class="col-12">
-        <h2 class="text-center mb-4">Order Management</h2>
+        <h2 class="text-center mb-4">Order List</h2>
       </div>
       <div class="col-12">
         <div class="tab-content">
@@ -30,18 +30,23 @@
                     {{#each data}}
                       <tr>
                         <td class="text-center">
-                          <a href="/order/{{orderCode}}" class="text-decoration-none">{{orderCode}}</a>
+                          <a href="/order/{{orderCode}}" class="text-decoration-none"><b>{{orderCode}}</b></a>
                         </td>
                         <td class="text-center">
+                        {{#if items}}
                           {{#each items}}
-                          {{#if @first}}
-                          <p>{{truncate this.item.name 15}}</p>
-                          {{/if}}
+                            {{#if @first}}
+                              <p>{{truncate this.item.name 15}}</p>
+                            {{/if}}
                           {{/each}}
+
                           {{#if (gt (length items) 1)}}
-                          <span class="more-items">+{{subtract (length items) 1}} more</span>
+                            <span class="more-items">+{{subtract (length items) 1}} more</span>
                           {{/if}}
-                        </td>
+                        {{else}}
+                          <p>No items available</p>
+                        {{/if}}
+                      </td>
                         <td class="text-center">{{amount}} vnd</td>
                         <td class="text-center">{{paymentMethod}}</td>
                         <td class="text-center">

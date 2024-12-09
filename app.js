@@ -73,14 +73,17 @@ app.use((req, res, next) => {
 });
 
 // Middleware to check admin session
-const { checkAdminSession } = require("./middlewares/auth");
+const { checkAdminSession, checkStaffSession } = require("./middlewares/auth");
+
 app.use("/admin", checkAdminSession);
+app.use("/staff", checkStaffSession);
 
 
 // Routes
 app.use('/', require('./routes/index'));
 app.use('/admin', require('./routes/admin'));
 app.use('/auth', require('./routes/auth'));
+app.use('/staff', require('./routes/staff'));
 app.use('/account', require('./routes/account'));
 app.use('/product', require('./routes/product'));
 app.use('/cart', require('./routes/cart'));

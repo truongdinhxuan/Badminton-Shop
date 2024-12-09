@@ -229,8 +229,13 @@
                 aria-controls="offcanvasCart" --}}
                 >
                 <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
-                <span class="position-absolute translate-middle badge rounded-circle bg-primary pt-2">
-                  {{session.cart.totalQty}}
+                <span class="position-absolute translate-middle badge rounded-circle pt-2
+                  {{#if session.cart.totalQty}}
+                            bg-primary  
+                    {{/if}}">
+                      {{#if session.cart.totalQty}}
+                        {{session.cart.totalQty}}
+                      {{/if}}
                 </span>
               </a>
             </li>
@@ -333,9 +338,19 @@
                 <li>
                   {{!-- Auth --}}
                   {{#if customer}}
-                  <a href="/account" class="mx-3">
-                    <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
-                  </a>
+                  <li class="nav-item dropdown">
+                <a class="nav-link" role="button" id="pages" data-bs-toggle="dropdown"
+                  aria-expanded="false"><iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon></a>
+                <ul class="dropdown-menu" aria-labelledby="pages">
+                  {{!-- Pages dropdown --}}
+                  <li>
+                    <a href="/account/profile" class="dropdown-item">Profile</a>
+                  </li>
+                  <li>
+                    <a href="/account/order" class="dropdown-item">My Order</a>
+                  </li>
+                </ul>
+              </li>
                   <a href="/auth/logout" class="mx-3">
                     <iconify-icon icon="material-symbols:logout" class="fs-4"></iconify-icon>
                   </a>

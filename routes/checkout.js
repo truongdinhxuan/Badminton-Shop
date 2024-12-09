@@ -114,7 +114,7 @@ router.get('/cancel' , async (req,res) => {
       await newOrder.save();
       //remote cart session
       req.session.cart = { items: {}, totalQty: 0, totalPrice: 0 };
-      res.redirect('/account')
+      res.redirect('/account/order')
     } else {
       res.render('checkout',{
         layout: 'layout',

@@ -1,7 +1,8 @@
 
 const AdminModel = require('../models/admin')
 const CustomerModel = require('../models/customer')
-const RoleModel = require('../models/roles')
+const StaffModel = require('../models/staff');
+const RoleModel = require('../models/roles');
 
 const checkLoginSession = (req, res, next) => {
     if (req.session.email) {
@@ -36,6 +37,18 @@ const checkCustomerSession = async (req, res, next) => {
     return;
   }
 };
+const checkStaffSession = async (req, res, next) => {
+  var staff = await StaffModel.findOne({ email: req.session.email });
+  if (staff) {
+    var role = await RoleModel.findById(staff.roleID);
+    if (req.session.email && role && role.roleName == "staff") {
+      next();
+    }
+  } else {
+    res.redirect("/auth");
+    return;
+  }
+};
 // const checkCustomerSession = async (req, res, next) => {
 //   const user = await UserModel.findOne({ email: req.session.email });
 //   if (!user) {
@@ -60,5 +73,6 @@ module.exports={
   checkLoginSession,
   checkAdminSession,
   checkCustomerSession,
+  checkStaffSession,
   checkMultipleSession
 }

@@ -24,22 +24,22 @@ const getImageFiles = (directory) => {
     return [];
   }
 };
-router.get('/', async (req, res) => {
+// router.get('/', async (req, res) => {
 
-    const customerEmail = req.session.email; // Get email from session
-      // Fetch customer ID based on email
-    const customer = await CustomerModel.findOne({ email: customerEmail }).lean();
-    if (!customer) {
-      // Handle the case where no customer is found (e.g., redirect to login)
-      return res.redirect('/auth'); 
-    }
-    res.render('account', {
-      layout: 'layout',
-      // data, // Send the array of orders to the view,
-      customer: customer,
-      // bank: bank.bank
-    });
-  })
+//     const customerEmail = req.session.email; // Get email from session
+//       // Fetch customer ID based on email
+//     const customer = await CustomerModel.findOne({ email: customerEmail }).lean();
+//     if (!customer) {
+//       // Handle the case where no customer is found (e.g., redirect to login)
+//       return res.redirect('/auth'); 
+//     }
+//     res.render('account', {
+//       layout: 'layout',
+//       // data, // Send the array of orders to the view,
+//       customer: customer,
+//       // bank: bank.bank
+//     });
+//   })
 router.get('/profile', async (req, res) => {
   const customerEmail = req.session.email; // Get email from session
   // Fetch customer ID based on email
@@ -95,7 +95,6 @@ router.get('/order', async (req, res) => {
   
       // Find orders associated with the customer
       const orders = await OrderModel.find({ buyerId: customerId, isDelete: false }).sort({orderDate: -1}).lean();
-  
       // Check if orders exist
       if (!orders || orders.length === 0) { 
         return res.render('account/order', {
@@ -117,12 +116,6 @@ router.get('/order', async (req, res) => {
               if (!item) {
                 return null;
               }
-  
-              // Fetch category and brand information
-              const category = await CategoryModel.findOne({ id: item.categoryId }).lean();
-              const brand = await BrandModel.findOne({ id: item.brandId }).lean();
-              console.log(category)
-              
               // Process images
               const imagesDirectory = path.join(__dirname, '..', 'public', 'uploads', item._id.toString());
               let imagesWithUrls = [];
@@ -137,8 +130,6 @@ router.get('/order', async (req, res) => {
                 ...itemObj,
                 item: {
                   ...item,
-                  categoryName: category ? category.name : 'Unknown Category',
-                  brandName: brand ? brand.name : 'Unknown Brand',
                   image: imagesWithUrls,
                 },
               };
@@ -166,12 +157,14 @@ router.get('/order', async (req, res) => {
         ...order,
         status: statusMap[order.statusId] || null,
       }));
-  
+
+      const category = await CategoryModel.find().lean()
       // Render the view
       res.render('account/order', {
         layout: 'layout',
         data, // Send the array of orders to the view
         customer,
+        category
       });
     } catch (error) {
       console.error('Error fetching orders:', error.message);

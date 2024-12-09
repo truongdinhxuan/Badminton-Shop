@@ -66,7 +66,7 @@ router.get('/detail/:urlRewriteName', async (req, res) => {
     try {
         // 1. Fetch the specific product
         const product = await ProductModel.findOne({ urlRewriteName }).lean(); // Changed to findOne
-
+        console.log(product)
         // 2. Handle Image Processing ONLY for the found product
         const imagesDirectory = path.join(__dirname, product.photo);
         const imageFiles = getImageFiles(imagesDirectory);
