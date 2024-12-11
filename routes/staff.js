@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const { checkLoginSession } = require("../middlewares/auth");
+const CustomerModel = require('../models/customer')
 const StaffModel = require('../models/staff')
 const OrderModel = require('../models/order')
 const ProductModel = require('../models/product')
@@ -55,9 +56,10 @@ router.get('/order', async (req ,res) => {
       countCanceledOrder: countCanceledOrder
     })
   })
-  router.get('/update-order/:id', async (req,res) => {
+router.get('/update-order/:id', async (req,res) => {
     const orderId = req.params.id
     const updateOrder = await OrderModel.findById(orderId).lean()
+    const order_need_to_refund = updateOrder.paymentMethod==='bank' && updateOrder.statusId===11
     let orderCode = updateOrder.orderCode
     const status = await StatusModel.find({}).lean()
     const report = await ReportModel.findOne({ orderId: orderCode }).lean();
@@ -66,17 +68,39 @@ router.get('/order', async (req ,res) => {
   
     let activeSteps = [];
     let showreturnsteps = false;
-  
-    if (updateOrder.statusId >= 6 && updateOrder.statusId <= 10) {
+    let showcancelsteps = false;
+    let showrefusesteps = false;
+    let showrefundcompletesteps = false;
+    if (updateOrder.statusId >= 6 && updateOrder.statusId <= 12) {
       showreturnsteps = true; // Hiển thị bước hoàn trả hàng nếu status là 6, 7, hoặc 8
+    }
+    if (updateOrder.statusId == 11) {
+      showcancelsteps = true
+    }
+    if (updateOrder.statusId == 8) {
+      showrefusesteps = true
+    }
+    if (updateOrder.statusId == 12) {
+      showrefundcompletesteps = true
     }
     // hoàn trả
     if (updateOrder.statusId === 6) {
       activeSteps = [6]
     } else if (updateOrder.statusId === 7) {
       activeSteps = [6,7]
+    // refuse step
     } else if (updateOrder.statusId === 8) {
-      activeSteps = [6,7.8]
+      activeSteps = [8]
+    } else if (updateOrder.statusId === 9) {
+      activeSteps = [6,7,9]
+    } else if (updateOrder.statusId === 10) {
+      activeSteps = [6,7,9,10]
+    // show only refund step
+    } else if (updateOrder.statusId === 12) {
+      activeSteps = [12]
+    // Cancel step
+    } else if (updateOrder.statusId === 11) {
+      activeSteps = [11]
     // giao hàng
     } else if (updateOrder.statusId === 1) {
       activeSteps = [1]; // chỉ step 1 active
@@ -90,10 +114,8 @@ router.get('/order', async (req ,res) => {
       activeSteps = [1,2,3,4,5]
     }
   
-    // const formatMoney = new Intl.NumberFormat('vi-VI', {
-    //   style: 'currency',
-    //   currency: 'VND'
-    // }).format(updateOrder.amount)
+    const customer = await CustomerModel.findOne({id: updateOrder.buyerId}).lean()
+
     
     res.render('staff/order/update-order', {
       layout: 'staff/layout',
@@ -103,10 +125,14 @@ router.get('/order', async (req ,res) => {
       report: report,
       activeSteps: activeSteps,
       showreturnsteps: showreturnsteps,
-     
+      showcancelsteps: showcancelsteps,
+      showrefusesteps: showrefusesteps,
+      showrefundcompletesteps: showrefundcompletesteps,
+      order_need_to_refund,
+      customer
     })
   })
-  router.post('/update-order/:id', async (req, res) => {
+router.post('/update-order/:id', async (req, res) => {
     try { 
       const orderId = req.params.id;
       const data = req.body;
@@ -128,12 +154,45 @@ router.get('/order', async (req ,res) => {
       res.redirect('/staff');
     }
   });
-  router.post('/update-status-order/:id', async (req, res) => {
+router.post('/update-status-order/:id', async (req, res) => {
     try {
         // Get the order ID from the URL
         const id = req.params.id;
-        const newStatusId = req.body.action === 'accept' ? 7 : 8; // Example: 7 for "Accepted", 8 for "Refused"
+        let newStatusId = req.body.newStatusId;
+        // const newStatusId = req.body.action === 'accept' ? 7 : 8; // Example: 7 for "Accepted", 8 for "Refused"
         
+        switch (newStatusId) {
+          case 'confirm':
+              newStatusId = 2; // Order confirmed
+              break;
+          case 'pack':
+              newStatusId = 3; // Packing order
+              break;
+          case 'deliver':
+              newStatusId = 4; // Delivering
+              break;
+          case 'delivered':
+              newStatusId = 5; // Delivering
+              break;
+          case 'accept':
+              newStatusId = 7 //acpt
+            break;
+          case 'return':
+            newStatusId = 9 
+          break;
+          case 'arrived':
+              newStatusId = 10 //acpt
+            break;
+          case 'refuse':
+              newStatusId = 8 //rf
+            break;  
+          case 'refunded':
+              newStatusId = 12 //rf
+            break;  
+          default:
+              req.flash('error', 'Invalid action.');
+              return res.redirect(`/staff/update-order/${id}`);
+      }
         // Update the order's status
         const updatedOrder = await OrderModel.findOneAndUpdate(
             { _id: id },
@@ -142,22 +201,24 @@ router.get('/order', async (req ,res) => {
         );
   
         if (updatedOrder) {
-            // If the order is updated, proceed to update the report
-            const report = await ReportModel.findOne({ orderId: updatedOrder.orderCode }).lean(); // Use orderCode from OrderModel to find the report
-            if (report) {
-                // Update isAccepted status in ReportModel
-                await ReportModel.findOneAndUpdate(
-                    { orderId: updatedOrder.orderCode }, // Ensure the report is matched using orderCode
-                    { isAccepted: req.body.action === 'accept' }, // Set isAccepted based on the action (accept or not)
-                    { new: true }
-                );
-                req.flash('success', `Order status updated to ${newStatusId === 7 ? 'Accepted' : 'Refused'}`);
-            } else {
-                req.flash('error', 'Report not found for the order.');
-            }
-        } else {
-            req.flash('error', 'Order not found or could not be updated.');
-        }
+          // Nếu đơn hàng đã được cập nhật, kiểm tra và cập nhật báo cáo
+          const report = await ReportModel.findOne({ orderId: updatedOrder.orderCode }).lean();
+          if (report) {
+              // Chỉ cập nhật trường isAccepted nếu trạng thái là 'accept'
+              if (newStatusId === 7 || newStatusId === 8) { // Chỉ cập nhật isAccepted nếu trạng thái là "Accepted"
+                  await ReportModel.findOneAndUpdate(
+                      { orderId: updatedOrder.orderCode },
+                      { isAccepted: true },
+                      { new: true }
+                  );
+              }
+              req.flash('success', `Order status updated to ${newStatusId === 7 ? 'Accepted' : 'Refused'}`);
+          } else {
+              req.flash('error', 'Report not found for the order.');
+          }
+      } else {
+          req.flash('error', 'Order not found or could not be updated.');
+      }
   
         // Redirect back to the orders page
         res.redirect(`/staff/update-order/${id}`);
@@ -167,7 +228,7 @@ router.get('/order', async (req ,res) => {
         res.redirect('/staff/order');
     }
   });
-  router.get('/order/isdeleted', async (req,res) => {
+router.get('/order/isdeleted', async (req,res) => {
     const deleteOrder = await OrderModel.find({statusId: 11}).lean()
   
     res.render('staff/order/isdeleted',{

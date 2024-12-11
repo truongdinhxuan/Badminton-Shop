@@ -12,23 +12,106 @@
                 </div>
             </article>
             <div class="track">
+                {{!-- Show cancel step --}}
+                {{#if showcancelsteps}}
+                <div class="step canceled {{#if (includes activeSteps 11)}}active{{/if}}"> 
+                    <span class="icon"> <i class="fa fa-ban"></i> </span> 
+                    <span class="text">Order is canceled</span> 
+                    {{#if order_need_to_refund}}
+                    <input type="hidden" name="newStatusId" value="refunded">
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#checkModelId">
+                            Refund information
+                            </button>
+                            <!-- Modal -->
+                            <div class="modal fade" id="checkModelId" tabindex="-1" role="dialog" aria-labelledby="checkModelLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                            <div class="modal-header">
+                                                    <h5 class="modal-title">- Refund information -</h5>
+                                                </div>
+                                        <div class="modal-body">
+                                        <h5>Total money you need to refund:  <b style="color: red;">{{updateOrder.amount}}</b> vnd </h5>
+                                        <hr>
+                                        <div class="card-body">
+                                            <h4><b>{{customer.bank_name}}</b></h4>
+                                            <h4><b>{{customer.bank_account_number}}</b></h4>
+                                            <h4><b>{{customer.name}}</b></h4>
+                                            *please check carefully before refund
+                                        </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <form method="POST" action="/staff/update-status-order/{{updateOrder._id}}">
+                                            <input type="hidden" name="newStatusId" value="refunded">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-success">Complete</button>
+                                            </form> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    {{/if}}
+                    </div>
+                {{else if showrefundcompletesteps}}
+                    <div class="step {{#if (includes activeSteps 12)}}active{{/if}}"> 
+                    <span class="icon"> <i class="fa fa-check-circle"></i> </span> 
+                    <span class="text">Refund complete</span> 
+                    </div>
+                {{else if showrefusesteps}}
+                <div class="step canceled {{#if (includes activeSteps 8)}}active{{/if}}"> 
+                    <span class="icon"> <i class="fa fa-ban"></i> </span> 
+                    <span class="text">Refuse the return/refund</span> 
+                </div>
+                {{else}}
                 {{!-- Các bước giao hàng --}}
                 {{#unless showreturnsteps}}
                     <div class="step {{#if (includes activeSteps 1)}}active{{/if}}"> 
                     <span class="icon"> <i class="fa fa-ellipsis-h"></i> </span> 
-                    <span class="text">Pending order</span> 
+                    <span class="text">Pending order</span>
+                    {{#ifEq selectedStatus.id 1}}
+                    <form method="POST" action="/staff/update-status-order/{{updateOrder._id}}">
+                        <input type="hidden" name="newStatusId" value="confirm">
+                        <button type="submit" class="btn btn-success">
+                            <u>Confirm the order</u>
+                        </button>
+                    </form>
+                    {{/ifEq}}
                     </div>
                     <div class="step {{#if (includes activeSteps 2)}}active{{/if}}"> 
                     <span class="icon"> <i class="fa fa-check"></i> </span> 
-                    <span class="text">Order onfirmed</span> 
+                    <span class="text">Order onfirmed</span>
+                    {{#ifEq selectedStatus.id 2}}
+                    <form method="POST" action="/staff/update-status-order/{{updateOrder._id}}">
+                        <input type="hidden" name="newStatusId" value="pack">
+                        <button type="submit" class="btn btn-info">
+                            <u>Ready to pack</u>
+                        </button>
+                    </form>
+                    {{/ifEq}}
                     </div>
                     <div class="step {{#if (includes activeSteps 3)}}active{{/if}}"> 
                     <span class="icon"> <i class="fa fa-box"></i> </span> 
                     <span class="text">Packing order</span> 
+                    {{#ifEq selectedStatus.id 3}}
+                    <form method="POST" action="/staff/update-status-order/{{updateOrder._id}}">
+                        <input type="hidden" name="newStatusId" value="deliver">
+                        <button type="submit" class="btn btn-info">
+                            <u>Ready to deliver</u>
+                        </button>
+                    </form>
+                    {{/ifEq}}
                     </div>
                     <div class="step {{#if (includes activeSteps 4)}}active{{/if}}"> 
                     <span class="icon"> <i class="fa fa-truck"></i> </span> 
-                    <span class="text">Delivering</span> 
+                    <span class="text">Delivering</span>
+                    {{#ifEq selectedStatus.id 4}}
+                    <form method="POST" action="/staff/update-status-order/{{updateOrder._id}}">
+                        <input type="hidden" name="newStatusId" value="delivered">
+                        <button type="submit" class="btn btn-info">
+                            <u>Deliver successfully</u>
+                        </button>
+                    </form>
+                    {{/ifEq}} 
                     </div>
                     <div class="step {{#if (includes activeSteps 5)}}active{{/if}}"> 
                     <span class="icon"> <i class="fa fa-box-open"></i> </span> 
@@ -42,17 +125,84 @@
                     <span class="icon"> <i class="fa fa-arrow-left"></i> </span> 
                     <span class="text">Request a refund</span> 
                     </div>
+                    {{!--  --}}
                     <div class="step {{#if (includes activeSteps 7)}}active{{/if}}"> 
                     <span class="icon"> <i class="fa fa-reply"></i> </span> 
                     <span class="text">Accept the refund</span> 
+                    {{#ifEq selectedStatus.id 7}}
+                    <form method="POST" action="/staff/update-status-order/{{updateOrder._id}}">
+                        <input type="hidden" name="newStatusId" value="return">
+                        <button type="submit" class="btn btn-primary">
+                            <u>Ready to return</u>
+                        </button>
+                    </form>
+                    {{/ifEq}}
+                    {{!--  --}}
                     </div>
-                    <div class="step {{#if (includes activeSteps 8)}}active{{/if}}"> 
-                    <span class="icon"> <i class="fa fa-check-circle"></i> </span> 
-                    <span class="text">Refund</span> 
+                    <div class="step {{#if (includes activeSteps 9)}}active{{/if}}"> 
+                    <span class="icon"> <i class="fa fa-repeat"></i> </span> 
+                    <span class="text">Returning to store</span>
+                    {{#ifEq selectedStatus.id 9}}
+                    <form method="POST" action="/staff/update-status-order/{{updateOrder._id}}">
+                        <input type="hidden" name="newStatusId" value="arrived">
+                        <button type="submit" class="btn btn-primary">
+                            <u>Arrived to store</u>
+                        </button>
+                    </form>
+                    {{/ifEq}}
                     </div>
+                    <div class="step {{#if (includes activeSteps 10)}}active{{/if}}"> 
+                    <span class="icon"> <i class="fa fa-check"></i> </span> 
+                    <span class="text">Order has arrived to store</span>
+                    {{#ifEq selectedStatus.id 10}}
+                        <input type="hidden" name="newStatusId" value="check">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#checkModelId">
+                          Refund information
+                        </button>
+                        
+                        <!-- Modal -->
+                        <div class="modal fade" id="checkModelId" tabindex="-1" role="dialog" aria-labelledby="checkModelLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                        <div class="modal-header">
+                                                <h5 class="modal-title">- Refund information -</h5>
+                                            </div>
+                                    <div class="modal-body">
+                                       <h5>Total money you need to refund:  <b style="color: red;">{{updateOrder.amount}}</b> vnd </h5>
+                                       <hr>
+                                    <div class="card-body">
+                                        <h4><b>{{customer.bank_name}}</b></h4>
+                                        <h4><b>{{customer.bank_account_number}}</b></h4>
+                                        <h4><b>{{customer.name}}</b></h4>
+                                        *please check carefully before refund
+                                    </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <form method="POST" action="/staff/update-status-order/{{updateOrder._id}}">
+                                        <input type="hidden" name="newStatusId" value="refunded">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-success">Complete</button>
+                                        </form> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            $('#exampleModal').on('show.bs.modal', event => {
+                                var button = $(event.relatedTarget);
+                                var modal = $(this);
+                                // Use above variables to manipulate the DOM
+                                
+                            });
+                        </script>
+                    {{/ifEq}}
+                    </div>
+                    
                 {{/if}}
+            {{/if}}
         </div>
-
+        <br>
             <hr>
 
             <ul class="row">
@@ -93,12 +243,12 @@
                                         </div>
                                 <div class="modal-body">
                                     <div class="container-fluid">
-                                        Are you sure to accept the refuse?
+                                        Are you sure to accept the return/refund?
                                     </div>
                                 </div>
                                 <div class="modal-footer">
                                     <form action="/staff/update-status-order/{{this.updateOrder._id}}" method="POST">
-                                    <input type="hidden" name="action" value="accept">
+                                    <input type="hidden" name="newStatusId" value="accept">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     <button type="submit" class="btn btn-success">Accept</button>
                                     </form>
@@ -125,8 +275,8 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <form action="staff/update-status-order/{{this.updateOrder._id}}" method="POST">
-                                    <input type="hidden" name="action" value="refuse">
+                                    <form action="/staff/update-status-order/{{this.updateOrder._id}}" method="POST">
+                                    <input type="hidden" name="newStatusId" value="refuse">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     <button type="submit" class="btn btn-danger">Refuse</button>
                                     </form>
@@ -146,9 +296,7 @@
                 {{else}}
                     <p>No report available for this order.</p>
                 {{/if}}
-                
-                
-            </div>
+     </div>
             <hr>
             <a href="/staff/order" class="btn btn-warning" data-abc="true"> <i class="fa fa-chevron-left"></i> Back to orders</a>
         </div>
@@ -172,6 +320,9 @@
         margin: 5px 0;
     }
 </style>
+<script>
+
+</script>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
