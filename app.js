@@ -122,6 +122,9 @@ hbs.registerHelper('truncate', function (str, len) {
   }
   return str;
 });
+hbs.registerHelper('add', function(a, b) {
+  return a + b;
+});
 hbs.registerHelper('subtract', function(a, b) {
   return a - b;
 });
@@ -134,6 +137,7 @@ hbs.registerHelper('lt', function (a, b) {
 hbs.registerHelper('length', function (obj) {
   return Object.keys(obj).length;
 });
+
 
 
 // Catch 404 and forward to error handler

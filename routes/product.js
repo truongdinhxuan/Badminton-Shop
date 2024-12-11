@@ -28,7 +28,18 @@ const getImageFiles = (directory) => {
 router.get('/',async(req,res) =>{
     try {
       // Fetch all products
-      const products = await ProductModel.find().lean();
+      const currentPage = parseInt(req.query.page) || 1;
+    const perPage = 9; // Số lượng sản phẩm mỗi trang
+
+    // Lấy tất cả sản phẩm và phân trang
+    const totalProducts = await ProductModel.countDocuments(); // Đếm tổng số sản phẩm
+    const totalPages = Math.ceil(totalProducts / perPage); // Tính tổng số trang
+
+    // Lấy các sản phẩm cho trang hiện tại (skip và limit)
+    const products = await ProductModel.find()
+      .skip((currentPage - 1) * perPage) // Bỏ qua số sản phẩm trước đó
+      .limit(perPage) // Giới hạn số sản phẩm cho trang hiện tại
+      .lean();
       
       const category = await CategoryModel.find().lean();
 
@@ -54,6 +65,8 @@ router.get('/',async(req,res) =>{
         brand: brand,
         product: productBigData,
         customer: user,
+        currentPage: currentPage, // Trang hiện tại
+        totalPages: totalPages,   // Tổng số trang
       }); 
     } catch (error) { 
       console.error('Error fetching products:', error);
