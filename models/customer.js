@@ -15,7 +15,8 @@ const Model = new mongoose.Schema(
     // bank 
     bank_account_number: String,
     bank_name: String,
-    roleID: String
+    roleID: String,
+    isDisable: Boolean
   }
 );
     

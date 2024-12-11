@@ -1,0 +1,116 @@
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4">Update Customer</h2>
+        <form action="/admin/account/customer/update-customer/{{updateCustomer._id}}" method="POST">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{updateCustomer.email}}">
+                </div>
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="name" class="form-control" id="name" name="name" value="{{updateCustomer.name}}">
+                </div>
+                <div class="form-group">
+                    <label for="phone_number">Phone number:</label>
+                    <input type="phone_number" class="form-control" id="phone_number" name="phone_number" value="{{updateCustomer.phone_number}}">
+                </div>
+                <div class="form-group">
+                    <label for="full_address">Full adress:</label>
+                    <input type="full_address" class="form-control" id="full_address" name="full_address" value="{{updateCustomer.full_address}}">
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="order">Order ordered: {{orderCount}}</label>
+                </div>
+            <br>
+            
+            <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+            <br>
+            <!-- Button trigger modal -->
+            {{#if message}}
+            <p style="color: red;">{{message}}</p>
+            {{/if}}
+            {{#if updateCustomer.isDisable}}
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#deleteModal">
+              Undisable
+            </button>
+            {{else}}
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
+              Disable
+            </button>
+            {{/if}}
+            
+            <!-- Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                            <div class="modal-header">
+                                    <h5 class="modal-title">Confirmation</h5>
+                                </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                Are you sure want to disable this customer?
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            {{#if updateCustomer.isDisable}}
+                            <form action="/admin/account/customer/disable-customer/{{updateCustomer._id}}" method="POST">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success">Undisable</button>
+                            </form>
+                            {{else}}
+                            <form action="/admin/account/customer/disable-customer/{{updateCustomer._id}}" method="POST">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-danger">Disable</button>
+                            </form>
+                            {{/if}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <script>
+                $('#exampleModal').on('show.bs.modal', event => {
+                    var button = $(event.relatedTarget);
+                    var modal = $(this);
+                    // Use above variables to manipulate the DOM
+                    
+                });
+            </script>
+            <br>
+            <br>
+    </div>
+</body>
+<style>
+        
+        .container {
+            max-width: 400px; 
+            margin-top: 50px;
+            outline: 2px solid black;
+        }
+        .form-group input {
+            font-size: 14px;
+        }
+        button {
+            font-size: 14px;
+        }
+</style>
+<script>
+        // Hàm tạo mật khẩu ngẫu nhiên
+        function generatePassword(length = 4) {
+            const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+            let password = "";
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * charset.length);
+                password += charset[randomIndex];
+            }
+            return password;
+        }
+
+        // Gán chức năng tạo mật khẩu tự động cho nút
+        document.getElementById('generate-password').addEventListener('click', function() {
+            const passwordField = document.getElementById('password');
+            passwordField.value = generatePassword(6);
+        });
+    </script>

@@ -7,7 +7,8 @@ const OrderModel = require('../models/order');
 const ProductModel = require('../models/product');
 const AdminModel = require('../models/admin');
 const CustomerModel = require('../models/customer');
-const StaffModel = require('../models/staff');
+const StaffModel = require('../models/staff')
+const RoleModel = require('../models/roles')
 const CategoryModel = require('../models/category');
 const BrandModel = require('../models/brand');
 const StatusModel = require('../models/status');
@@ -539,6 +540,7 @@ router.post('/order/update-status-order/:id', async (req, res) => {
       res.redirect('/admin/order');
   }
 });
+// customer
 router.get('/account/customer', async (req,res) =>{
   const customer = await CustomerModel.find().lean()
   console.log(customer)
@@ -548,6 +550,68 @@ router.get('/account/customer', async (req,res) =>{
     customer
   })
 })
+router.get('/account/customer/update-customer/:id', async (req,res) =>{
+  const customerId = req.params.id
+  const updateCustomer = await CustomerModel.findById(customerId).lean()
+  const orderCount = await OrderModel.countDocuments({buyerId: updateCustomer.id, statusId: 5})
+  console.log(orderCount)
+  res.render('admin/account/customer/update-customer', {
+    layout: 'admin/layout/layout',
+    updateCustomer: updateCustomer,
+    orderCount: orderCount
+  })
+})
+router.post('/account/customer/update-customer/:id', async (req,res) =>{
+  try {
+    const customerId = req.params.id;
+    const email = req.body.email
+    const name = req.body.name
+    const password = req.body.password
+
+    await CustomerModel.findByIdAndUpdate(customerId, {
+      email: email,
+      name: name,
+      password: password
+    });
+
+    res.redirect("/admin/account/customer")
+} catch (errors) {
+    console.log(errors)
+    res.redirect('/admin/account/customer')
+}
+})
+// delete -> disable
+router.post('/account/customer/disable-customer/:id', async (req, res) => {
+  const customerId = req.params.id;
+
+  try {
+    // Tìm khách hàng theo ID
+    const customer = await CustomerModel.findById(customerId);
+
+    // Kiểm tra và thay đổi trạng thái isDisable
+    switch (customer.isDisable) {
+      case true:
+        // Nếu isDisable là true, chuyển thành false
+        await CustomerModel.findByIdAndUpdate(customerId, { isDisable: false });
+        break;
+      case false:
+        // Nếu isDisable là false, chuyển thành true
+        await CustomerModel.findByIdAndUpdate(customerId, { isDisable: true });
+        break;
+      default:
+        // Nếu isDisable không phải là true/false (trường hợp bất thường)
+        res.status(400).send('Invalid state');
+        return;
+    }
+
+    // Sau khi cập nhật, chuyển hướng về trang danh sách khách hàng
+    res.redirect("/admin/account/customer");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 // Staff
 router.get('/account/staff', async (req,res) =>{
   const staff = await StaffModel.find().lean()
@@ -567,13 +631,26 @@ router.post('/account/staff/add-staff', async (req,res) =>{
   const name = req.body.name
   const email = req.body.email
   const password = req.body.password
-    
+  const staffRole = await RoleModel.findOne({roleName: "staff"}).lean();
+  
+  const existingStaff = await StaffModel.findOne({
+    email: email
+
+  })
+  if(existingStaff) {
+    return res.render('admin/account/staff/add-staff',{
+      layout: 'admin/layout/layout',
+      message: 'Duplicate email'
+    })
+  }
+
     try {
         let info = {
             id: await StaffModel.countDocuments() + 1,
             email: email,
             name: name,
-            password: password
+            password: password,
+            roleID: staffRole._id
         }
         await StaffModel.create(info);
         res.redirect('/admin/account/staff')
@@ -597,12 +674,21 @@ router.post('/account/staff/update-staff/:id', async (req,res) =>{
     const email = req.body.email
     const name = req.body.name
     const password = req.body.password
-
+    // const existingStaff = await StaffModel.findOne({
+    //   email: email
+  
+    // })
+    // if(existingStaff) {
+    //   return res.render('admin/account/staff/update-staff',{
+    //     layout: 'admin/layout/layout',
+    //     message: 'Duplicate email'
+    //   })
+    // }
     await StaffModel.findByIdAndUpdate(staffId, {
       email: email,
       name: name,
       password: password
-    });
+    }, { new: true });
 
     res.redirect("/admin/account/staff")
 } catch (errors) {

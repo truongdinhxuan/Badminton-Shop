@@ -1,7 +1,7 @@
 <body>
     <div class="container mt-5">
         <h2 class="mb-4">Update Staff</h2>
-        
+        <form action="/admin/account/staff/update-staff/{{updateStaff._id}}" method="POST">
             <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" class="form-control" id="email" name="email" value="{{updateStaff.email}}">
@@ -20,11 +20,14 @@
                 </div>
             </div>
             <br>
-            <form action="/admin/account/staff/update-staff/{{updateStaff._id}}" method="POST">
+            
             <button type="submit" class="btn btn-primary">Update</button>
             </form>
             <br>
             <!-- Button trigger modal -->
+            {{#if message}}
+            <p style="color: red;">{{message}}</p>
+            {{/if}}
             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
               Delete
             </button>
@@ -61,7 +64,6 @@
             </script>
             <br>
             <br>
-    
     </div>
 </body>
 <style>

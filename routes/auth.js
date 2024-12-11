@@ -33,8 +33,14 @@ router.post("/login", async (req, res) => {
       if (customer) {
         var role = await RoleModel.findById(customer.roleID).lean();
         if (role && role.roleName == "customer") {
-          req.session.email = customer.email;
-          return res.redirect("/");
+          if(customer.isDisable === true) {
+            return res.render('auth', {
+              message: 'Your account is disabled'
+            })
+          } else {
+            req.session.email = customer.email;
+            return res.redirect("/");
+          } 
         }
       }
       var staff = await StaffModel.findOne({
