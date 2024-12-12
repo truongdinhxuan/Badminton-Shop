@@ -40,7 +40,7 @@ router.get('/order', async (req ,res) => {
     // console.log(orderData)
   
     const countReport = await ReportModel.countDocuments({isAccepted: false})
-    const countCanceledOrder = await OrderModel.findOne({statusId: 11, paymentMethod: 'bank'}).countDocuments()
+    const countCanceledOrder = await OrderModel.findOne({statusId: 11, paymentMethod: 'bank', isDelete: false}).countDocuments()
     // const bigData = await Promise.all(orders.map(async (order) => {
     //   const status = await StatusModel.findOne({id: order.statusId}).lean();
     //   return {
