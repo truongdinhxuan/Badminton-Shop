@@ -85,7 +85,7 @@ router.get('/order', async (req, res) => {
       const customerEmail = req.session.email; // Get email from session
   
       // Fetch customer ID based on email
-      const customer = await CustomerModel.findOne({ email: customerEmail }).sort({ orderId: -1 }).lean();
+      const customer = await CustomerModel.findOne({ email: customerEmail }).lean();
       if (!customer) {
         // Handle the case where no customer is found (e.g., redirect to login)
         return res.redirect('/auth');
@@ -94,7 +94,8 @@ router.get('/order', async (req, res) => {
       const customerId = customer.id;
   
       // Find orders associated with the customer
-      const orders = await OrderModel.find({ buyerId: customerId, isDelete: false }).sort({orderDate: -1}).lean();
+      const orders = await OrderModel.find({ buyerId: customerId, isDelete: false }).sort({statusId: 1}).lean();
+      console.log(orders.orderDate)
       // Check if orders exist
       if (!orders || orders.length === 0) { 
         return res.render('account/order', {
@@ -229,6 +230,7 @@ x       5 delivered                   buy again -> return(/cart) cùng với ord
         return res.status(404).send('Order not found');
       }
       let newStatusId;
+      const updatedData = {}
       switch (order.statusId) {
         case 1:
           // Đơn hàng đang ở trạng thái "Chờ xác nhận"
@@ -237,6 +239,7 @@ x       5 delivered                   buy again -> return(/cart) cùng với ord
         // các case sau làm ở đây
         case 2:
           newStatusId = 11;
+          updatedData.buyerNote = "Waiting for refund..."
           break;
         case 3:
           newStatusId = 11;
@@ -251,7 +254,7 @@ x       5 delivered                   buy again -> return(/cart) cùng với ord
       }
   
       // Cập nhật trạng thái đơn hàng trong database
-      await OrderModel.findByIdAndUpdate(orderId, { statusId: newStatusId }, { new: true, lean: true });
+      await OrderModel.findByIdAndUpdate(orderId, { statusId: newStatusId,...updatedData }, { new: true, lean: true });
       // Chuyển hướng người dùng hoặc trả về kết quả thành công
       res.redirect('/account/order'); 
    

@@ -27,15 +27,23 @@ const Order = require("../models/order");
 // Admin index
 router.get('/',checkLoginSession, async (req, res) => {
     // Dashboard.... Chinh sau
-    const order = await OrderModel.find().count();
-    const product = await ProductModel.find().count();
+    const customerCount = await CustomerModel.find().count()
+    const staffCount = await StaffModel.find().count()
+    const orderCount = await OrderModel.findOne({isDelete: false}).count();
+    const productCount = await ProductModel.find().count();
+    const cateCount = await CategoryModel.find().count()
+    const brandCount = await BrandModel.find().count()
     const user = await  AdminModel.findOne({ email: req.session.email }).lean();
     
     res.render("admin/index", {
     layout: "admin/layout/layout",
     admin: user.name,
-    order: order,
-    product: product
+    customerCount,
+    staffCount,
+    orderCount,
+    productCount,
+    brandCount,
+    cateCount,
     });
 });
 // CATEGORY

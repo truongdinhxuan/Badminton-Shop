@@ -58,36 +58,52 @@ router.get('/:orderCode', async (req, res) => {
 
             //xử lý status order
             let activeSteps = [];
-            let showreturnsteps = false;
-            let showCancelsteps = false;
-
-            if (order.statusId >= 6 && order.statusId <= 10) {
-                showreturnsteps = true; // Hiển thị bước hoàn trả hàng nếu status là 6, 7, hoặc 8
-            }
-            if (order.statusId === 11) {
-                showCancelsteps = true
-            }
-            // hoàn trả
-            if (order.statusId === 6) {
-                activeSteps = [6]
-            } else if (order.statusId === 7) {
-                activeSteps = [6,7]
-            } else if (order.statusId === 8) {
-                activeSteps = [6,7.8]
-            // giao hàng
-            } else if (order.statusId === 1) {
-                activeSteps = [1]; // chỉ step 1 active
-            } else if (order.statusId === 2) {
-                activeSteps = [1, 2]; // step 1 và 2 active
-            } else if (order.statusId === 3) {
-                activeSteps = [1, 2, 3]; // step 1, 2 và 3 active
-            } else if (order.statusId == 4) {
-                activeSteps = [1,2,3,4]
-            } else if (order.statusId == 5) {
-                activeSteps = [1,2,3,4,5]
-            } else if (order.statusId == 11) {
-                activeSteps = [11]
-            }
+    let showreturnsteps = false;
+    let showCancelsteps = false;
+    let showrefusesteps = false;
+    let showrefundcompletesteps = false;
+    if (order.statusId >= 6 && order.statusId <= 12) {
+      showreturnsteps = true; // Hiển thị bước hoàn trả hàng nếu status là 6, 7, hoặc 8
+    }
+    if (order.statusId == 11) {
+      showCancelsteps = true
+    }
+    if (order.statusId == 8) {
+      showrefusesteps = true
+    }
+    if (order.statusId == 12) {
+      showrefundcompletesteps = true
+    }
+    // hoàn trả
+    if (order.statusId === 6) {
+      activeSteps = [6]
+    } else if (order.statusId === 7) {
+      activeSteps = [6,7]
+    // refuse step
+    } else if (order.statusId === 8) {
+      activeSteps = [8]
+    } else if (order.statusId === 9) {
+      activeSteps = [6,7,9]
+    } else if (order.statusId === 10) {
+      activeSteps = [6,7,9,10]
+    // show only refund step
+    } else if (order.statusId === 12) {
+      activeSteps = [12]
+    // Cancel step
+    } else if (order.statusId === 11) {
+      activeSteps = [11]
+    // giao hàng
+    } else if (order.statusId === 1) {
+      activeSteps = [1]; // chỉ step 1 active
+    } else if (order.statusId === 2) {
+      activeSteps = [1, 2]; // step 1 và 2 active
+    } else if (order.statusId === 3) {
+      activeSteps = [1, 2, 3]; // step 1, 2 và 3 active
+    } else if (order.statusId == 4) {
+      activeSteps = [1,2,3,4]
+    } else if (order.statusId == 5) {
+      activeSteps = [1,2,3,4,5]
+    }
 
             res.render('order/orderPage', {
                 layout: 'layout',
@@ -96,7 +112,9 @@ router.get('/:orderCode', async (req, res) => {
                 items: updatedItems,
                 activeSteps: activeSteps,
                 showreturnsteps: showreturnsteps,
-                showCancelsteps:showCancelsteps
+                showCancelsteps:showCancelsteps,
+                showrefundcompletesteps: showrefundcompletesteps,
+                showrefusesteps: showrefusesteps
             });
         } else {
             // chỗ này làm cái render no login

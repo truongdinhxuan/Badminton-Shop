@@ -6,7 +6,7 @@
         <div class="card" style="border-radius: 10px;">
           <div class="card-body p-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
-              <p class="lead fw-normal mb-0" style="color: #ff9c08;">Receipt</p>
+              <p class="lead fw-normal mb-0" style="color: #ff9c08;">Receipt {{order.orderCode}}</p>
             </div>
 
             <div class="row d-flex align-items-center">
@@ -17,9 +17,19 @@
                     {{#if showCancelsteps}} <!-- Nếu trạng thái là canceled, hiển thị bước này -->
                       <div class="step canceled {{#if (includes activeSteps 11)}}active{{/if}}"> 
                           <span class="icon"> <i class="fa fa-ban"></i> </span> 
-                          <span class="text">Order Canceled</span> 
+                          <span class="text">Order is Canceled</span> 
                       </div>
-                      {{else}}
+                    {{else if showrefundcompletesteps}}
+                    <div class="step {{#if (includes activeSteps 12)}}active{{/if}}"> 
+                    <span class="icon"> <i class="fa fa-check-circle"></i> </span> 
+                    <span class="text">Refund complete</span> 
+                    </div>
+                    {{else if showrefusesteps}}
+                    <div class="step canceled {{#if (includes activeSteps 8)}}active{{/if}}"> 
+                        <span class="icon"> <i class="fa fa-ban"></i> </span> 
+                        <span class="text">Refuse the return/refund</span> 
+                    </div>
+                    {{else}}
                   {{#unless showreturnsteps}}
                     <div class="step {{#if (includes activeSteps 1)}}active{{/if}}"> 
                     <span class="icon"> <i class="fa fa-ellipsis-h"></i> </span> 
@@ -91,26 +101,134 @@
                 
               </div>
             </div>
-
-            <div class="d-flex justify-content-between pt-2">
               <p class="fw-bold mb-0">Order Details</p>
-              <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span>{{order.amount}}đ</p>
-            </div>
-
-
-            <div class="d-flex justify-content-between">
-              <p class="text-muted mb-0">Invoice Date : {{order.orderDate}}</p>
+              <p class="text-muted mb-0"><span class="fw-bold me-4">Invoice Date : </span>{{order.orderDate}}</p> 
+              <p class="text-muted mb-0"><span class="fw-bold me-4">Shipping to :</span> {{order.buyerAddress}}</p>
               <p class="text-muted mb-0"><span class="fw-bold me-4">Delivery Charges</span> Free</p>
-            </div>
-
-            <div class="d-flex justify-content-between mb-5">
-              <p class="text-muted mb-0">Shipping to : {{order.buyerAddress}}</p>
-            </div>
             <hr>
 
-            <p class="text-muted mb-0"><span class="fw-bold me-4">Note</span>{{#if order.buyerNote}}{{order.buyerNote}}{{else}}*there is no note{{/if}}</p> 
-            <p class="text-muted mb-0"><span class="fw-bold me-4">Bank detail: </span>Refund accepted to bank name Dinh Xuan Truong</p> 
-            
+            <p class="text-muted mb-0"><span class="fw-bold me-4">Note:</span>{{#if order.buyerNote}}{{order.buyerNote}}{{else}}*there is no note{{/if}}</p> 
+          <hr>
+                            {{#ifEq order.statusId 1}}
+                            <!-- Cancel Order -->
+                            <form action="/account/update-status/{{order._id}}" method="POST" class="d-inline">
+                              <button type="submit" class="btn btn-danger btn-lg" title="Cancel Order">
+                                <i class="fas fa-times"></i> Cancel
+                              </button>
+                            </form>
+                            {{else ifEq order.statusId 2}}
+                            <!-- Cancel Order -->
+                            <form action="/account/update-status/{{order._id}}" method="POST" class="d-inline">
+                              <button type="submit" class="btn btn-danger btn-lg" title="Cancel Order">
+                                <i class="fas fa-times"></i> Cancel
+                              </button>
+                            </form>
+                            {{else ifEq order.statusId 3}}
+                            <!-- Cancel Order -->
+                            <form action="/account/update-status/{{order._id}}" method="POST" class="d-inline">
+                              <button type="submit" class="btn btn-danger btn-lg" title="Cancel Order">
+                                <i class="fas fa-times"></i> Cancel
+                              </button>
+                            </form>
+                          {{else ifEq order.statusId 4}}
+                            <!-- Mark as Delivered -->
+                            <form action="/account/update-status/{{order._id}}" method="POST" class="d-inline">
+                              <button type="submit" class="btn btn-success btn-lg" title="Mark as Delivered">
+                                <i class="fas fa-check"></i> Mark as Delivered
+                              </button>
+                            </form>
+                          {{else ifEq order.statusId 5}}
+                            <!-- Buy Again, Request Refund, Delete Order -->
+                            <button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#buyAgainModal-{{this._id}}" title="Buy Again">
+                              <i class="fas fa-undo"></i> Buy Again
+                            </button>
+                            <button type="button" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#reportModal-{{this._id}}" title="Request Refund">
+                              <i class="fas fa-flag"></i> Request Refund
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-lg" data-toggle="modal" data-target="#deleteModal-{{this._id}}" title="Delete Order">
+                              <i class="fas fa-trash"></i> Delete Order
+                            </button>
+                          {{else ifEq order.statusId 10}}
+                            <!-- Buy Again, Delete Order -->
+                            <button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#buyAgainModal-{{this._id}}" title="Buy Again">
+                              <i class="fas fa-undo"></i> Buy Again
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-lg" data-toggle="modal" data-target="#deleteModal-{{this._id}}" title="Delete Order">
+                              <i class="fas fa-trash"></i> Delete Order
+                            </button>
+                          {{else ifEq order.statusId 11}}
+                            <!-- Buy Again, Delete Order -->
+                            <button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#buyAgainModal-{{this._id}}" title="Buy Again">
+                              <i class="fas fa-undo"></i> Buy Again
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-lg" data-toggle="modal" data-target="#deleteModal-{{this._id}}" title="Delete Order">
+                              <i class="fas fa-trash"></i> Delete Order
+                            </button>
+                          {{/ifEq}}
+                      <!-- Buy Again Modal -->
+                      <div class="modal fade" id="buyAgainModal-{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="buyAgainModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="buyAgainModalLabel">Buy Again</h5>
+                            </div>
+                            <div class="modal-body">
+                              Are you sure you want to add this order to the cart again?
+                            </div>
+                            <div class="modal-footer">
+                              <form action="/account/buy-again/{{this._id}}" method="POST">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-danger">Confirm</button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Request Refund Modal -->
+                      <div class="modal fade" id="reportModal-{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="reportModalLabel">Request Refund</h5>
+                            </div>
+                            <div class="modal-body">
+                              <form action="/account/send-report/{{this._id}}" method="POST">
+                                <div class="form-group">
+                                  <label for="reportTitle-{{this._id}}">Title</label>
+                                  <input type="text" class="form-control" id="reportTitle-{{this._id}}" name="title" required>
+                                </div>
+                                <div class="form-group">
+                                  <label for="reportMessage-{{this._id}}">Message</label>
+                                  <textarea class="form-control" id="reportMessage-{{this._id}}" name="message" rows="4" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-danger mt-2">Send Report</button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Delete Modal -->
+                      <div class="modal fade" id="deleteModal-{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="deleteModalLabel">Delete Order</h5>
+                            </div>
+                            <div class="modal-body">
+                              Are you sure you want to delete this order?
+                            </div>
+                            <div class="modal-footer">
+                              <form action="/account/delete/{{this._id}}" method="POST">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                                
           </div>
           <div class="card-footer border-0 px-4 py-5"
             style="background-color: #a8729a; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">

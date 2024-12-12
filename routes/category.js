@@ -23,15 +23,8 @@ const getImageFiles = (directory) => {
 router.get('/:slug', async (req,res)=>{
     try
     {
-        const customerEmail = req.session.email; // Get email from session
-  
-      // Fetch customer ID based on email
+      const customerEmail = req.session.email; // Get email from session
       const customer = await CustomerModel.findOne({ email: customerEmail });
-    //   if (!customer) {
-    //     // Handle the case where no customer is found (e.g., redirect to login)
-    //     return res.redirect('/auth');
-    //   }
-        
 
         const {slug} = req.params;
         const category = await CategoryModel.find().lean();
@@ -40,7 +33,17 @@ router.get('/:slug', async (req,res)=>{
         if(!selectedCategory) {
             return res.status(404).send('Category not found')
         }
-        const products = await ProductModel.find({categoryId: selectedCategory.id}).lean()
+
+        const currentPage = parseInt(req.query.page) || 1;
+        const perPage = 9; // Số lượng sản phẩm mỗi trang
+
+        // Lấy tất cả sản phẩm và phân trang
+        const totalProducts = await ProductModel.countDocuments(); // Đếm tổng số sản phẩm
+        const totalPages = Math.ceil(totalProducts / perPage); // Tính tổng số trang
+
+        const products = await ProductModel.find({categoryId: selectedCategory.id}).skip((currentPage - 1) * perPage) // Bỏ qua số sản phẩm trước đó
+        .limit(perPage) // Giới hạn số sản phẩm cho trang hiện tại
+        .lean();
         const productBigData = await Promise.all(products.map(async (product) => {
         
             const imagesDirectory = path.join(__dirname, product.photo);
@@ -56,7 +59,9 @@ router.get('/:slug', async (req,res)=>{
             products: productBigData,
             category: category,
             selectedCategory: selectedCategory,
-            customer
+            customer,
+            currentPage: currentPage, // Trang hiện tại
+            totalPages: totalPages,
         })
     } catch (error) {
         console.error(error);

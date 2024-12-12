@@ -54,11 +54,25 @@
                             {{status.name}}
                           {{/if}}
                         </td>
-                        <td class="text-center">{{note}}</td>
+                        <td class="text-center">{{buyerNote}}</td>
                         <td class="text-center">
                           {{#if status}}
                             {{#ifEq status.id 1}}
                               <form action="/account/update-status/{{this._id}}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm" title="Cancel Order">
+                                  <i class="fas fa-times"></i>
+                                </button>
+                              </form>
+                            {{else ifEq status.id 2}}
+                            <!-- Cancel Order -->
+                            <form action="/account/update-status/{{this._id}}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm" title="Cancel Order">
+                                  <i class="fas fa-times"></i>
+                                </button>
+                              </form>
+                            {{else ifEq status.id 3}}
+                            <!-- Cancel Order -->
+                            <form action="/account/update-status/{{this._id}}" method="POST" class="d-inline">
                                 <button type="submit" class="btn btn-danger btn-sm" title="Cancel Order">
                                   <i class="fas fa-times"></i>
                                 </button>
@@ -130,7 +144,14 @@
                               <form action="/account/send-report/{{this._id}}" method="POST">
                                 <div class="form-group">
                                   <label for="reportTitle-{{this._id}}">Title</label>
-                                  <input type="text" class="form-control" id="reportTitle-{{this._id}}" name="title" required>
+                                  <select class="form-control" id="reportTitle-{{this._id}}" name="title" required>
+                                      <option value="">Select a reason</option>
+                                      <option value="Damaged product">Damaged product</option>
+                                      <option value="Wrong item received">Wrong item received</option>
+                                      <option value="Not as described">Not as described</option>
+                                      <option value="Late delivery">Late delivery</option>
+                                      <option value="Other">Other</option>
+                                  </select>
                                 </div>
                                 <div class="form-group">
                                   <label for="reportMessage-{{this._id}}">Message</label>

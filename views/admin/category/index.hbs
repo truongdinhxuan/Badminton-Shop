@@ -17,12 +17,32 @@
                                     </span>
                                     <span class="text">Add new category</span>
                                 </a>
-                                <a href="/admin/delete-all-category" class="btn btn-danger btn-icon-split">
-                                    <span class="icon text-white-50">
-                                        <i class="fas fa-trash"></i>
-                                    </span>
-                                    <span class="text">Delete all</span>
-                                </a>
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modelId">
+                                  Delete all
+                                </button>
+                                
+                                <!-- Modal -->
+                                <div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                                <div class="modal-header">
+                                                        <h5 class="modal-title">Delete All</h5>
+                                                    </div>
+                                            <div class="modal-body">
+                                                <div class="container-fluid">
+                                                    Are you sure want to delete all documment? This will not recover!
+                                                </div>
+                                            </div>
+                                            <form action="/admin/delete-all-category" method="GET">
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-danger">Confirm</button>
+                                            </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

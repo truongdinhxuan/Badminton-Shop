@@ -57,17 +57,29 @@
           </div>
           <!-- / product-grid -->
           <nav class="navigation paging-navigation text-center mt-5" role="navigation">
-            <div class="pagination loop-pagination d-flex justify-content-center align-items-center">
-              <a href="#" class="pagination-arrow d-flex align-items-center mx-3">
+          <div class="pagination loop-pagination d-flex justify-content-center align-items-center">
+            
+            {{!-- Previous page button --}}
+            {{#if (gt currentPage 1)}}
+              <a href="?page={{subtract currentPage 1}}" class="pagination-arrow d-flex align-items-center mx-3">
                 <iconify-icon icon="ic:baseline-keyboard-arrow-left" class="pagination-arrow fs-1"></iconify-icon>
               </a>
-              <span aria-current="page" class="page-numbers mt-2 fs-3 mx-3 current">1</span>
-              <a class="page-numbers mt-2 fs-3 mx-3" href="#">2</a>
-              <a class="page-numbers mt-2 fs-3 mx-3" href="#">3</a>
-              <a href="#" class="pagination-arrow d-flex align-items-center mx-3">
+            {{/if}}
+
+            {{!-- Các trang --}}
+            {{#each pages}}
+              <a href="?page={{this}}" class="page-numbers mt-2 fs-3 mx-3 {{#if (eq this currentPage)}}current{{/if}}">
+                {{this}}
+              </a>
+            {{/each}}
+
+            {{!-- Next page button --}}
+            {{#if (lt currentPage totalPages)}}
+              <a href="?page={{add currentPage 1}}" class="pagination-arrow d-flex align-items-center mx-3">
                 <iconify-icon icon="ic:baseline-keyboard-arrow-right" class="pagination-arrow fs-1"></iconify-icon>
               </a>
-            </div>
+            {{/if}}
+          </div>
           </nav>
 
         </main>
@@ -146,17 +158,29 @@
           </div>
           <!-- / product-grid -->
           <nav class="navigation paging-navigation text-center mt-5" role="navigation">
-            <div class="pagination loop-pagination d-flex justify-content-center align-items-center">
-              <a href="#" class="pagination-arrow d-flex align-items-center mx-3">
+          <div class="pagination loop-pagination d-flex justify-content-center align-items-center">
+            
+            {{!-- Previous page button --}}
+            {{#if (gt currentPage 1)}}
+              <a href="?page={{subtract currentPage 1}}" class="pagination-arrow d-flex align-items-center mx-3">
                 <iconify-icon icon="ic:baseline-keyboard-arrow-left" class="pagination-arrow fs-1"></iconify-icon>
               </a>
-              <span aria-current="page" class="page-numbers mt-2 fs-3 mx-3 current">1</span>
-              <a class="page-numbers mt-2 fs-3 mx-3" href="#">2</a>
-              <a class="page-numbers mt-2 fs-3 mx-3" href="#">3</a>
-              <a href="#" class="pagination-arrow d-flex align-items-center mx-3">
+            {{/if}}
+
+            {{!-- Các trang --}}
+            {{#each pages}}
+              <a href="?page={{this}}" class="page-numbers mt-2 fs-3 mx-3 {{#if (eq this currentPage)}}current{{/if}}">
+                {{this}}
+              </a>
+            {{/each}}
+
+            {{!-- Next page button --}}
+            {{#if (lt currentPage totalPages)}}
+              <a href="?page={{add currentPage 1}}" class="pagination-arrow d-flex align-items-center mx-3">
                 <iconify-icon icon="ic:baseline-keyboard-arrow-right" class="pagination-arrow fs-1"></iconify-icon>
               </a>
-            </div>
+            {{/if}}
+          </div>
           </nav>
 
         </main>

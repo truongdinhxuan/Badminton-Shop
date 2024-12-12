@@ -160,7 +160,7 @@ router.post('/update-status-order/:id', async (req, res) => {
         const id = req.params.id;
         let newStatusId = req.body.newStatusId;
         // const newStatusId = req.body.action === 'accept' ? 7 : 8; // Example: 7 for "Accepted", 8 for "Refused"
-        
+        let buyerNote = req.body.buyerNote || '';
         switch (newStatusId) {
           case 'confirm':
               newStatusId = 2; // Order confirmed
@@ -188,6 +188,7 @@ router.post('/update-status-order/:id', async (req, res) => {
             break;  
           case 'refunded':
               newStatusId = 12 //rf
+              buyerNote = req.body.buyerNote || 'Refund successfully';
             break;  
           default:
               req.flash('error', 'Invalid action.');
@@ -196,7 +197,7 @@ router.post('/update-status-order/:id', async (req, res) => {
         // Update the order's status
         const updatedOrder = await OrderModel.findOneAndUpdate(
             { _id: id },
-            { statusId: newStatusId },
+            { statusId: newStatusId, buyerNote: buyerNote },
             { new: true }
         );
   
@@ -208,7 +209,7 @@ router.post('/update-status-order/:id', async (req, res) => {
               if (newStatusId === 7 || newStatusId === 8) { // Chỉ cập nhật isAccepted nếu trạng thái là "Accepted"
                   await ReportModel.findOneAndUpdate(
                       { orderId: updatedOrder.orderCode },
-                      { isAccepted: true },
+                      {isAccepted: true},
                       { new: true }
                   );
               }
