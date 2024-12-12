@@ -51,7 +51,7 @@ router.post("/login", async (req, res) => {
         var role = await RoleModel.findById(staff.roleID).lean();
         if (role && role.roleName == "staff") {
           req.session.email = staff.email;
-          return res.redirect("/staff");
+          return res.redirect("/staff/order");
         }
       }
       res.render('auth', { 
