@@ -596,23 +596,17 @@ router.post('/account/customer/disable-customer/:id', async (req, res) => {
     // Tìm khách hàng theo ID
     const customer = await CustomerModel.findById(customerId);
 
-    // Kiểm tra và thay đổi trạng thái isDisable
     switch (customer.isDisable) {
       case true:
-        // Nếu isDisable là true, chuyển thành false
         await CustomerModel.findByIdAndUpdate(customerId, { isDisable: false });
         break;
       case false:
-        // Nếu isDisable là false, chuyển thành true
         await CustomerModel.findByIdAndUpdate(customerId, { isDisable: true });
         break;
       default:
-        // Nếu isDisable không phải là true/false (trường hợp bất thường)
         res.status(400).send('Invalid state');
         return;
     }
-
-    // Sau khi cập nhật, chuyển hướng về trang danh sách khách hàng
     res.redirect("/admin/account/customer");
   } catch (err) {
     console.error(err);

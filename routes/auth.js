@@ -85,7 +85,8 @@ router.post("/register", async (req, res) => {
     email: email,
     password: password,
     name: name,
-    roleID: customerRole._id
+    roleID: customerRole._id,
+    isDisable: false
   }
 
   await CustomerModel.create(customer)
